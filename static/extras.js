@@ -110,6 +110,74 @@
          <div class="small muted" style="margin-top:6px">آخرین تصمیم: ${esc(((sc.last_decision || {}).reason) || ((sc.last_decision || {}).action) || '—')} · کنترلر قطعی (بدون هوش مصنوعی) است؛ نگهبان فقط کارت پیشنهاد می‌سازد.</div>`}`;
     } catch (e) { $('#xScale') && ($('#xScale').innerHTML = '<h2>↔️ مقیاس افقی</h2><div class="muted small">در دسترس نیست</div>'); }
   };
+
+  /* ------------------------------------------------------------ GitOps: per-app CI/CD card (overview + app page) */
+  const RUNFA = {success: ['ok', 'موفق'], failure: ['bad', 'ناموفق'], cancelled: ['bad', 'لغو'], skipped: ['', 'رد شد'], timed_out: ['bad', 'زمان تمام'], action_required: ['warn', 'نیاز به تأیید']};
+  const runChip = r => { if (!r) return '<span class="muted">—</span>'; const [c, t] = r.status !== 'completed' ? ['info', r.status === 'waiting' ? 'منتظر تأیید' : 'در حال اجرا'] : (RUNFA[r.conclusion] || ['', r.conclusion || '—']);
+    return `<span class="chip ${c}">${esc(t)}</span> <a class="ltr small" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.sha)}</a> <span class="muted small">${esc(N.ago ? N.ago(Date.parse(r.created_at) / 1000) : r.created_at)}</span>`; };
+  const NODISPATCH = ['meowmeow-wallex'];
+  function cicdBlock(app, o, full) {
+    if (o.error) return `<div class="muted small">${esc(o.error)}</div>`;
+    const lv = o.live || {}, b = o.live_vs_main, hc = o.head_checks, ci = (o.ci_runs || [])[0], dep = (o.deploy_runs || [])[0];
+    const behind = b && !b.unknown ? (b.behind_main ? `<span class="chip warn">${fa(b.behind_main)} کامیت عقب‌تر از main</span>` : `<span class="chip ok">هم‌سطح main</span>`) + (b.estimated ? ' <span class="muted small" title="ریلیز فعلی اطلاعات git ندارد؛ آخرین کامیت پیش از زمان استقرار در نظر گرفته شد">(تخمینی)</span>' : '') : '<span class="muted small">نامشخص</span>';
+    const behindTxt = b && b.unknown ? `<span class="chip">نامشخص</span><div class="muted small">${esc(b.unknown)}</div>` : behind;
+    return `<div class="facts">
+      <div class="fact"><small>مخزن</small><a class="ltr" href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.repo)}</a></div>
+      <div class="fact"><small>آخرین CI</small>${runChip(ci)}</div>
+      <div class="fact"><small>کامیت آخر main</small><code>${esc((o.commits[0] || {}).sha || '—')}</code> ${hc ? `<span class="chip ${hc.failed.length ? 'bad' : hc.pending ? 'info' : 'ok'}" title="${esc(hc.failed.length ? 'ناموفق: ' + hc.failed.join(', ') : '')}">${fa(hc.success)}/${fa(hc.total)} چک</span>` : ''}</div>
+      <div class="fact"><small>نسخه‌ی روی لیارا</small>${esc(lv.release_tag || '—')} <code>${esc((lv.commit || '').slice(0, 7) || '—')}</code><br>${behindTxt}</div>
+      <div class="fact"><small>آخرین اجرای Deploy to Liara</small>${runChip(dep)}</div></div>
+      ${full ? `<div class="tl small" style="margin-top:8px">${(o.commits || []).slice(0, 6).map(c => `<div><code>${esc(c.sha)}</code> ${esc(c.message)} <span class="muted">— ${esc(c.author || '')}</span></div>`).join('')}</div>
+        ${(o.tags || []).length ? `<div class="small muted">تگ‌ها: ${o.tags.map(t => `<code>${esc(t)}</code>`).join(' ')}</div>` : ''}` : ''}
+      <div class="row" style="margin-top:6px"><button class="btn sm" data-ghchg="${esc(app)}">چه چیزی تغییر کرده؟</button>
+      ${NODISPATCH.includes(app) ? '<span class="muted small">فقط پایش (انتشار از نگهبان غیرفعال است)</span>' : `<button class="btn sm primary" data-ghrel="${esc(app)}">🚀 انتشار از پایپ‌لاین…</button>`}</div>`;
+  }
+  function bindCicd(root) {
+    $$('[data-ghchg]', root).forEach(b => b.onclick = () => busy(b, '…', async () => {
+      const c = await api(`/api/gitops/${b.dataset.ghchg}/changes`);
+      modal(`<h2>تغییرات ${esc(b.dataset.ghchg)}: <code>${esc(c.base ? String(c.base).slice(0, 12) : 'نسخه‌ی فعلی')}</code> ← <code>${esc(c.head)}</code></h2>${c.note ? `<div class="chip warn">${esc(c.note)}</div>` : ''}
+        <div class="row"><span class="chip">${fa(c.ahead_by || 0)} کامیت</span><span class="chip">${fa(c.files_total)} فایل</span><span class="chip ok">+${fa(c.additions)}</span><span class="chip bad">−${fa(c.deletions)}</span>${c.compare_url ? `<a class="ltr small" href="${esc(c.compare_url)}" target="_blank" rel="noopener">مقایسه در GitHub ↗</a>` : ''}</div>
+        <h3>کامیت‌ها</h3><div class="tl small">${c.commits.map(x => `<div><code>${esc(x.sha)}</code> ${esc(x.message)} <span class="muted">— ${esc(x.author || '')}</span></div>`).join('') || '—'}</div>
+        <h3>فایل‌ها</h3><div class="tablewrap"><table class="small">${c.files.map(f => `<tr><td class="ltr mono">${esc(f.file)}</td><td>${esc(f.status)}</td><td>+${fa(f.additions)} / −${fa(f.deletions)}</td></tr>`).join('')}</table></div>`);
+    }));
+    $$('[data-ghrel]', root).forEach(b => b.onclick = () => {
+      const app = b.dataset.ghrel;
+      modal(`<h2>انتشار ${esc(app)} از گیت‌هاب</h2><p class="small">نگهبان workflow «Deploy to Liara» همان مخزن را اجرا می‌کند (CI ← استقرار ← تست دود ← بازگشت خودکار در صورت شکست) و اجرای آن را زنده دنبال می‌کند. ابتدا یک کارت تأیید ساخته می‌شود؛ تا تأیید نکنید چیزی اجرا نمی‌شود.</p>
+        <div class="form"><label>شاخه یا تگ<input id="ghRef" class="ltr" value="main"></label><label class="switch small"><input type="checkbox" id="ghDry"> اجرای آزمایشی (بدون استقرار)</label>
+        <button class="btn primary" id="ghGo">ساخت کارت تأیید</button><div id="ghOut" class="small"></div></div>`);
+      $('#ghGo').onclick = () => busy($('#ghGo'), 'در حال بررسی مخزن…', async () => {
+        const r = await api(`/api/gitops/${app}/release`, {method: 'POST', body: {ref: $('#ghRef').value.trim() || 'main', dry_run: $('#ghDry').checked}});
+        if (r.error) { $('#ghOut').innerHTML = `<div class="err">${esc(r.error)}</div>`; return; }
+        const pr = r.proposal || {};
+        $('#ghOut').innerHTML = propCard({tool: 'release_via_pipeline', app, origin: 'dashboard', created_at: Date.now() / 1000, expires_at: Date.now() / 1000 + 1200, ...pr, status: pr.status === 'pending_approval' ? 'pending' : pr.status});
+        bindProps();
+        toast('کارت تأیید ساخته شد؛ در بخش «تأییدها» هم دیده می‌شود');
+      });
+    });
+  }
+  async function cicdCard(host, app) {
+    try {
+      const g = await api('/api/gitops' + (app ? `?app_name=${encodeURIComponent(app)}` : ''));
+      if (!g.configured) { host.innerHTML = '<h2>🔁 CI/CD</h2><div class="muted small">اتصال گیت‌هاب پیکربندی نشده است.</div>'; return; }
+      host.innerHTML = `<h2>🔁 CI/CD (GitHub)</h2>` + Object.entries(g.apps).map(([n, o]) => `<div class="item" style="margin-bottom:10px">${app ? '' : `<b class="ltr">${esc(n)}</b>`}${cicdBlock(n, o, !!app)}</div>`).join('')
+        + `<div class="muted small">دسترسی نگهبان به مخزن‌ها فقط خواندنی است به‌علاوه‌ی اجرای workflow استقرار با تأیید شما؛ هیچ کامیت، push یا PR ای ساخته نمی‌شود.</div>`;
+      bindCicd(host);
+    } catch (e) { host.innerHTML = `<h2>🔁 CI/CD</h2><div class="muted small">${esc(e.message)}</div>`; }
+  }
+  const ov2 = VIEWS.overview;
+  VIEWS.overview = async (silent) => {
+    await ov2(silent);
+    if (N.S.view !== 'overview' || $('#xCicd')) return;
+    const c = document.createElement('div'); c.className = 'card'; c.id = 'xCicd'; c.style.marginTop = '18px'; c.innerHTML = '<h2>🔁 CI/CD (GitHub)</h2><div class="spin"></div>';
+    $('#view').appendChild(c); cicdCard(c);
+  };
+  const appView = VIEWS.app;
+  VIEWS.app = async (name) => {
+    await appView(name);
+    if (!['bazargard-ai', 'negahban-sre', 'meowmeow-wallex'].includes(name) || $('#xCicdApp')) return;
+    const c = document.createElement('div'); c.className = 'card'; c.id = 'xCicdApp'; c.style.marginTop = '16px'; c.innerHTML = '<h2>🔁 CI/CD (GitHub)</h2><div class="spin"></div>';
+    $('#view').appendChild(c); cicdCard(c, name);
+  };
   const ap = VIEWS.autopilot;
   VIEWS.autopilot = async (arg) => {
     await ap(arg);

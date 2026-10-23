@@ -34,7 +34,7 @@ class Settings:
     dry_run: bool = field(default_factory=lambda: _env('LIARA_DRY_RUN', '0') == '1')
 
     def secrets(self):
-        out = [self.liara_token, self.admin_password, self.session_secret, self.mcp_token, self.watchdog_token, self.demo_chaos_token, os.environ.get('LLM_GATE_TOKEN', ''), os.environ.get('LIARA_EXEC_RELAY_TOKEN', ''), os.environ.get('STATUS_INGEST_TOKEN', ''), os.environ.get('SCALER_ADMIN_TOKEN', ''), os.environ.get('LB_READ_TOKEN', ''), os.environ.get('LB_WRITE_TOKEN', ''), *self.box_keys]
+        out = [self.liara_token, self.admin_password, self.session_secret, self.mcp_token, self.watchdog_token, self.demo_chaos_token, os.environ.get('LLM_GATE_TOKEN', ''), os.environ.get('LIARA_EXEC_RELAY_TOKEN', ''), os.environ.get('STATUS_INGEST_TOKEN', ''), os.environ.get('SCALER_ADMIN_TOKEN', ''), os.environ.get('LB_READ_TOKEN', ''), os.environ.get('LB_WRITE_TOKEN', ''), os.environ.get('NEGAHBAN_GITHUB_TOKEN', ''), *self.box_keys]
         return [s for s in out if s and len(s) >= 6]
 
 

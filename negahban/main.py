@@ -13,7 +13,7 @@ from .security import COOKIE, CSRF_COOKIE, TTL, check_password, client_ip, make_
 from . import obs  # noqa: E402
 obs.setup()
 STATIC = Path(__file__).resolve().parent.parent / 'static'
-VERSION = '1.9.1'
+VERSION = '1.10.0'
 app = FastAPI(title='Negahban', docs_url=None, redoc_url=None, openapi_url=None)
 STARTED = time.time()
 obs.install(app)
@@ -26,6 +26,7 @@ except Exception as _e:  # the diagnostics toolkit is optional; never block the 
     logging.getLogger('negahban').error('diag api not loaded: %r', _e)
 
 LIMITATIONS = [
+    ('دسترسی گیت‌هاب محدود شده در کد', 'توکن گیت‌هاب داده‌شده دسترسی بیشتری از نیاز دارد؛ نگهبان در کد فقط خواندن (کامیت، مقایسه، تگ، ریلیز، اجراهای CI، چک‌ها) و اجرای workflow «Deploy to Liara» با تأیید شما را مجاز می‌کند. هیچ کامیت، push، شاخه یا PR ای در مخزن‌های عمومی ساخته نمی‌شود. ریلیزهایی که پیش از اتصال پایپ‌لاین مستقر شده‌اند اطلاعات git ندارند و «عقب‌تر از main» برایشان نامشخص نمایش داده می‌شود.'),
     ('مقیاس افقی وجود ندارد', 'API لیارا فقط روشن/خاموش (scale 0 یا 1) و تغییر پلن عمودی (resize) دارد؛ چند نسخه‌ی هم‌زمان یا autoscaling داخلی ندارد. نگهبان مقیاس خودکار را با تغییر پلن در بازه‌ی مجاز شما انجام می‌دهد.'),
     ('تغییر پلن قطعی کوتاه دارد', 'هر resize حدود ۲۰ ثانیه خطای 502 ایجاد می‌کند. با باندل نقره‌ای/طلایی و «استقرار بدون قطعی» کمتر می‌شود؛ باندل برنزی این قابلیت را ندارد.'),
     ('وب‌هوک و هشدار ندارد', 'لیارا برای خرابی، کمبود منابع یا شکست استقرار رویداد push نمی‌فرستد؛ نگهبان هر دقیقه وضعیت، لاگ، متریک و رویدادها را می‌خواند.'),
@@ -139,7 +140,7 @@ async def healthz():
 def _asset_version():
     import hashlib
     h = hashlib.sha1()
-    for f in ('app.js', 'style.css', 'charts.js', 'templates.js', 'diag.js', 'servers.js', 'extras.js'):
+    for f in ('app.js', 'style.css', 'charts.js', 'templates.js', 'diag.js', 'servers.js', 'data.js', 'extras.js'):
         p = STATIC / f
         if p.exists():
             h.update(p.read_bytes())
@@ -379,10 +380,10 @@ async def approve(pid: str, request: Request):
     except Exception:
         pass
     p = store.get_proposal(pid)
-    if p and p['tool'] in ('delete_app', 'delete_server') and body.get('confirm_name') != ((p['args'] or {}).get('app') or (p['args'] or {}).get('server')):
+    if p and p['tool'] in ('delete_app', 'delete_server', 'delete_database', 'restore_database_backup', 'delete_bucket') and body.get('confirm_name') != ((p['args'] or {}).get('app') or (p['args'] or {}).get('server') or (p['args'] or {}).get('database') or (p['args'] or {}).get('bucket')):
         raise HTTPException(400, 'برای حذف، نام را دقیقاً تایپ کنید')
     extra = {}
-    if p and p['tool'] in ('delete_app', 'delete_server'):
+    if p and p['tool'] in ('delete_app', 'delete_server', 'delete_database', 'restore_database_backup', 'delete_bucket'):
         extra['confirm_name'] = body.get('confirm_name')
     if p and p['tool'] == 'launch_project' and body.get('envs'):
         from .onboarding import stash_secrets
@@ -472,7 +473,12 @@ async def llm_set(request: Request):
 @app.get('/api/limitations')
 async def limitations(request: Request):
     require(request)
-    return [{'title': t, 'text': x} for t, x in LIMITATIONS]
+    try:
+        from .diag import limitations as _dl
+        extra = list(_dl())
+    except Exception:
+        extra = []
+    return [{'title': t, 'text': x} for t, x in LIMITATIONS + extra]
 
 
 # ------------------------------------------------------------------ chat + stream
@@ -780,6 +786,51 @@ async def scaler_view(request: Request):
     require(request)
     from .tools_scaler import status
     return await status()
+
+
+# ------------------------------------------------------------------ GitOps (read-only views; releases go through approval cards)
+@app.get('/api/gitops')
+async def gitops_view(request: Request, app_name: str = '', fresh: int = 0):
+    require(request)
+    from . import gitops
+    if not gitops.gh.configured:
+        return {'configured': False, 'apps': {}}
+    names = [app_name] if app_name in gitops.APP_REPO else list(gitops.APP_REPO)
+
+    async def one(n):
+        try:
+            return n, await gitops.overview(n, fresh=bool(fresh))
+        except Exception as e:
+            return n, {'error': redact(str(e))[:200]}
+    res = await asyncio.gather(*(one(n) for n in names))
+    return {'configured': True, 'owner': gitops.OWNER, 'apps': dict(res), 'policy': 'read-only + deploy workflow dispatch (approval card); no commits/pushes/PRs'}
+
+
+@app.get('/api/gitops/{name}/changes')
+async def gitops_changes(name: str, request: Request, base: str = '', head: str = ''):
+    require(request)
+    from . import gitops
+    import re as _re
+    for v in (base, head):
+        if v and not _re.match(r'^[A-Za-z0-9._/-]{1,100}$', v):
+            raise HTTPException(400, 'bad ref')
+    try:
+        return await gitops.what_changed(name, base or None, head or None)
+    except Exception as e:
+        raise HTTPException(502, redact(str(e))[:200])
+
+
+@app.post('/api/gitops/{name}/release')
+async def gitops_release(name: str, request: Request):
+    """Dashboard button: creates the «release via pipeline» approval card (nothing is dispatched until the owner approves it)."""
+    require(request, csrf=True)
+    b = await request.json()
+    from .tools import ToolError, run
+    args = {'app': name, 'ref': str(b.get('ref') or 'main'), 'dry_run': bool(b.get('dry_run', False))}
+    try:
+        return await run('release_via_pipeline', args, {'origin': 'dashboard', 'actor': 'owner', 'why': 'درخواست انتشار از داشبورد (کارت CI/CD)'})
+    except ToolError as e:
+        raise HTTPException(400, str(e))
 
 
 # ------------------------------------------------------------------ alert rules, notifications, push ingest, self-guardrails
