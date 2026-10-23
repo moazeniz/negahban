@@ -15,6 +15,7 @@ guards apply. With the LLM disabled nothing changes: the loop does not use one.
 from __future__ import annotations
 
 import asyncio
+import os
 import re
 import time
 from collections import deque
@@ -22,7 +23,7 @@ from collections import deque
 from . import obs
 from .liara import Liara, LiaraError
 from .lb import Pool
-from .policy import Decision, Signals, State, decide, observe
+from .policy import FA, Decision, Signals, State, decide, effective_policy, observe
 
 TICK = 15.0
 VERTICAL = {  # apps that must not get replicas, and why (shown in /scaler/status and /api/replicas)
@@ -54,10 +55,14 @@ class Controller:
         self._last_tick = self.now()
         self._metrics_at = 0.0
         self._billing_at = 0.0
+        self._refusal_episode: float | None = None   # one "refused" audit entry per sustained-load episode
+        self._dry_seen: dict[str, float] = {}
+        self.team_label = os.getenv("LIARA_TEAM_LABEL", "")
 
     # -- audit ---------------------------------------------------------------------------------------
     def record(self, kind: str, actor: str, result: str, reason: str = "", **details) -> dict:
-        entry = {"ts": round(self.now(), 3), "kind": kind, "actor": actor, "result": result, "reason": reason, **details}
+        entry = {"ts": round(self.now(), 3), "kind": kind, "actor": actor, "result": result, "reason": reason,
+                 **({"team": self.team_label} if self.team_label else {}), **details}
         self.audit.append(entry)
         obs.log("scaler.audit", "warn" if result in ("failed", "rejected") else "info", f"{kind}: {result}",
                 actor=actor, kind=kind, result=result, reason=reason, **details)
@@ -78,6 +83,7 @@ class Controller:
         pol = self.pol
         self.base_info = {"network": (base.get("network") or {}).get("_id"), "plan": base.get("planID"),
                           "bundle": base.get("bundlePlanID")}
+        self.state.base_plan = base.get("planID")
         self.plan_specs = plans["projects"]
         self.state.replica_hourly = float(plans["projects"][pol["replica_plan"]]["price"]) + float(
             plans["projectBundlePlans"][pol["replica_plan"]][pol["replica_bundle"]]["price"])
@@ -96,6 +102,8 @@ class Controller:
         cpu = mem = None
         try:  # the base app's plan can change (vertical resize): read it on every refresh
             self.base_info["plan"] = (await self.li.project(self.app)).get("planID") or self.base_info.get("plan")
+            if not self.state.pending:
+                self.state.base_plan = self.base_info["plan"]
         except LiaraError:
             pass
         for app, plan in [(self.app, self.base_info.get("plan"))] + [(n, self.pol["replica_plan"]) for n in self.replica_names]:
@@ -156,19 +164,40 @@ class Controller:
         name = self.next_name()
         self.state.quota_left = self.pol["deploy_quota_per_app"] - self.deploys_today.get(name, 0)
         self.state.pending = None if self.task is None or self.task.done() else self.state.pending
-        observe(self.state, sig, self.pol, self.now())
-        d = decide(sig, self.state, self.pol, self.now())
+        now = self.now()
+        pol = effective_policy(self.pol, self.state, now)
+        was_breaching = self.state.breach_out_since is not None
+        observe(self.state, sig, pol, now)
+        if self.state.breach_out_since is not None and not was_breaching:
+            self._billing_at = now          # load just started: judge the one-week rule on fresh billing data
+            await self.refresh_billing()
+        d = decide(sig, self.state, pol, now)
         if not self.last_decision or (d.action, re.sub(r"[0-9.,]+", "#", d.reason)) != (
                 self.last_decision.action, re.sub(r"[0-9.,]+", "#", self.last_decision.reason)):
-            obs.log("scaler.decision", msg=d.reason, action=d.action, target=d.target, signals=d.signals)
+            obs.log("scaler.decision", msg=d.reason, action=d.action, target=d.target, signals=d.signals, plan=d.plan)
         self.last_decision = d
         self.watch_unhealthy()
+        if d.blocked and d.blocked != "cooldown" and self._refusal_episode != self.state.breach_out_since:
+            self._refusal_episode = self.state.breach_out_since   # audit why a replica was not added, once per episode
+            s = self.state
+            self.record("scale_out", "controller", "at_max" if d.blocked == "max" else "refused", d.reason,
+                        reason_fa=d.reason_fa, blocked=d.blocked,
+                        balance_toman=s.balance, one_week_need_toman=None if s.run_rate_hourly is None else
+                        round(168 * (s.run_rate_hourly + s.replica_hourly)))
         actor = "override" if d.reason.startswith("override") else "controller"
+        if d.action != "none" and now < self.state.dry_until:   # dry run: audit what would happen, change nothing
+            if now - self._dry_seen.get(d.action, 0) >= 120:
+                self._dry_seen[d.action] = now
+                self.record("dry_run", actor, "would_" + d.action, d.reason, reason_fa=d.reason_fa, plan=d.plan,
+                            replica=name if d.action == "scale_out" else None)
+            return d
         if d.action == "scale_out":
-            self.start(f"create {name}", self.scale_out(name, d.reason, actor))
+            self.start(f"create {name}", self.scale_out(name, d.reason, actor, d.reason_fa))
         elif d.action == "scale_in" and self.replica_names:
             victim = self.replica_names[-1]
-            self.start(f"remove {victim}", self.scale_in(victim, d.reason, actor))
+            self.start(f"remove {victim}", self.scale_in(victim, d.reason, actor, d.reason_fa))
+        elif d.action in ("scale_up", "scale_down") and d.plan:
+            self.start(f"resize {self.app} -> {d.plan}", self.resize_base(d.plan, d.action, d.reason, actor, d.reason_fa))
         return d
 
     def start(self, label: str, coro) -> None:
@@ -198,10 +227,10 @@ class Controller:
             await asyncio.sleep(TICK)
 
     # -- actions -------------------------------------------------------------------------------------
-    async def scale_out(self, name: str, reason: str, actor: str) -> None:
+    async def scale_out(self, name: str, reason: str, actor: str, reason_fa: str = "") -> None:
         self.state.pending = f"create {name}"
         t0 = self.now()
-        self.record("scale_out", actor, "started", reason, replica=name)
+        self.record("scale_out", actor, "started", reason, replica=name, reason_fa=reason_fa or f"افزودن رپلیکای {name}")
         created = False
         try:
             rels = await self.li.releases(self.app, 5)
@@ -209,7 +238,15 @@ class Controller:
             rel = next((r for r in rels.get("releases", []) if r["_id"] == cur), None) or {}
             base = await self.li.project(self.app)
             envs = {e["key"]: e["value"] for e in base.get("envs", [])}
-            await self.li.create_app(name, self.pol["replica_plan"], self.pol["replica_bundle"], self.base_info.get("network"))
+            try:
+                await self.li.create_app(name, self.pol["replica_plan"], self.pol["replica_bundle"], self.base_info.get("network"))
+            except LiaraError as e:
+                if e.status == 429:   # Liara's one-week balance rule (our estimate was optimistic): back off
+                    self.state.out_refused_until = self.now() + self.pol.get("vertical", {}).get("refused_backoff_s", 900)
+                    self.record("scale_out", actor, "refused", obs.redact(str(e))[:300], replica=name, blocked="refused",
+                                reason_fa=FA["refused"])
+                    return
+                raise
             created = True
             self.replica_names.append(name)
             self.state.replicas = len(self.replica_names)
@@ -227,9 +264,11 @@ class Controller:
             healthy = await self.wait_healthy(name, 300)
             if not healthy:
                 raise RuntimeError(f"{name} READY but never passed the LB health check")
-            self.record("scale_out", actor, "done", reason, replica=name, release=rid, seconds=round(self.now() - t0))
+            self.record("scale_out", actor, "done", reason, replica=name, release=rid, seconds=round(self.now() - t0),
+                        reason_fa=f"رپلیکای {name} آماده و سالم است و ترافیک می‌گیرد ({round(self.now() - t0)} ثانیه)")
         except Exception as e:  # noqa: BLE001
-            self.record("scale_out", actor, "failed", obs.redact(str(e))[:300], replica=name, seconds=round(self.now() - t0))
+            self.record("scale_out", actor, "failed", obs.redact(str(e))[:300], replica=name, seconds=round(self.now() - t0),
+                        reason_fa=f"ساخت رپلیکای {name} ناموفق بود؛ پاک‌سازی شد")
             if created:  # never leave a half-built replica billing
                 await self.remove_app(name, "cleanup after failed scale-out", actor)
         finally:
@@ -237,10 +276,10 @@ class Controller:
             self.state.last_action_ts = self.now()
             self._billing_at = 0.0  # the account run-rate changed: re-read it before the next decision
 
-    async def scale_in(self, name: str, reason: str, actor: str) -> None:
+    async def scale_in(self, name: str, reason: str, actor: str, reason_fa: str = "") -> None:
         self.state.pending = f"remove {name}"
         t0 = self.now()
-        self.record("scale_in", actor, "started", reason, replica=name)
+        self.record("scale_in", actor, "started", reason, replica=name, reason_fa=reason_fa or f"حذف رپلیکای {name}")
         try:
             others = [b for b in self.pool.healthy() if b.name != name]
             if not others:
@@ -254,13 +293,58 @@ class Controller:
                         break
                     await asyncio.sleep(self.drain_poll_s)
             await self.remove_app(name, reason, actor)
-            self.record("scale_in", actor, "done", reason, replica=name, seconds=round(self.now() - t0))
+            self.record("scale_in", actor, "done", reason, replica=name, seconds=round(self.now() - t0),
+                        reason_fa=f"رپلیکای {name} تخلیه و حذف شد ({round(self.now() - t0)} ثانیه)")
         except Exception as e:  # noqa: BLE001
             self.record("scale_in", actor, "failed", obs.redact(str(e))[:300], replica=name)
         finally:
             self.state.pending = None
             self.state.last_action_ts = self.now()
             self._billing_at = 0.0
+
+    async def resize_base(self, plan: str, kind: str, reason: str, actor: str, reason_fa: str = "") -> None:
+        """Vertical step of the base app (scale_up / scale_down), verified: Liara reports the new plan and the load
+        balancer's health check passes again. A Liara refusal backs off; it never retries in a loop."""
+        frm = self.state.base_plan
+        self.state.pending = f"resize {self.app} -> {plan}"
+        t0 = self.now()
+        v = self.pol.get("vertical") or {}
+        self.record(kind, actor, "started", reason, from_plan=frm, to_plan=plan, reason_fa=reason_fa)
+        try:
+            try:
+                await self.li.resize(self.app, plan)
+            except LiaraError as e:
+                self.state.up_refused_until = self.now() + v.get("refused_backoff_s", 900)
+                self.record(kind, actor, "refused", obs.redact(str(e))[:300], from_plan=frm, to_plan=plan,
+                            reason_fa=f"لیارا تغییر پلن به {plan} را رد کرد" + ("؛ قانون موجودی یک‌هفته‌ای لیارا" if e.status == 429 else ""))
+                return
+            if kind == "scale_up" and not self.state.vertical_from:
+                self.state.vertical_from = frm
+            verified = False
+            while self.now() - t0 < v.get("verify_timeout_s", 240):
+                await asyncio.sleep(self.poll_s)
+                try:
+                    now_plan = (await self.li.project(self.app)).get("planID")
+                except LiaraError:
+                    continue
+                b = self.pool.backends.get(self.app)
+                if now_plan == plan and (b is None or b.healthy):
+                    verified = True
+                    break
+            self.state.base_plan = self.base_info["plan"] = plan if verified else frm if frm else plan
+            if kind == "scale_down" and verified:
+                self.state.vertical_from = None
+            secs = round(self.now() - t0)
+            self.record(kind, actor, "done" if verified else "unverified", reason, from_plan=frm, to_plan=plan, seconds=secs,
+                        reason_fa=(f"تأیید شد: {self.app} اکنون روی {plan} است و سالم پاسخ می‌دهد ({secs} ثانیه)" if verified else
+                                   f"تغییر پلن به {plan} در {secs} ثانیه تأیید نشد"))
+        except Exception as e:  # noqa: BLE001
+            self.record(kind, actor, "failed", obs.redact(str(e))[:300], from_plan=frm, to_plan=plan)
+        finally:
+            self.state.pending = None
+            self.state.last_action_ts = self.now()
+            self._billing_at = 0.0
+            self._metrics_at = 0.0
 
     async def remove_app(self, name: str, reason: str, actor: str) -> None:
         if not self.replica_re().match(name) or name == self.app:
@@ -313,6 +397,16 @@ class Controller:
             self.state.override_desired, self.state.override_until = clamped, now + minutes * 60
             res = {"accepted": True, "applied_desired": clamped,
                    "reason": f"target {clamped} instances for {minutes} min" + (f" (clamped from {want})" if clamped != want else "")}
+        elif action in ("demo_mode", "demo_off"):
+            minutes = min(minutes, 180)
+            self.state.demo_until = now + minutes * 60 if action == "demo_mode" else 0.0
+            res = {"accepted": True, "reason": (f"demo timings for {minutes} min (reverts by itself)" if action == "demo_mode"
+                                                else "demo timings off: normal policy")}
+        elif action in ("dry_run", "dry_off"):
+            minutes = min(minutes, 120)
+            self.state.dry_until = now + minutes * 60 if action == "dry_run" else 0.0
+            res = {"accepted": True, "reason": (f"dry run for {minutes} min: decisions are audited, nothing is created or resized"
+                                                if action == "dry_run" else "dry run off")}
         elif action == "set_bounds":
             lo = int(body.get("min", self.pol["min"]))
             hi = int(body.get("max", self.pol["max"]))
@@ -322,7 +416,8 @@ class Controller:
                 self.pol["min"], self.pol["max"] = lo, hi
                 res = {"accepted": True, "reason": f"bounds set to {lo}..{hi}"}
         else:
-            res = {"accepted": False, "reason": "action must be scale_out, scale_in, desired, hold, resume or set_bounds"}
+            res = {"accepted": False, "reason": "action must be scale_out, scale_in, desired, hold, resume, set_bounds, "
+                                                "demo_mode, demo_off, dry_run or dry_off"}
         self.record("override", actor, "accepted" if res["accepted"] else "rejected", f"{action}: {reason} -> {res['reason']}")
         return res
 
@@ -330,8 +425,15 @@ class Controller:
         now = self.now()
         sig = self.signals()
         s = self.state
+        pol = effective_policy(self.pol, s, now)
         return {
-            "generated_at": now, "app": self.app, "mode": "horizontal", "policy": self.pol,
+            "generated_at": now, "app": self.app, "team": self.team_label or None, "mode": "horizontal", "policy": pol,
+            "base_plan": s.base_plan,
+            "vertical": {**(pol.get("vertical") or {}), "scaled_up_from": s.vertical_from,
+                         "resize_refused_until": s.up_refused_until or None},
+            "modes": {"demo_until": s.demo_until if now < s.demo_until else None,
+                      "dry_run_until": s.dry_until if now < s.dry_until else None,
+                      "replica_refused_until": s.out_refused_until if now < s.out_refused_until else None},
             "instances": s.instances, "replicas": list(self.replica_names), "pending": s.pending,
             "signals": {"rps_1m": round(sig.rps_1m, 2), "rps_per_backend": round(sig.rps_per_backend, 2), "p95_ms": sig.p95_ms,
                         "cpu": sig.cpu, "mem": sig.mem, "healthy_backends": sig.healthy_backends},

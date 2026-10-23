@@ -31,6 +31,9 @@ Negahban tells the owner clearly when something cannot be done through Liara's A
 
 ## Negahban MVP limits
 
+- **Multi-team.** Policies and locks are keyed by app name. That is safe because Liara app names are global, but database names are per team.
+  The status page, horizontal scaling and GitOps cover the production team only. Test-team apps are monitored read-only (autopilot off by default).
+
 - **GitHub token scope (GitOps).** The token provided (`NEGAHBAN_GITHUB_TOKEN`, a Liara env var on `negahban-sre`, read from a 600-mode file on Hetzner) has more power than Negahban needs. Negahban restricts it in code: `negahban/gitops.py` allows only read endpoints (repo, commits, compare, tags, releases, workflow runs/jobs/logs, check runs, statuses, the deploy workflow file) and exactly one write, `POST /repos/moazeniz/{bazargard|negahban|wallex-ai-trader}/actions/workflows/deploy.yml/dispatches`. Everything else is refused before any network call (`tests/test_gitops.py`, 27 blocked routes). Negahban never commits, pushes, or creates files, branches or PRs in these public repos. A token with only `actions:write` + `contents:read` on the three repos would remove this residual risk.
 - **Live commit of older releases is unknown.** Releases deployed before the GitHub pipeline existed carry no `gitInfo`, and the public repos have fresh history, so "N commits behind main" shows «نامشخص» until the first release through the pipeline. `meowmeow-wallex` is monitor-only: Negahban never dispatches its deploy.
 - **GitHub "production" environment.** The deploy job runs in the repo's `production` environment. If reviewers are required there, the run waits for approval in GitHub after the Negahban card is approved; Negahban reports the wait.

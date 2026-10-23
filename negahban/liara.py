@@ -10,6 +10,9 @@ TERMINAL = {'READY', 'FAILED', 'CANCELED', 'TIMEDOUT', 'UNHEALTHY'}
 SKIP_DIRS = {'.git', 'node_modules', '.venv', 'venv', '__pycache__', '.pytest_cache', '.mypy_cache', '.next', '.idea', '.vscode', 'dist', '.negahban'}
 
 
+_NETS = {}  # team id -> private network id (g2 apps/databases)
+
+
 class LiaraError(Exception):
     def __init__(self, status, message, path='', data=None):
         self.status, self.message, self.path, self.data = status, message, path, data
@@ -43,7 +46,8 @@ def make_tarball(src, extra_skip=()):
 class Liara:
     def __init__(self, token=None, team=None, base=None, transport=None, dns_base=None):
         self.token = token if token is not None else settings.liara_token
-        self.team = team if team is not None else settings.liara_team
+        self._fixed_team = team is not None  # an explicitly bound client (tests, scripts) ignores the operation's team context
+        self._team = team
         self.base = (base or settings.liara_base).rstrip('/')
         self.dns_base = (dns_base or settings.liara_dns_base).rstrip('/')
         self._transport = transport
@@ -56,16 +60,35 @@ class Liara:
                                              headers={'Authorization': f'Bearer {self.token}', 'User-Agent': 'negahban-sre/1.0'})
         return self._client
 
+    @property
+    def team(self):
+        """Team of the current operation (teams.CUR context), else the production team."""
+        if self._fixed_team:
+            return self._team
+        from .teams import current
+        return current()
+
+    @team.setter
+    def team(self, v):
+        self._team, self._fixed_team = v, True
+
     async def close(self):
         if self._client:
             await self._client.aclose()
             self._client = None
 
-    async def req(self, method, path, *, json_body=None, params=None, files=None, base=None, timeout=None, retries=None):
+    async def req(self, method, path, *, json_body=None, params=None, files=None, base=None, timeout=None, retries=None, team=None):
         url = (base or self.base) + path
         params = dict(params or {})
-        if self.team:
-            params['teamID'] = self.team
+        team = self.team if team is None else team  # per-call override; '' = no team (e.g. GET /v2/teams)
+        if team:
+            params['teamID'] = team
+        headers = None
+        if not self._fixed_team and team:
+            from .teams import token_for
+            tok = token_for(team)
+            if tok and tok != self.token:
+                headers = {'Authorization': f'Bearer {tok}'}
         retries = (3 if method == 'GET' else 1) if retries is None else retries
         from .resilience import CircuitOpen, backoff, breaker, log_call
         br = breaker('liara-dns' if base else 'liara', threshold=6, cooldown=30)
@@ -78,7 +101,7 @@ class Liara:
             t0 = time.perf_counter()
             try:
                 self.calls += 1
-                r = await self.client().request(method, url, json=json_body, params=params, files=files,
+                r = await self.client().request(method, url, json=json_body, params=params, files=files, headers=headers,
                                                 timeout=timeout or (300 if files else 30))
             except (httpx.ConnectError, httpx.ReadTimeout, httpx.ConnectTimeout, httpx.RemoteProtocolError, httpx.PoolTimeout) as e:
                 br.fail()
@@ -141,16 +164,19 @@ class Liara:
     async def network_id(self, create=True):
         """Private network for g2 apps/databases: LIARA_NETWORK_ID, else the team's first network, else a new free one named
         'negahban-net'. (A team without a network otherwise fails with: "network" is not allowed to be empty.)"""
-        if settings.liara_network:
+        team = self.team
+        if settings.liara_network and team == settings.liara_team:
             return settings.liara_network
+        if team in _NETS:
+            return _NETS[team]
         nets = (await self.get('/v1/networks')).get('networks') or []
         if not nets and create:
             await self.post('/v1/networks', {'networkName': 'negahban-net'})
             nets = (await self.get('/v1/networks')).get('networks') or []
         if not nets:
             raise LiaraError(400, 'this team has no private network and one could not be created', '/v1/networks')
-        settings.liara_network = nets[0]['_id']
-        return settings.liara_network
+        _NETS[team] = nets[0]['_id']
+        return _NETS[team]
 
     async def create_app(self, name, plan, bundle='basic', platform='docker', network=None):
         body = {'name': name, 'planID': plan, 'bundlePlanID': bundle, 'platform': platform}

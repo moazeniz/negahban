@@ -8,7 +8,7 @@ import sys
 from datetime import datetime, timezone
 
 APP = "meow-lb"
-RELEASE = "1.0.3"
+RELEASE = "1.1.0"
 _SECRET = re.compile(r"(?i)(bearer\s+)[A-Za-z0-9._~+/=-]{8,}")
 _JWT = re.compile(r"eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}")
 

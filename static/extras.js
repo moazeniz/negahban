@@ -92,7 +92,7 @@
     await ov(silent);
     if (N.S.view !== 'overview' || $('#xUsage')) return;
     const grid = document.createElement('div'); grid.className = 'grid g2'; grid.style.marginTop = '18px';
-    grid.innerHTML = `<div class="card" id="xUsage"><h2>🧠 مصرف مدل زبانی</h2><div class="spin"></div></div><div class="card" id="xScale"><h2>↔️ مقیاس افقی (demo-shop)</h2><div class="spin"></div></div>`;
+    grid.innerHTML = `<div class="card" id="xUsage"><h2>🧠 مصرف مدل زبانی</h2><div class="spin"></div></div><div class="card" id="xScale"><h2>↔️ مقیاس خودکار</h2><div class="spin"></div></div>`;
     $('#view').appendChild(grid);
     try {
       const [u, c] = await Promise.all([api('/api/llm/usage?days=7'), api('/api/control')]);
@@ -102,13 +102,34 @@
         ${u.days.map(d => `<tr><td>${esc(d.day)}</td><td>${fa(d.calls)}</td><td>${fa(d.tokens_in + d.cache_read + d.cache_write)} / ${fa(d.tokens_out)}</td><td>${d.cache_hit_pct != null ? fa(d.cache_hit_pct) + '٪' : '—'}</td><td>$${esc(d.cost_usd)}</td></tr>`).join('')}</table></div>
         <div class="small muted">به تفکیک کاربرد (امروز): ${Object.entries((u.days[0] || {}).by_feature || {}).map(([k, x]) => `${esc(k)}: ${fa(x.calls)}`).join(' · ')}</div>` : '<div class="muted small">هنوز مصرفی ثبت نشده</div>'}`;
     } catch (e) { $('#xUsage') && ($('#xUsage').textContent = e.message); }
+    scaleCard();
+  };
+  /* scaling card: one block per load balancer (production «دوخت» and, while it exists, the lab in «لیارا»), with the
+     controller's Persian reasons and a short timeline; it refreshes itself every 10 s while the overview is open */
+  const SCK = {scale_out: 'افزودن رپلیکا', scale_in: 'حذف رپلیکا', scale_up: 'ارتقای پلن', scale_down: 'کاهش پلن', dry_run: 'اجرای آزمایشی'};
+  const SCR = {started: ['info', 'شروع'], done: ['ok', 'انجام و تأیید شد'], refused: ['bad', 'رد شد'], at_max: ['warn', 'در سقف'], failed: ['bad', 'ناموفق'], unverified: ['warn', 'تأیید نشد']};
+  function scaleBlock(s) {
+    const lb = s.lb || {}, sc = s.scaler || {};
+    if (lb.error && sc.error) return `<div class="muted small">کنترلر رپلیکا در دسترس نیست (${esc(lb.error)}).</div>`;
+    const m = sc.modes || {}, ld = sc.last_decision || {};
+    const tl = (sc.audit_tail || []).filter(a => SCK[a.kind]).slice(-6).reverse();
+    return `<div class="row small" style="gap:6px;flex-wrap:wrap"><b class="ltr">${esc(sc.app || '')}</b>${sc.team ? `<span class="chip">تیم ${esc(sc.team)}</span>` : ''}
+        ${sc.base_plan ? `<span class="chip">پلن <span class="ltr">${esc(sc.base_plan)}</span></span>` : ''}<span class="chip">${fa(sc.instances)} نمونه</span>
+        ${m.demo_until ? '<span class="chip warn">زمان‌بندی نمایشی</span>' : ''}${m.dry_run_until ? '<span class="chip info">اجرای آزمایشی</span>' : ''}</div>
+      <div class="small" style="margin-top:6px">${(lb.backends || []).map(b => `<div><span class="dot ${b.healthy ? 'on' : 'bad'}"></span> <span class="ltr">${esc(b.name)}</span>${b.draining ? ' (در حال تخلیه)' : ''} · p95 ${b.p95_ms == null ? '—' : fa(Math.round(b.p95_ms))}ms · ${fa(b.requests)} درخواست · ${fa(b.rpm)} در دقیقه</div>`).join('') || 'بک‌اندی ثبت نشده'}</div>
+      <div class="small" style="margin-top:6px"><b>آخرین تصمیم:</b> ${esc(ld.reason_fa || ld.reason || '—')}</div>
+      ${tl.length ? `<div class="tl small" style="margin-top:6px">${tl.map(a => { const [c, t] = a.result.startsWith('would_') ? ['info', 'فقط شبیه‌سازی'] : (SCR[a.result] || ['', a.result]);
+        return `<div>${N.dt(a.ts)} · ${SCK[a.kind]} <span class="chip ${c}">${t}</span> ${esc(a.reason_fa || a.reason || '')}</div>`; }).join('')}</div>` : ''}`;
+  }
+  async function scaleCard() {
+    const host = $('#xScale'); if (!host) return;
     try {
-      const s = await api('/api/scaler'); const lb = s.lb || {}, sc = s.scaler || {};
+      const s = await api('/api/scaler');
       if (!$('#xScale')) return;
-      $('#xScale').innerHTML = `<h2>↔️ مقیاس افقی (demo-shop)</h2>${lb.error && sc.error ? `<div class="muted small">کنترلر رپلیکا هنوز در دسترس نیست (${esc(lb.error)}).</div>` :
-        `<div class="small">${(lb.backends || []).map(b => `<div><span class="dot ${b.healthy ? 'on' : 'bad'}"></span> <span class="ltr">${esc(b.name)}</span> · p95 ${fa(b.p95_ms)}ms · ${fa(b.requests)} درخواست</div>`).join('') || 'بک‌اندی ثبت نشده'}</div>
-         <div class="small muted" style="margin-top:6px">آخرین تصمیم: ${esc(((sc.last_decision || {}).reason) || ((sc.last_decision || {}).action) || '—')} · کنترلر قطعی (بدون هوش مصنوعی) است؛ نگهبان فقط کارت پیشنهاد می‌سازد.</div>`}`;
-    } catch (e) { $('#xScale') && ($('#xScale').innerHTML = '<h2>↔️ مقیاس افقی</h2><div class="muted small">در دسترس نیست</div>'); }
+      host.innerHTML = `<h2>↔️ مقیاس خودکار</h2>${scaleBlock(s)}${s.lab ? `<hr style="margin:12px 0;border:0;border-top:1px solid var(--line, #e5e7eb)">${scaleBlock(s.lab)}` : ''}
+        <div class="small muted" style="margin-top:8px">تصمیم‌ها قطعی و قانون‌محورند (بدون هوش مصنوعی)؛ نگهبان فقط توضیح می‌دهد یا کارت پیشنهاد می‌سازد.</div>`;
+    } catch (e) { host.innerHTML = '<h2>↔️ مقیاس خودکار</h2><div class="muted small">در دسترس نیست</div>'; }
+    clearTimeout(scaleCard.t); scaleCard.t = setTimeout(() => { if ($('#xScale') && N.S.view === 'overview') scaleCard(); }, 10000);
   };
 
   /* ------------------------------------------------------------ GitOps: per-app CI/CD card (overview + app page) */

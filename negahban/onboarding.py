@@ -40,14 +40,18 @@ async def _impact(a):
     envs = sorted((a.get('envs') or {}).keys())
     secrets = store.kv_get(f"pending_envs:{a['secret_ref']}", {}) if a.get('secret_ref') else {}
     missing = [e for e in (m.get('env_schema') or []) if e['name'] not in envs and e['name'] not in secrets]
-    warn = None
+    warn = check = None
+    from .teams import label as _tl
+    tl = _tl()['label_fa']
     if not exists:  # Liara refuses new apps unless the balance covers ~one week of the team's run-rate (incl. the new app)
         try:
             from .tools import team_usage
             u = await team_usage({}, {})
             need = ((u.get('total_toman_per_hour') or 0) + h) * 24 * 7
+            if u.get('balance_toman') is not None:
+                check = f"{tl}: موجودی {plans.fmt_toman(u['balance_toman'])} / هزینه‌ی یک هفته {plans.fmt_toman(need)}"
             if u.get('balance_toman') is not None and u['balance_toman'] < need:
-                warn = f"موجودی ({plans.fmt_toman(u['balance_toman'])}) برای ساخت برنامه‌ی جدید کافی نیست؛ لیارا موجودی معادل یک هفته هزینه ({plans.fmt_toman(need)}) می‌خواهد."
+                warn = f"{tl}: موجودی ({plans.fmt_toman(u['balance_toman'])}) برای ساخت برنامه‌ی جدید کافی نیست؛ لیارا موجودی معادل یک هفته هزینه ({plans.fmt_toman(need)}) می‌خواهد."
         except Exception:
             pass
     steps = (['ساخت برنامه در لیارا'] if not exists else []) + ['بارگذاری سورس و بیلد (لاگ بیلد زنده نمایش داده می‌شود)', 'تنظیم متغیرهای محیطی',
@@ -57,7 +61,7 @@ async def _impact(a):
              'risk': 'کم' if not exists else 'متوسط — سورس فعلی جایگزین می‌شود', 'resources': f"{plan} ({plans.plan_sync(plan)['cpu']} هسته، {plans.plan_sync(plan)['ram']} گیگ رم) · باندل {bundle}",
              'deploys': 'یک استقرار از سهمیه‌ی روزانه', 'steps': steps, 'env_names': envs, 'secrets_provided': sorted(secrets),
              'secrets_missing': [e['name'] for e in missing if e.get('secret')], 'env_missing': [e['name'] for e in missing if not e.get('secret')],
-             'framework': m.get('framework'), 'url': f"https://{a['app']}.liara.run", 'hourly': h, 'monthly': round(h * 720), **({'balance_warning': warn} if warn else {})},
+             'framework': m.get('framework'), 'url': f"https://{a['app']}.liara.run", 'hourly': h, 'monthly': round(h * 720), **({'balance_warning': warn} if warn else {}), **({'balance_check': check} if check else {})},
             'حذف برنامه با کارت «حذف» (نام را تایپ کنید)؛ سورس در آرشیو نگهبان می‌ماند.')
 
 

@@ -4,6 +4,11 @@ decide(signals, state, policy, now) -> Decision is the whole brain of the contro
 hysteresis, sustained-breach windows, cooldowns, bounds, a daily budget and deploy-quota awareness, so the same
 inputs always give the same answer and every answer carries a human-readable reason (written to the audit log).
 The AI (Negahban) may only *request* a target through an override; the request goes through the same guards.
+
+Vertical fallback: when sustained load calls for a replica but a replica is not possible (Liara's one-week balance
+rule, a Liara refusal, the daily budget, the deploy quota or the max bound), the policy resizes the base app one step
+up its allowed plan ladder instead (scale_up), and steps it back down (scale_down) after sustained calm. It only
+scales down what it scaled up itself.
 """
 from __future__ import annotations
 
@@ -28,6 +33,23 @@ DEFAULT_POLICY = {
     "max_replica_unhealthy_s": 600,   # a replica that never turns healthy is reported after this
     "hard_max": 5,                    # ceiling for set_bounds overrides
     "replica_url": "https://{name}.liara.run",
+    # vertical fallback for the base app (plan ladder, lowest first); down_after_s = calm needed before stepping down.
+    # Off by default: where Negahban's autopilot owns vertical resizes of the app, exactly one actor may resize it.
+    "vertical": {"enabled": False, "plans": ["small-g2", "medium-g2"], "down_after_s": 1800, "cooldown_s": 600,
+                 "refused_backoff_s": 900, "verify_timeout_s": 240},
+}
+
+# Temporary demo timings (POST /scaler/override {"action": "demo_mode", "minutes": N}); they revert by themselves.
+DEMO_OVERRIDES = {"scale_out": {"sustain_s": 45}, "scale_in": {"sustain_s": 60}, "cooldown_out_s": 60, "cooldown_in_s": 60,
+                  "vertical": {"down_after_s": 60, "cooldown_s": 60}}
+
+FA = {  # Persian reasons shown on Negahban's scaling card
+    "max": "سقف تعداد نمونه‌ها پر است",
+    "budget": "سقف بودجه‌ی روزانه‌ی رپلیکا اجازه نمی‌دهد",
+    "quota": "سهمیه‌ی استقرار روزانه تمام شده است",
+    "balance": "قانون موجودی یک‌هفته‌ای لیارا: ساخت رپلیکا ممکن نیست",
+    "refused": "لیارا ساخت رپلیکا را رد کرد (قانون موجودی یک‌هفته‌ای لیارا)",
+    "cooldown": "دوره‌ی خنک‌سازی",
 }
 
 
@@ -60,6 +82,12 @@ class State:
     quota_left: int = 20              # deploys left today for the next replica app
     balance: float | None = None      # account balance (toman); Liara refuses new apps unless it covers
     run_rate_hourly: float | None = None  # ... one week of the whole account's run-rate including the new app
+    base_plan: str | None = None      # current Liara plan of the base app
+    vertical_from: str | None = None  # plan the controller scaled up from (it only scales down what it scaled up)
+    out_refused_until: float = 0.0    # Liara answered 429 to a replica create: treat replicas as blocked until then
+    up_refused_until: float = 0.0     # Liara refused a resize: no new resize attempt until then
+    demo_until: float = 0.0           # demo timings active until (DEMO_OVERRIDES)
+    dry_until: float = 0.0            # dry run until: decisions are audited, nothing is created or resized
 
     @property
     def instances(self) -> int:
@@ -72,6 +100,9 @@ class Decision:
     reason: str
     target: int
     signals: dict = field(default_factory=dict)
+    plan: str | None = None           # scale_up / scale_down: the target plan of the base app
+    blocked: str | None = None        # why a replica was not possible: max|budget|quota|balance|refused|cooldown
+    reason_fa: str = ""
 
     def as_dict(self) -> dict:
         return asdict(self)
@@ -82,6 +113,11 @@ def merge_policy(base: dict, override: dict | None) -> dict:
     for k, v in (override or {}).items():
         out[k] = {**base[k], **v} if isinstance(v, dict) and isinstance(base.get(k), dict) else v
     return out
+
+
+def effective_policy(pol: dict, state: State, now: float) -> dict:
+    """The policy in force right now: demo timings while demo mode is on."""
+    return merge_policy(pol, DEMO_OVERRIDES) if now < state.demo_until else pol
 
 
 def _gt(v, limit) -> bool:
@@ -106,6 +142,20 @@ def breaching(sig: Signals, pol: dict) -> list[str]:
     return why
 
 
+def breaching_fa(sig: Signals, pol: dict) -> str:
+    """The same triggers as breaching(), worded in Persian for the scaling card."""
+    o, why = pol["scale_out"], []
+    if _gt(sig.rps_per_backend, o["rps_per_backend"]):
+        why.append(f"{sig.rps_per_backend:.1f} درخواست در ثانیه برای هر نمونه (آستانه {o['rps_per_backend']:g})")
+    if _gt(sig.p95_ms, o["p95_ms"]):
+        why.append(f"p95 برابر {sig.p95_ms:.0f} میلی‌ثانیه (آستانه {o['p95_ms']})")
+    if _gt(sig.cpu, o["cpu"]):
+        why.append(f"CPU {sig.cpu:.0%} (آستانه {o['cpu']:.0%})")
+    if _gt(sig.mem, o["mem"]):
+        why.append(f"حافظه {sig.mem:.0%} (آستانه {o['mem']:.0%})")
+    return "، ".join(why)
+
+
 def calm(sig: Signals, pol: dict) -> bool:
     i = pol["scale_in"]
     return (sig.rps_per_backend < i["rps_per_backend"] and _lt_or_none(sig.p95_ms, i["p95_ms"])
@@ -128,20 +178,52 @@ def observe(state: State, sig: Signals, pol: dict, now: float) -> State:
     return state
 
 
-def _can_out(state: State, pol: dict, now: float) -> str | None:
+def _can_out(state: State, pol: dict, now: float) -> tuple[str, str] | None:
     if state.instances >= pol["max"]:
-        return f"at max ({pol['max']} instances)"
+        return "max", f"at max ({pol['max']} instances)"
     if state.last_action_ts and now - state.last_action_ts < pol["cooldown_out_s"]:
-        return f"cooldown ({int(pol['cooldown_out_s'] - (now - state.last_action_ts))} s left)"
+        return "cooldown", f"cooldown ({int(pol['cooldown_out_s'] - (now - state.last_action_ts))} s left)"
     projected = state.cost_today + state.replica_hourly * pol["min_billed_hours"]
     if state.replica_hourly and projected > pol["daily_budget_toman"]:
-        return f"daily budget: {projected:,.0f} > {pol['daily_budget_toman']:,} toman"
+        return "budget", f"daily budget: {projected:,.0f} > {pol['daily_budget_toman']:,} toman"
     if state.quota_left <= 0:
-        return "deploy quota for today is used up"
+        return "quota", "deploy quota for today is used up"
+    if now < state.out_refused_until:
+        return "refused", "Liara refused the last replica (one-week balance rule)"
     if state.balance is not None and state.run_rate_hourly is not None:
         need = 168 * (state.run_rate_hourly + state.replica_hourly)
         if state.balance < need:
-            return f"Liara one-week balance rule: needs {need:,.0f} toman, balance {state.balance:,.0f}"
+            return "balance", f"Liara one-week balance rule: needs {need:,.0f} toman, balance {state.balance:,.0f}"
+    return None
+
+
+def _fa_block(code: str, state: State) -> str:
+    if code == "balance" and state.balance is not None and state.run_rate_hourly is not None:
+        need = 168 * (state.run_rate_hourly + state.replica_hourly)
+        return f"{FA['balance']} (نیاز {need:,.0f} تومان، موجودی {state.balance:,.0f} تومان)"
+    return FA.get(code, code)
+
+
+def _next_plan(state: State, pol: dict, step: int) -> str | None:
+    plans = (pol.get("vertical") or {}).get("plans") or []
+    if state.base_plan not in plans:
+        return None
+    i = plans.index(state.base_plan) + step
+    return plans[i] if 0 <= i < len(plans) else None
+
+
+def _can_up(state: State, pol: dict, now: float) -> str | None:
+    v = pol.get("vertical") or {}
+    if not v.get("enabled"):
+        return "vertical fallback is off (vertical resizes are owned by Negahban's autopilot)"
+    if state.base_plan not in (v.get("plans") or []):
+        return f"base plan {state.base_plan} is outside the allowed ladder {v.get('plans')}"
+    if _next_plan(state, pol, +1) is None:
+        return f"already on the largest allowed plan ({state.base_plan})"
+    if now < state.up_refused_until:
+        return f"Liara refused the last resize; next try in {int(state.up_refused_until - now)} s"
+    if state.last_action_ts and now - state.last_action_ts < v.get("cooldown_s", 600):
+        return f"vertical cooldown ({int(v.get('cooldown_s', 600) - (now - state.last_action_ts))} s left)"
     return None
 
 
@@ -157,52 +239,86 @@ def _can_in(state: State, sig: Signals, pol: dict, now: float) -> str | None:
 
 def decide(sig: Signals, state: State, pol: dict, now: float) -> Decision:
     snap = {"rps_1m": round(sig.rps_1m, 2), "rps_per_backend": round(sig.rps_per_backend, 2), "p95_ms": sig.p95_ms,
-            "cpu": sig.cpu, "mem": sig.mem, "healthy": sig.healthy_backends, "instances": state.instances}
+            "cpu": sig.cpu, "mem": sig.mem, "healthy": sig.healthy_backends, "instances": state.instances,
+            "plan": state.base_plan}
     cur = state.instances
+    app = pol.get("app", "app")
     if not pol.get("enabled", True):
-        return Decision("none", "controller disabled by policy", cur, snap)
+        return Decision("none", "controller disabled by policy", cur, snap, reason_fa="کنترلر خاموش است")
     if state.pending:
-        return Decision("none", f"waiting for {state.pending}", cur, snap)
+        return Decision("none", f"waiting for {state.pending}", cur, snap, reason_fa=f"در حال اجرا: {state.pending}")
 
     # 1. an operator/AI override (time-bounded) sets the target; guards still apply
     if state.override_desired is not None and now < state.override_until:
         want = max(pol["min"], min(pol["max"], state.override_desired))
         if want > cur:
             blocked = _can_out(state, {**pol, "cooldown_out_s": 0}, now)
-            return Decision("none", f"override wants {want}, blocked: {blocked}", cur, snap) if blocked else \
-                Decision("scale_out", f"override: desired {want} instances", cur + 1, snap)
+            return Decision("none", f"override wants {want}, blocked: {blocked[1]}", cur, snap, blocked=blocked[0],
+                            reason_fa=f"درخواست دستی {want} نمونه؛ {_fa_block(blocked[0], state)}") if blocked else \
+                Decision("scale_out", f"override: desired {want} instances", cur + 1, snap, reason_fa=f"درخواست دستی: {want} نمونه")
         if want < cur:
             blocked = _can_in(state, sig, {**pol, "cooldown_in_s": 0}, now)
             return Decision("none", f"override wants {want}, blocked: {blocked}", cur, snap) if blocked else \
-                Decision("scale_in", f"override: desired {want} instances", cur - 1, snap)
+                Decision("scale_in", f"override: desired {want} instances", cur - 1, snap, reason_fa=f"درخواست دستی: {want} نمونه")
         return Decision("none", f"override holds {want} instances", cur, snap)
     if now < state.hold_until:
-        return Decision("none", f"hold for {int(state.hold_until - now)} s (operator request)", cur, snap)
+        return Decision("none", f"hold for {int(state.hold_until - now)} s (operator request)", cur, snap,
+                        reason_fa="اقدام خودکار موقتاً متوقف است")
 
     # 2. below the configured minimum (e.g. min raised): repair upwards
     if cur < pol["min"]:
         blocked = _can_out(state, {**pol, "cooldown_out_s": 0}, now)
-        return Decision("none", f"below min, blocked: {blocked}", cur, snap) if blocked else \
+        return Decision("none", f"below min, blocked: {blocked[1]}", cur, snap, blocked=blocked[0]) if blocked else \
             Decision("scale_out", f"below min {pol['min']}", cur + 1, snap)
 
-    # 3. sustained load -> scale out one step
+    # 3. sustained load -> scale out one step; if a replica is not possible -> vertical fallback (one plan up)
     why = breaching(sig, pol)
     if why and state.breach_out_since is not None and now - state.breach_out_since >= pol["scale_out"]["sustain_s"]:
+        held = int(now - state.breach_out_since)
         blocked = _can_out(state, pol, now)
-        if blocked:
-            return Decision("none", f"load high ({'; '.join(why)}) but {blocked}", cur, snap)
-        return Decision("scale_out", f"sustained {int(now - state.breach_out_since)} s: {'; '.join(why)}", cur + 1, snap)
+        if not blocked:
+            return Decision("scale_out", f"sustained {held} s: {'; '.join(why)}", cur + 1, snap,
+                            reason_fa=f"بار بالا به مدت {held} ثانیه: {breaching_fa(sig, pol)} ← افزودن یک رپلیکا ({cur + 1} نمونه)")
+        code, msg = blocked
+        if code == "cooldown":
+            return Decision("none", f"load high ({'; '.join(why)}) but {msg}", cur, snap, blocked=code,
+                            reason_fa=f"بار بالا؛ {FA['cooldown']}")
+        up = _can_up(state, pol, now)
+        if up is None:
+            nxt = _next_plan(state, pol, +1)
+            return Decision("scale_up", f"sustained {held} s: {'; '.join(why)}; replica not possible ({msg}) -> vertical fallback: "
+                                        f"resize {app} {state.base_plan} -> {nxt}", cur, snap, plan=nxt, blocked=code,
+                            reason_fa=f"{_fa_block(code, state)} ← جایگزین: مقیاس عمودی {app} از {state.base_plan} به {nxt}")
+        return Decision("none", f"load high ({'; '.join(why)}) but {msg}; vertical: {up}", cur, snap, blocked=code,
+                        reason_fa=f"بار بالا؛ {_fa_block(code, state)}" + (
+                            f"؛ {app} روی بزرگ‌ترین پلن مجاز ({state.base_plan}) است" if "largest" in up else
+                            "؛ مقیاس عمودی با خودران نگهبان است" if "Negahban" in up else ""))
     if why:
-        return Decision("none", f"load high ({'; '.join(why)}), waiting for {pol['scale_out']['sustain_s']} s sustain", cur, snap)
+        return Decision("none", f"load high ({'; '.join(why)}), waiting for {pol['scale_out']['sustain_s']} s sustain", cur, snap,
+                        reason_fa=f"بار بالا: {breaching_fa(sig, pol)}؛ انتظار برای پایداری {pol['scale_out']['sustain_s']} ثانیه")
 
-    # 4. sustained calm -> scale in one step
-    if state.calm_since is not None and now - state.calm_since >= pol["scale_in"]["sustain_s"] and state.replicas > 0:
+    # 4. sustained calm -> scale in one step (replicas first), then step a vertical fallback back down
+    calm_for = None if state.calm_since is None else now - state.calm_since
+    if calm_for is not None and calm_for >= pol["scale_in"]["sustain_s"] and state.replicas > 0:
         blocked = _can_in(state, sig, pol, now)
         if blocked:
             return Decision("none", f"calm but {blocked}", cur, snap)
-        return Decision("scale_in", f"calm for {int(now - state.calm_since)} s "
-                                    f"(rps/backend {sig.rps_per_backend:.1f} < {pol['scale_in']['rps_per_backend']})", cur - 1, snap)
-    return Decision("none", "within band", cur, snap)
+        return Decision("scale_in", f"calm for {int(calm_for)} s "
+                                    f"(rps/backend {sig.rps_per_backend:.1f} < {pol['scale_in']['rps_per_backend']})", cur - 1, snap,
+                        reason_fa=f"آرامش پایدار به مدت {int(calm_for)} ثانیه ({sig.rps_per_backend:.1f} درخواست در ثانیه برای هر نمونه، "
+                                  f"آستانه {pol['scale_in']['rps_per_backend']:g}) ← حذف یک رپلیکا ({cur - 1} نمونه)")
+    v = pol.get("vertical") or {}
+    if (state.replicas == 0 and state.vertical_from and state.base_plan and state.base_plan != state.vertical_from
+            and calm_for is not None):
+        if calm_for < v.get("down_after_s", 1800):
+            return Decision("none", f"calm for {int(calm_for)} s; back to {state.vertical_from} after {v.get('down_after_s', 1800)} s",
+                            cur, snap, reason_fa=f"آرامش {int(calm_for)} ثانیه؛ بازگشت به {state.vertical_from} پس از {v.get('down_after_s', 1800)} ثانیه")
+        if state.last_action_ts and now - state.last_action_ts < v.get("cooldown_s", 600):
+            return Decision("none", "calm, vertical cooldown", cur, snap, reason_fa="آرامش؛ دوره‌ی خنک‌سازی")
+        return Decision("scale_down", f"calm for {int(calm_for)} s: resize {app} {state.base_plan} -> {state.vertical_from}",
+                        cur, snap, plan=state.vertical_from,
+                        reason_fa=f"آرامش پایدار به مدت {int(calm_for)} ثانیه ← بازگشت {app} از {state.base_plan} به {state.vertical_from}")
+    return Decision("none", "within band", cur, snap, reason_fa="در محدوده‌ی عادی")
 
 
 def hours_left_today(now: float) -> float:

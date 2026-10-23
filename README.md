@@ -34,6 +34,7 @@
   - مدل زبانی توضیح ساده می‌نویسد و موارد تازه را تحلیل می‌کند.
   - ابزارهای عمیق‌تر: ترمینال کانتینر، کاوشگر لاگ ساخت‌یافته، TLS، DNS، runbook و جستجوی وب برای خطاهای ناشناخته.
 - **سرورهای مجازی (IaaS لیارا)**: فهرست، جزئیات و ترافیک سرورها؛ ساخت سرور از قالب، روشن و خاموش کردن، تغییر پلن، دیسک و رمز یک‌بارمصرف. همه‌ی این کارها با کارت تأیید انجام می‌شود و حداقل هزینه‌ی ۲۴ ساعته روی کارت نمایش داده می‌شود.
+- **چند تیم لیارا**: تیم اصلی (دوخت) و یک تیم آزمایشی (لیارا) در یک داشبورد. انتخابگر تیم در بالای صفحه نام و موجودی هر تیم را نشان می‌دهد. هر کارت تأیید تیم خودش را با رنگ مشخص نشان می‌دهد، و بررسی موجودی یک‌هفته‌ای برای هر تیم جداست. در گفتگو بگویید «در تیم لیارا …».
 - **گیت‌آپس (GitHub + CI/CD)**: برای هر برنامه‌ی دارای مخزن، وضعیت آخرین CI، نسخه‌ی روی لیارا در برابر main («N کامیت عقب‌تر»)، «چه چیزی تغییر کرده؟» و ارتباط استقرار با رخداد را نشان می‌دهد. انتشار نسخه‌ی جدید از طریق workflow «Deploy to Liara» همان مخزن (CI، تست دود، بازگشت خودکار) و با کارت تأیید انجام می‌شود. دسترسی نگهبان به گیت‌هاب در کد محدود شده است: فقط خواندن و اجرای workflow استقرار؛ هیچ کامیت یا PR ای نمی‌سازد.
 - **پایگاه‌داده و ذخیره‌سازی ابری**: فهرست، ساخت، اتصال به برنامه، پشتیبان‌گیری و بازیابی پایگاه‌داده‌ها و باکت‌ها؛ همه با کارت تأیید و نمایش هزینه‌ی ساعتی و ماهانه.
 - **حافظه‌ی بلندمدت**: واقعیت‌ها و ترجیحات مالک، علت و راه‌حل رخدادهای گذشته (که در تشخیص بعدی هم استفاده می‌شود) و خلاصه‌ی گفتگوهای قبلی.
@@ -74,6 +75,7 @@ LLM: Anthropic `claude-haiku-5-5` through the team gate (default), with automati
 - **Token and cost logging plus prompt caching:** −54 % input cost.
 - **Daily report** and a **first-run tour.**
 - **Horizontal-scaling view and override cards** for the platform's deterministic replica controller.
+- **Multiple Liara teams**: production «دوخت» plus a test team «لیارا». A header switcher shows each team with its balance. Every card shows its team in a coloured band, the one-week precheck runs per team, and wiring resources across teams is refused.
 - **GitOps**: CI/CD status per app, live commit vs main, what-changed diffs, deploy↔incident correlation, and releases through the repo's own «Deploy to Liara» workflow behind an approval card. A code-level allowlist limits GitHub access to reads plus that one dispatch.
 - **Managed databases and object storage**: list, create, connect, back up and restore databases and buckets, all through approval cards with hourly and monthly cost.
 

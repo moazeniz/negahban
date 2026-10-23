@@ -1,0 +1,154 @@
+{
+ "teams": {
+  "teams": [
+   {
+    "id": "<liara-team-id>",
+    "name": "دوخت",
+    "test": false,
+    "default": true,
+    "color": "#0f766e",
+    "label_fa": "تیم دوخت (اصلی)",
+    "apps": 5,
+    "balance": 1754144,
+    "burn_toman_h": 9363.4,
+    "week_need": 1573050,
+    "week_headroom": 181094
+   },
+   {
+    "id": "<liara-test-team-id>",
+    "name": "لیارا",
+    "test": true,
+    "default": false,
+    "color": "#c2410c",
+    "label_fa": "تیم لیارا (آزمایشی)",
+    "apps": 0,
+    "balance": 1997402.8,
+    "burn_toman_h": 0,
+    "week_need": 0,
+    "week_headroom": 1997403
+   }
+  ],
+  "default": "<liara-team-id>",
+  "selected": "<liara-team-id>"
+ },
+ "overview_prod": {
+  "team": {
+   "id": "<liara-team-id>",
+   "name": "دوخت",
+   "test": false,
+   "default": true,
+   "color": "#0f766e",
+   "label_fa": "تیم دوخت (اصلی)"
+  },
+  "apps": [
+   "demo-shop",
+   "meow-lb",
+   "meowmeow-wallex",
+   "negahban-sre",
+   "bazargard-ai"
+  ]
+ },
+ "overview_test": {
+  "team": {
+   "id": "<liara-test-team-id>",
+   "name": "لیارا",
+   "test": true,
+   "default": false,
+   "color": "#c2410c",
+   "label_fa": "تیم لیارا (آزمایشی)"
+  },
+  "apps": [],
+  "unregistered": []
+ },
+ "diag_apps_test": [],
+ "databases_test": {
+  "count": 0,
+  "databases": [],
+  "total_toman_per_hour": 0
+ },
+ "pg_card_test_team": {
+  "proposal": {
+   "id": "prp_bb69aa126bb6",
+   "title": "ساخت پایگاه‌داده‌ی postgres «ngh-video-pg»",
+   "status": "pending_approval",
+   "impact": {
+    "downtime": "ندارد (سرویس جدید)",
+    "cost": "+1,042 تومان در ساعت (~749,995 تومان در ماه)",
+    "risk": "کم؛ هزینه تا حذف دیتابیس ادامه دارد",
+    "engine": "postgres",
+    "version": "آخرین نسخه",
+    "resources": "small-g2 · 0.5 هسته · 0.5 گیگ RAM · 5 گیگ دیسک · باندل basic",
+    "toman_per_hour": 1041.66,
+    "backups": "ندارد (باندل basic)",
+    "balance_check": "تیم لیارا (آزمایشی): موجودی 1,997,403 ≥ هزینه‌ی یک هفته 174,999",
+    "label": "create_database",
+    "session": "dashboard"
+   },
+   "rollback": "حذف دیتابیس با کارت «حذف» (تایپ نام)؛ اتصال برنامه با حذف همین متغیرها برمی‌گردد.",
+   "note": "Shown to the owner as an approval card; NOT executed yet.",
+   "team": {
+    "id": "<liara-test-team-id>",
+    "name": "لیارا",
+    "test": true,
+    "default": false,
+    "color": "#c2410c",
+    "label_fa": "تیم لیارا (آزمایشی)"
+   }
+  }
+ },
+ "cross_team_refused": {
+  "http": 400,
+  "body": {
+   "detail": "برنامه‌ی demo-shop در تیم دوخت (اصلی) است، نه در تیم لیارا (آزمایشی)؛ اتصال منابع بین دو تیم ممکن نیست (شبکه و صورتحساب جداست). منبع را در همان تیم برنامه بسازید."
+  }
+ },
+ "chat": {
+  "seconds": 14,
+  "answer": "یک کارت تأیید برای ساخت دیتابیس ساخته شد. منتظر تأیید شما است و هنوز اجرا نشده است.\n\n**جزئیات کارت (`prp_f6d21b6e2ba4`):**\n- **نام:** ngh-chat-pg\n- **موتور:** PostgreSQL (آخرین نسخه)\n- **سخت‌افزار:** small-g2 (۰.۵ هسته، ۰.۵ گیگ RAM، ۵ گیگ دیسک)\n- **باندل:** basic، بدون بک‌آپ\n- **هزینه:** حدود ۱,۰۴۲ تومان در ساعت (≈ ۷۵۰,۰۰۰ تومان در ماه)\n- **تیم:** لیارا (آزمایشی)\n- **موجودی:** کافی است (۱,۹۹۷,۴۰۳ تومان)\n\n**نکته:** باندل basic بک‌آپ ندارد. اگر این دیتابیس داده‌ی مهمی نگه می‌دارد، بهتر است باندل standard را انتخاب کنید. می‌توانم قیمت آن را هم برای شما بررسی کنم."
+ },
+ "pending": [
+  {
+   "id": "prp_f6d21b6e2ba4",
+   "tool": "create_database",
+   "title": "ساخت پایگاه‌داده‌ی postgres «ngh-chat-pg»",
+   "team": {
+    "id": "<liara-test-team-id>",
+    "name": "لیارا",
+    "test": true,
+    "default": false,
+    "color": "#c2410c",
+    "label_fa": "تیم لیارا (آزمایشی)"
+   },
+   "balance_check": "تیم لیارا (آزمایشی): موجودی 1,997,403 ≥ هزینه‌ی یک هفته 174,999",
+   "args": {
+    "name": "ngh-chat-pg",
+    "engine": "postgres",
+    "plan": "small-g2",
+    "bundle": "basic",
+    "reason": "Small Postgres for the TEST team, requested by the owner",
+    "team": "<liara-test-team-id>"
+   }
+  },
+  {
+   "id": "prp_bb69aa126bb6",
+   "tool": "create_database",
+   "title": "ساخت پایگاه‌داده‌ی postgres «ngh-video-pg»",
+   "team": {
+    "id": "<liara-test-team-id>",
+    "name": "لیارا",
+    "test": true,
+    "default": false,
+    "color": "#c2410c",
+    "label_fa": "تیم لیارا (آزمایشی)"
+   },
+   "balance_check": "تیم لیارا (آزمایشی): موجودی 1,997,403 ≥ هزینه‌ی یک هفته 174,999",
+   "args": {
+    "name": "ngh-video-pg",
+    "engine": "postgres",
+    "plan": "small-g2",
+    "bundle": "basic",
+    "team": "<liara-test-team-id>"
+   }
+  }
+ ]
+}

@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from meowlb.policy import DEFAULT_POLICY, Signals, State, decide, merge_policy, observe  # noqa: E402
+from meowlb.policy import DEFAULT_POLICY, Signals, State, decide, effective_policy, merge_policy, observe  # noqa: E402
 
 POL = merge_policy(DEFAULT_POLICY, {"min": 1, "max": 3, "scale_out": {"sustain_s": 60}, "scale_in": {"sustain_s": 180},
                                     "cooldown_out_s": 120, "cooldown_in_s": 180, "daily_budget_toman": 30000})
@@ -112,6 +112,62 @@ class TestDecisions(unittest.TestCase):
     def test_pending_operation_blocks(self):
         d = decide(Signals(rps_1m=100), state(pending="create demo-shop-r1"), POL, 0)
         self.assertIn("waiting for create", d.reason)
+
+
+VPOL = merge_policy(POL, {"vertical": {"enabled": True, "plans": ["small-g2", "medium-g2"], "down_after_s": 600, "cooldown_s": 300}})
+
+
+class TestVerticalFallback(unittest.TestCase):
+    def test_balance_rule_falls_back_to_one_plan_up(self):
+        st = state(balance=1_700_000, run_rate_hourly=9_363, base_plan="small-g2")
+        step(st, Signals(rps_1m=30), 0, VPOL)
+        d = step(st, Signals(rps_1m=30), 61, VPOL)
+        self.assertEqual((d.action, d.plan, d.blocked), ("scale_up", "medium-g2", "balance"))
+        self.assertIn("قانون موجودی یک‌هفته‌ای لیارا", d.reason_fa)
+        self.assertEqual(d.target, 1)                                  # instance count unchanged
+
+    def test_at_top_of_ladder_and_off_by_default(self):
+        st = state(balance=1_700_000, run_rate_hourly=9_363, base_plan="medium-g2")
+        step(st, Signals(rps_1m=30), 0, VPOL)
+        d = step(st, Signals(rps_1m=30), 61, VPOL)
+        self.assertEqual(d.action, "none")
+        self.assertIn("largest allowed plan", d.reason)
+        st = state(balance=1_700_000, run_rate_hourly=9_363, base_plan="small-g2")
+        step(st, Signals(rps_1m=30), 0)
+        d = step(st, Signals(rps_1m=30), 61)                           # default policy: Negahban owns resizes
+        self.assertEqual((d.action, d.blocked), ("none", "balance"))
+        self.assertIn("Negahban", d.reason)
+
+    def test_liara_refusal_and_resize_refusal_back_off(self):
+        st = state(base_plan="small-g2", out_refused_until=1000)
+        step(st, Signals(rps_1m=30), 0, VPOL)
+        d = step(st, Signals(rps_1m=30), 61, VPOL)
+        self.assertEqual((d.action, d.blocked), ("scale_up", "refused"))
+        st.up_refused_until = 1000
+        self.assertIn("refused the last resize", step(st, Signals(rps_1m=30), 70, VPOL).reason)
+
+    def test_steps_back_down_only_what_it_scaled_up(self):
+        st = state(base_plan="medium-g2", vertical_from="small-g2", last_action_ts=0)
+        for t in range(0, 620, 20):
+            d = step(st, Signals(rps_1m=0, p95_ms=100), 1000 + t, VPOL)
+        self.assertEqual((d.action, d.plan), ("scale_down", "small-g2"))
+        st = state(base_plan="medium-g2")                                 # resized by someone else: leave it
+        for t in range(0, 620, 20):
+            d = step(st, Signals(rps_1m=0, p95_ms=100), 1000 + t, VPOL)
+        self.assertEqual(d.action, "none")
+
+    def test_replicas_scale_in_before_the_plan_steps_down(self):
+        st = state(replicas=1, base_plan="medium-g2", vertical_from="small-g2", last_action_ts=0)
+        for t in range(0, 700, 20):
+            d = step(st, Signals(rps_1m=0, healthy_backends=2, p95_ms=100), 1000 + t, VPOL)
+        self.assertEqual(d.action, "scale_in")
+
+    def test_demo_mode_shortens_timings_and_expires(self):
+        st = state(demo_until=500)
+        pol = effective_policy(VPOL, st, 100)
+        self.assertEqual((pol["scale_out"]["sustain_s"], pol["scale_in"]["sustain_s"], pol["vertical"]["down_after_s"]), (45, 60, 60))
+        self.assertTrue(pol["vertical"]["enabled"])                     # demo timings keep the other settings
+        self.assertEqual(effective_policy(VPOL, st, 600)["scale_out"]["sustain_s"], 60)
 
 
 class TestSimulation(unittest.TestCase):

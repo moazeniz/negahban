@@ -90,6 +90,11 @@ def audit_list(limit=200, app=None):
 
 # ---- apps -------------------------------------------------------------------
 def upsert_app(name, role='monitored', url=None, health_path='/', port=8080, meta=None):
+    meta = dict(meta or {})
+    if 'team' not in meta:  # an app registered while working in a non-production team remembers its team
+        from .teams import current, default_id
+        if current() != default_id():
+            meta['team'] = current()
     x("""insert into apps(name,role,url,health_path,port,added_at,meta) values(?,?,?,?,?,?,?)
          on conflict(name) do update set role=excluded.role, url=coalesce(excluded.url, apps.url), health_path=excluded.health_path,
          port=excluded.port, meta=excluded.meta""",

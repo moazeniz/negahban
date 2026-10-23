@@ -62,6 +62,22 @@ flowchart LR
 | `static/` | Vanilla-JS Persian RTL dashboard (no framework, CSP `script-src 'self'`). Vendored Vazirmatn font, our own SVG charts, and the vendored Pele renderer for Mermaid diagrams. Updates live over SSE. |
 | `deploy/watchdog.py` | The external watchdog ("who watches the watchman"). After 2 failed checks of `/healthz` or a stalled orchestrator, it calls the Liara API: scale on if off, otherwise restart. 15-min cooldown; every decision is logged. |
 
+### Multi-team (`negahban/teams.py`)
+
+Negahban works with several Liara teams of the same Liara user: the **production** team (`LIARA_TEAM_ID`, default) and, for example,
+a **test** team for create demos (`LIARA_TEAMS`, names refreshed from `GET /v2/teams`). The team of an operation is a context
+variable that the Liara client reads on every call (`?teamID=`, plus an optional per-team token such as `LIARA_API_TOKEN_2`):
+
+- **Dashboard:** the header switcher sends `X-Ngh-Team`; `/api/apps/<name>` always uses the app's own team.
+- **Tools / MCP:** every tool takes an optional `team` (name or id). Without it: the registered app's team, else production.
+- **Chat:** a team named in the message («در تیم لیارا …») is passed to the tools; otherwise production. The dashboard selection never leaks
+  into chat tool calls implicitly.
+- **Cards:** an approval card stores its team (`args.team`), is built, approved and executed inside that team, and shows a coloured team band.
+  The one-week balance precheck uses that team's balance and run-rate.
+- **Orchestrator:** each app is observed in its own team. Apps of non-production teams are registered for read-only monitoring
+  (autopilot off). The public status page, the replica controller and GitOps cover the production team only.
+- **No cross-team wiring:** connecting a database/bucket of one team to an app of another is refused with a message naming both teams.
+
 ## Data model (SQLite at `/data/negahban.db`)
 
 | Table | Contents |

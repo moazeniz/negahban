@@ -185,6 +185,8 @@ def fake_liara(state):
     @routes.post("/v1/projects")
     async def create(req):
         body = await req.json()
+        if state.get("create_429"):
+            return web.json_response({"message": "You need enough balance to cover one week's cost"}, status=429)
         state["apps"][body["name"]] = {"envs": [], "planID": body["planID"]}
         state["calls"].append(("create", body["name"], body["planID"], body.get("network")))
         return web.json_response({}, status=201)
@@ -196,6 +198,15 @@ def fake_liara(state):
             return web.json_response({}, status=404)
         return web.json_response({"project": {"_id": a, "planID": "small-g2", "bundlePlanID": "standard",
                                               "network": {"_id": "net1"}, **state["apps"][a]}})
+
+    @routes.post("/v1/projects/{app}/resize")
+    async def resize(req):
+        body = await req.json()
+        state["calls"].append(("resize", req.match_info["app"], body["planID"]))
+        if state.get("resize_429"):
+            return web.json_response({"message": "You need enough balance to cover one week's cost"}, status=429)
+        state["apps"][req.match_info["app"]]["planID"] = body["planID"]
+        return web.json_response({}, status=200)
 
     @routes.delete("/v1/projects/{app}")
     async def delete(req):
@@ -313,6 +324,65 @@ class TestController(Base):
         await self.c.scale_in("demo-shop-r1", "test", "controller")
         self.assertIn("demo-shop-r1", self.state["apps"])
         self.assertIn(("scale_in", "rejected"), [(a["kind"], a["result"]) for a in self.c.audit])
+
+    async def test_replica_429_backs_off_and_is_audited(self):
+        await self.make()
+        self.state["create_429"] = True
+        await self.c.scale_out("demo-shop-r1", "test", "controller")
+        self.assertEqual(self.c.replica_names, [])
+        self.assertGreater(self.c.state.out_refused_until, 0)
+        last = self.c.audit[-1]
+        self.assertEqual((last["kind"], last["result"], last["blocked"]), ("scale_out", "refused", "refused"))
+        self.assertIn("قانون موجودی یک‌هفته‌ای لیارا", last["reason_fa"])
+
+    async def test_vertical_resize_verified_and_back(self):
+        await self.make()
+        self.c.pol["vertical"] = {**self.c.pol["vertical"], "enabled": True, "verify_timeout_s": 5}
+        await self.c.resize_base("medium-g2", "scale_up", "test", "controller")
+        self.assertEqual(self.state["calls"][-1], ("resize", "demo-shop", "medium-g2"))
+        self.assertEqual((self.c.state.base_plan, self.c.state.vertical_from), ("medium-g2", "small-g2"))
+        self.assertEqual((self.c.audit[-1]["result"], self.c.audit[-1]["to_plan"]), ("done", "medium-g2"))
+        self.assertIn("تأیید شد", self.c.audit[-1]["reason_fa"])
+        await self.c.resize_base("small-g2", "scale_down", "test", "controller")
+        self.assertEqual((self.c.state.base_plan, self.c.state.vertical_from), ("small-g2", None))
+
+    async def test_resize_refusal_backs_off(self):
+        await self.make()
+        self.state["resize_429"] = True
+        await self.c.resize_base("medium-g2", "scale_up", "test", "controller")
+        self.assertEqual(self.c.audit[-1]["result"], "refused")
+        self.assertGreater(self.c.state.up_refused_until, 0)
+        self.assertEqual(self.c.state.base_plan, "small-g2")
+
+    async def test_dry_run_audits_without_acting(self):
+        await self.make()
+        self.c.override({"action": "dry_run", "minutes": 5})
+        self.c.state.breach_out_since = self.c.now() - 120
+        self.pool.rps_1m = lambda: 50.0
+        d = await self.c.tick()
+        self.assertEqual(d.action, "scale_out")
+        self.assertIsNone(self.c.task)
+        self.assertEqual(self.c.audit[-1]["result"], "would_scale_out")
+        self.assertNotIn("create", [c[0] for c in self.state["calls"]])
+        st = json.loads(json.dumps(self.c.status(), default=str))
+        self.assertIsNotNone(st["modes"]["dry_run_until"])
+
+    async def test_balance_refusal_is_audited_once_per_episode(self):
+        await self.make()
+        self.c._billing_at = self.c.now()
+        self.c.state.breach_out_since = self.c.now() - 120
+        self.pool.rps_1m = lambda: 50.0
+
+        async def low_balance():
+            self.c.state.balance, self.c.state.run_rate_hourly = 1_000_000, 9_000
+        self.c.refresh_billing = low_balance
+        await low_balance()
+        for _ in range(3):
+            await self.c.tick()
+        refused = [a for a in self.c.audit if a["result"] == "refused"]
+        self.assertEqual(len(refused), 1)
+        self.assertEqual(refused[0]["blocked"], "balance")
+        self.assertIn("نیاز", refused[0]["reason_fa"])
 
     async def test_override_clamps(self):
         await self.make()

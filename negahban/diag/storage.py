@@ -140,7 +140,7 @@ async def _key_by_ref(ref):
 # ---------------------------------------------------------------- actions
 async def create_bucket(name, plan='20g-g2', permission='private', connect_app=None, ctx=None):
     if connect_app:
-        _check_app(connect_app)
+        await _check_app(connect_app)
     if not NAME_RX.match(name or ''):
         raise DiagError('bucket name: 3-63 chars, lowercase letters, digits and -')
     if permission not in PERMS:
@@ -242,7 +242,7 @@ def env_names(style='liara'):
 
 
 async def connect(bucket, app, style='liara', ctx=None):
-    _check_app(app)
+    await _check_app(app)
     if style not in ENV_STYLES:
         raise DiagError('style must be liara or aws')
     await find(bucket)
@@ -268,15 +268,15 @@ async def _create_impact(a):
     imp = {'downtime': 'ندارد (سرویس جدید)', 'cost': f"+{row['toman_per_hour']:,.0f} تومان در ساعت (~{row['toman_per_month']:,.0f} تومان در ماه)",
            'risk': 'کم' if (a.get('permission') or 'private') == 'private' else 'متوسط: فایل‌ها بدون احراز هویت قابل خواندن‌اند', 'space': f"{row['space_gb']} گیگ",
            'permission': a.get('permission') or 'private', 'toman_per_hour': row['toman_per_hour'],
-           'balance_check': f"موجودی {pre.get('balance') or 0:,.0f} ≥ هزینه‌ی یک هفته {pre.get('need') or 0:,.0f}" if pre['ok'] else pre.get('message_fa')}
+           'balance_check': f"{pre.get('team') or ''}: موجودی {pre.get('balance') or 0:,.0f} ≥ هزینه‌ی یک هفته {pre.get('need') or 0:,.0f}" if pre['ok'] else pre.get('message_fa')}
     if a.get('connect_app'):
-        _check_app(a['connect_app'])
+        await _check_app(a['connect_app'])
         imp.update(connect_app=a['connect_app'], env_names=env_names(a.get('style') or 'liara'), downtime=f"برنامه‌ی {a['connect_app']} پس از اتصال یک بار ری‌استارت می‌شود")
     return imp, 'حذف باکت با کارت «حذف» (تایپ نام، باکت باید خالی باشد).'
 
 
 async def _connect_impact(a):
-    _check_app(a['app'])
+    await _check_app(a['app'])
     await find(a['bucket'])
     names = env_names(a.get('style') or 'liara')
     try:

@@ -51,6 +51,11 @@ How you work:
 - INITIAL SETUP: «این ریپو رو دیپلوی کن: <git URL>» → analyze_project(git_url) → explain the recommended plan/bundle, price and
   reasoning → launch_project(project_id, app, plan, bundle, envs with NON-secret values) which creates ONE approval card; secret
   env values are typed by the owner on that card. After it runs, give the URL and the custom-domain next step.
+- TEAMS: Negahban manages several Liara teams (listed in the context): the PRODUCTION team (default; real apps, meow-lb, almost no
+  spare credit) and a TEST team for demos/creates. Every tool takes an optional `team` (name or id). When the owner says «در تیم لیارا …»,
+  «تیم دوخت», «تیم تست» pass that team. If a CREATE/DELETE action does not name a team while the dashboard shows a non-production team,
+  ask which team first; otherwise use production and SAY which team you used. Resources never cross teams (a database of one team cannot be
+  connected to an app of another). Always mention the team on cards you create.
 - GITOPS: apps with a GitHub repo (bazargard-ai, negahban-sre, meowmeow-wallex; account moazeniz) → cicd_status for CI/live-vs-main,
   git_what_changed for "what changed", deploy_incident_correlation for "did a deploy cause this", ci_run_details for a failing run.
   To publish a new version of an app that has a repo («از گیت‌هاب منتشر کن») use release_via_pipeline (approval card; CI + smoke test +
@@ -167,12 +172,15 @@ async def chat(session, login_sid, text):
     from .llm import feature
     feature.set('chat')
     # stable prompt first (prompt-cached with the tool list), per-turn context second
-    messages = [{'role': 'system', 'content': SYSTEM}, {'role': 'system', 'content': _context() + memory.context_block(session)}] + _history(session)
+    messages = [{'role': 'system', 'content': SYSTEM}, {'role': 'system', 'content': _context(text) + memory.context_block(session)}] + _history(session)
     if verdict == 'offtopic':
         messages.append({'role': 'system', 'content': 'The last user message looks off-topic. Politely decline in one Persian sentence and offer help with their Liara apps.'})
     recent = ' '.join(m['content'] for m in store.chat_history(session, 6) if m['role'] == 'user')
     tools = select_tools(recent + ' ' + text)
     ctx = {'origin': 'chat', 'session': session, 'actor': 'agent'}
+    from . import teams
+    named = teams.mentioned(text)
+    chat_team = named[0] if len(named) == 1 else teams.default_id()  # a team named in this message, else production (never implicit)
     steps, attachments = [], []
     for turn in range(10):
         bus.publish('chat_step', session=session, text='در حال فکر کردن…' if turn == 0 else 'در حال جمع‌بندی…', state='thinking')
@@ -206,8 +214,11 @@ async def chat(session, login_sid, text):
             label = (STEP_FA.get(name) or TOOLS.get(name, {}).get('label_fa') or f'در حال اجرای {name}…') if risk != 'sensitive' else f'ساخت کارت تأیید برای «{name}»…'
             step = {'tool': name, 'args': args, 'risk': risk, 'label': label, 'ts': time.time()}
             bus.publish('chat_step', session=session, text=label, tool=name, risk=risk, args=args, state='running')
+            if isinstance(args, dict) and not args.get('team') and not teams.is_default(chat_team) and name in TOOLS:
+                args['team'] = chat_team  # the owner named a team («در تیم لیارا …»): route the call there even if the model forgot
             try:
-                res = await asyncio.wait_for(run(name, args, ctx), 300)
+                with teams.use(teams.default_id()):  # the dashboard's selected team never leaks into chat tool calls implicitly
+                    res = await asyncio.wait_for(run(name, args, ctx), 300)
             except asyncio.TimeoutError:
                 res = {'error': 'tool timeout'}
             except Exception as e:  # tool validation errors etc. are returned to the model
@@ -297,12 +308,21 @@ def select_tools(text):
     return [t for t in openai_tools() if t['function']['name'] in want]
 
 
-def _context():
+def _context(text=''):
+    from . import teams
     apps = store.apps()
-    lines = [f"- {a['name']} (role={a['role']}, url={a['url']}, write_lock={store.policy(a['name']).get('write_lock')})" for a in apps]
+    lines = [f"- {a['name']} (team={teams.label(teams.app_team(a))['name']}, role={a['role']}, url={a['url']}, write_lock={store.policy(a['name']).get('write_lock')})" for a in apps]
     inc = store.incidents(5, open_only=True)
     s = '\n\nRegistered apps:\n' + '\n'.join(lines)
     if inc:
         s += '\nOpen incidents:\n' + '\n'.join(f"- [{i['id']}] {i['app']}: {i['title']}" for i in inc)
+    ts = teams.all_teams()
+    if len(ts) > 1:
+        s += '\nLiara teams: ' + '; '.join(f"«{t['name']}» id={t['id']} ({'PRODUCTION, default' if t['default'] else 'TEST team for demos/creates' if t['test'] else 'extra'})" for t in ts)
+        dash = teams.label()
+        s += f"\nThe dashboard currently shows team «{dash['name']}»."
+        named = teams.mentioned(text)
+        if named:
+            s += f"\nThe owner named team(s) in this message: {', '.join('«' + teams.label(n)['name'] + '»' for n in named)} -> pass team=<that name> in tool calls."
     s += f"\nNow: {time.strftime('%Y-%m-%d %H:%M')} (server time)."
     return s

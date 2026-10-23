@@ -15,7 +15,7 @@ const STATUS_FA = {pending: 'در انتظار تأیید', executing: 'در ح�
   expired: 'منقضی شد', stale: 'باطل (وضعیت تغییر کرد)', unverified: 'اجرا شد، راستی‌آزمایی ناموفق'};
 const ORIGIN_FA = {chat: 'گفتگو', orchestrator: 'پایشگر خودکار', autopilot: 'خودران', mcp: 'MCP', wizard: 'ویزارد', dashboard: 'داشبورد', scenario: 'سناریو'};
 const INC_FA = {open: 'باز', mitigating: 'در حال رفع', resolved: 'برطرف شد'};
-let S = {csrf: null, view: 'overview', ov: null, session: localStorage.getItem('ngh_session') || ('s' + Math.random().toString(36).slice(2, 10)), chatSteps: [], busy: false, es: null};
+let S = {team: (() => { try { return localStorage.getItem('ngh_team') || ''; } catch { return ''; } })(), csrf: null, view: 'overview', ov: null, session: localStorage.getItem('ngh_session') || ('s' + Math.random().toString(36).slice(2, 10)), chatSteps: [], busy: false, es: null};
 localStorage.setItem('ngh_session', S.session);
 const getCookie = n => (document.cookie.split('; ').find(c => c.startsWith(n + '=')) || '').split('=')[1];
 
@@ -24,6 +24,7 @@ async function api(path, opts = {}) {
   if (opts.body instanceof FormData) o.body = opts.body;
   else if (opts.body !== undefined) { o.body = JSON.stringify(opts.body); o.headers['Content-Type'] = 'application/json'; }
   if (o.method !== 'GET') o.headers['X-CSRF-Token'] = getCookie('ngh_csrf') || S.csrf || '';
+  if (S.team) o.headers['X-Ngh-Team'] = S.team;  // selected Liara team (header switcher); the server falls back to production
   const r = await fetch(path, o);
   if (r.status === 401 && path !== '/api/login') { showLogin(); throw new Error('ابتدا وارد شوید'); }
   let data = null; try { data = await r.json(); } catch { }
@@ -199,8 +200,10 @@ function propCard(p, live) {
     ${pp.fallback ? `<div class="chip warn">${esc(pp.fallback)}</div>` : ''}${im.gh_env_note ? `<div class="muted">${esc(im.gh_env_note)}</div>` : ''}
     ${rr.run_url ? `<div><a class="ltr" href="${esc(rr.run_url)}" target="_blank" rel="noopener">اجرای GitHub ↗</a> · نتیجه: <span class="chip ${rr.conclusion === 'success' ? 'ok' : 'bad'}">${esc(rr.conclusion || '—')}</span></div>${(rr.jobs || []).map(j => `<div>${j.conclusion === 'success' ? '✅' : j.conclusion === 'skipped' ? '⏭' : '❌'} ${esc(j.name)} <span class="muted">${(j.steps || []).filter(s => s.conclusion && s.conclusion !== 'skipped').map(s => esc(s.name)).slice(-6).join(' · ')}</span></div>`).join('')}` : ''}</div>` : '';
   const delIn = ['delete_app', 'delete_server', 'delete_database', 'restore_database_backup', 'delete_bucket'].includes(p.tool) && st === 'pending' ? `<label class="small">برای تأیید حذف، نام برنامه را تایپ کنید<input data-delname="${esc(p.id)}" class="ltr"></label>` : '';
-  return `<div class="prop ${esc(st)}" data-prop="${esc(p.id)}">
-    <div class="row"><span class="t">${esc(p.title)}</span><span class="chip ${st === 'pending' ? 'warn' : st === 'done' ? 'ok' : ['failed', 'rejected', 'stale', 'unverified', 'expired'].includes(st) ? 'bad' : 'info'}">${esc(STATUS_FA[st] || st)}</span>
+  const tm = p.team || {};
+  const teamBand = tm.name ? `<div class="team-band ${tm.test ? 'test' : ''}" style="--tc:${esc(tm.color || '#0f766e')}">${tm.test ? '🧪' : '🏢'} ${esc(tm.label_fa || ('تیم ' + tm.name))}</div>` : '';
+  return `<div class="prop ${esc(st)} ${tm.test ? 'prop-test' : ''}" data-prop="${esc(p.id)}" style="${tm.color ? `border-inline-start:5px solid ${esc(tm.color)}` : ''}">
+    ${teamBand}<div class="row"><span class="t">${esc(p.title)}</span><span class="chip ${st === 'pending' ? 'warn' : st === 'done' ? 'ok' : ['failed', 'rejected', 'stale', 'unverified', 'expired'].includes(st) ? 'bad' : 'info'}">${esc(STATUS_FA[st] || st)}</span>
       ${p.auto ? '<span class="chip ok">🤖 خودران</span>' : ''}${p.decision === 'rules' ? '<span class="chip" title="تصمیم بر اساس قواعد قطعی، بدون مدل زبانی">⚙️ قاعده‌محور</span>' : p.decision === 'ai' ? '<span class="chip info" title="پیشنهاد با کمک هوش مصنوعی">🧠 با کمک AI</span>' : ''}<span class="right muted small">${esc(ORIGIN_FA[p.origin] || p.origin)} · ${ago(p.created_at)}</span></div>
     ${p.why ? `<div>${esc(p.why)}</div>` : ''}
     ${im.blocked ? `<div class="chip bad">${esc(im.blocked)}</div>` : ''}${im.balance_warning ? `<div class="chip warn">${esc(im.balance_warning)}</div>` : ''}

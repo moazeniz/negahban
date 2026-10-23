@@ -1,16 +1,18 @@
 """Horizontal scaling integration with the platform's deterministic replica controller + load balancer (meow-lb).
 Negahban reads its public status (backends, decisions, policy) and can request an override ONLY through an owner-approved
 card; the controller itself enforces min/max, budget, deploy quota, cooldown and never-remove-last."""
+import asyncio
 import os
 import httpx
 from .tools import ToolError, tool
 
 BASE = lambda: (os.environ.get('SCALER_URL') or os.environ.get('LB_URL') or 'https://meow-lb.liara.run').rstrip('/')
+LAB = lambda: (os.environ.get('SCALER_LAB_URL') or 'https://meow-lb-lab.liara.run').rstrip('/')  # test-team lab stack (temporary)
 
 
-async def _get(path, token=None):
-    async with httpx.AsyncClient(timeout=15) as c:
-        r = await c.get(BASE() + path, headers={'Authorization': f'Bearer {token}'} if token else {})
+async def _get(path, token=None, base=None, timeout=15):
+    async with httpx.AsyncClient(timeout=timeout) as c:
+        r = await c.get((base or BASE()) + path, headers={'Authorization': f'Bearer {token}'} if token else {})
     if r.status_code >= 400:
         raise ToolError(f'scaler {path}: HTTP {r.status_code}')
     return r.json()
@@ -29,6 +31,11 @@ async def status():
             out['replicas'] = await _get('/api/replicas', tok)
         except Exception as e:
             out['replicas'] = {'error': str(e)[:160]}
+    try:  # the lab load balancer in the test team, shown only while it exists (public read-only endpoints)
+        sc, lb = await asyncio.gather(_get('/scaler/status', base=LAB(), timeout=6), _get('/lb/status', base=LAB(), timeout=6))
+        out['lab'] = {'url': LAB(), 'scaler': sc, 'lb': lb}
+    except Exception:
+        pass
     return out
 
 
