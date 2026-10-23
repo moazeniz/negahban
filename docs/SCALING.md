@@ -115,6 +115,8 @@ Live policy for demo-shop (`scaler/deploy_meowlb.py`). The defaults are in `poli
 | **one-week balance rule** | balance ≥ 168 h × (account run-rate + new replica) | Liara's own precondition for creating an app, checked *before* calling the API |
 | never-remove-last | at least one other healthy backend | checked in the policy **and** again in the controller |
 | unhealthy replica | reported after 10 min | it never takes traffic while unhealthy |
+| a replica is not possible | audited once per load episode, in English and Persian | the one-week rule (`refused`), a Liara 429 (`refused`, then a 15 min back-off), the budget, the quota, or the max bound (`at_max`) |
+| vertical fallback (optional, **off**) | `vertical.enabled`, plan ladder `small-g2 → medium-g2` | when on, a blocked scale-out resizes the base app one plan up instead, verified (Liara reports the new plan and the health check passes), and steps it back down after sustained calm. It only steps down what it stepped up. It is off for demo-shop because **Negahban's autopilot owns vertical resizes there: exactly one actor may resize an app** |
 
 **Overrides (AI or human)** use `POST /scaler/override {action, desired?, min?, max?, minutes?, reason, actor}`.
 
@@ -124,6 +126,8 @@ Live policy for demo-shop (`scaler/deploy_meowlb.py`). The defaults are in `poli
 | `hold` | Pauses automatic actions. |
 | `resume` | Clears holds and overrides. |
 | `set_bounds` | Changes min/max, with 1 ≤ min ≤ max ≤ `hard_max` (5). |
+| `demo_mode` / `demo_off` | Short timings for a recording (§9), for at most 180 min. They revert by themselves. |
+| `dry_run` / `dry_off` | Decisions are audited as `would_scale_out` and so on; nothing is created, deleted or resized. At most 120 min. |
 
 Every override is audited with the actor (`negahban-ai` or `human`) and the reason.
 
@@ -199,9 +203,70 @@ against a fake Liara API. It covers:
 - scale-in: drain and delete;
 - cleanup after a failed release;
 - adoption of existing replicas, and refusal to delete the base app;
-- never-remove-last, and override clamping.
+- never-remove-last, and override clamping;
+- a Liara 429 on replica creation (audited, back-off), the vertical fallback resize (verified, and back down),
+  a refused resize (back-off), dry run (audited, no API writes), and one refusal audit per load episode.
 
-## 8. Limits and next steps
+`test_policy.py` also covers the vertical fallback: the one-week rule leading to one plan up, the top of the ladder,
+off by default, back-offs after refusals, stepping down only what it stepped up, replicas scaled in before the plan
+steps down, and demo timings that expire by themselves.
+
+## 8. Demo mode, dry run and the lab stack
+
+**Why a lab.** In the production team «دوخت» the one-week balance rule leaves no room for a replica (§1): the
+controller logs the refusal (`scale_out refused`, «قانون موجودی یک‌هفته‌ای لیارا») and holds. To show the same
+mechanism adding capacity, the identical image runs as a temporary lab stack in the test team «لیارا», which has
+headroom. Production is never touched by the lab.
+
+| | Production («دوخت») | Lab («لیارا», temporary) |
+|---|---|---|
+| Load balancer | `meow-lb` | `meow-lb-lab` (same image, `deploy_meowlb.py --lab`) |
+| Base app | `demo-shop` (small-g2, standard) | `demo-shop-lab` (small-g2, basic; `deploy_meowlb.py --lab-shop`) |
+| Replicas | `demo-shop-rN`, max 3 instances | `demo-shop-lab-rN`, max 2 instances |
+| Vertical step | Negahban autopilot, small-g2 ↔ medium-g2 | Negahban autopilot, small-g2 ↔ medium-g2 |
+| Removal | stays | `deploy_meowlb.py --delete-lab` deletes only `meow-lb-lab`, `demo-shop-lab`, `demo-shop-lab-rN`, and refuses to run outside the test team |
+
+**Demo timings** (`POST /scaler/override {"action": "demo_mode", "minutes": N}` or `demo_mode.sh on lab 90`):
+
+| Setting | Normal | Demo |
+|---|---|---|
+| scale-out sustain | 60 s | 45 s |
+| scale-in sustain | 120 s | 60 s |
+| cooldowns (out / in) | 120 s / 120 s | 60 s / 60 s |
+| vertical fallback: calm before stepping down / cooldown | 1800 s / 600 s | 60 s / 60 s |
+
+The thresholds, bounds, budget, quota and the one-week rule do not change. Demo mode ends by itself after N minutes
+(at most 180), and `demo_mode.sh off` ends it at once. `/scaler/status → modes.demo_until` shows when it ends, and the
+scaling card shows a «زمان‌بندی نمایشی» chip while it is on.
+
+**Bounded load** (`scaler/demo_load.py`):
+
+```sh
+demo_load.py --profile demo --target https://meow-lb-lab.liara.run --max-rps 30 --minutes 8
+demo_load.py --stop
+```
+
+- Profiles: `ramp`, `demo` (60 s up, hold, 30 s down), `step`, `spike` and `constant`.
+- Requests: 70 % `GET /api/report` (CPU-heavy on purpose) and 30 % `GET /`.
+- Hard caps: 40 rps and 12 minutes, 150 requests in flight and a 15 s timeout per request.
+- Targets: only our own four `*.liara.run` apps are allowed.
+- Stopping: Ctrl-C, SIGTERM, `--stop` and a hard deadline all stop it.
+- Output: one line every 5 s (target and sent rps, ok and errors, p50 and p95, requests per backend from the
+  `X-Backend` header), and the same data as JSON in `--status-file` for an on-screen panel.
+
+**Rehearsal in the lab (2026-10-23 12:07 UTC, demo timings, 30 rps for 4 min):**
+
+| t | Observed |
+|---|---|
+| 0 s | load starts through `meow-lb-lab` |
+| ≈ 55 s | rps per backend above 5: sustain timer starts. CPU of `demo-shop-lab` 55 % → 98 % → 160 % of its plan, p95 at the LB up to 1.9 s |
+| 96 s | `scale_out started`: «بار بالا به مدت ۴۵ ثانیه … ← افزودن یک رپلیکا» |
+| 200 s | `demo-shop-lab-r1` built from the base app's release, READY and healthy (**104 s**). Traffic splits at once (19 / 140 requests in the first 5 s window) |
+| 202 s | still above the band at 2 instances: `at_max`, «مقیاس عمودی با خودران نگهبان است» |
+| 240 s | load stops: 5,850 requests, 5,843 × 200 and 7 client-side disconnects |
+| 353 s | 60 s of calm: `scale_in`, r1 drained and deleted; back to 1 small-g2 instance |
+
+## 9. Limits and next steps
 
 - **Single load balancer instance.** meow-lb itself is not replicated (Liara gives one instance per app). If it
   fails, Liara restarts it on a failed health check, and clients can always reach the base app directly.

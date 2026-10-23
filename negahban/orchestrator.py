@@ -340,6 +340,13 @@ async def check_balance():
 _register_jobs()
 
 
+async def _cycle_in_team(a):
+    """Each app is observed (and any card proposed) inside its own Liara team."""
+    from . import teams
+    with teams.use(teams.app_team(a)):
+        return await cycle_app(a)
+
+
 async def loop():
     STATE['running'] = True
     await asyncio.sleep(5)
@@ -350,7 +357,7 @@ async def loop():
             expire_old()
             await plans.catalogue()
             apps = [a for a in store.apps() if a['role'] not in ('off', 'replica')]  # replicas are owned by the replica controller
-            res = await asyncio.gather(*(cycle_app(a) for a in apps), return_exceptions=True)
+            res = await asyncio.gather(*(_cycle_in_team(a) for a in apps), return_exceptions=True)
             errs = [f"{a['name']}: {r}" for a, r in zip(apps, res) if isinstance(r, Exception)]
             STATE['last_error'] = '; '.join(errs)[:500] if errs else None
             await check_balance()

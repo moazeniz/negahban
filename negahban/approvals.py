@@ -117,7 +117,33 @@ def guard(tool, a, auto=False):
     return None
 
 
+def _team_of(a):
+    """Team for a card: explicit args.team, else the registered app's team, else the operation's team (context)."""
+    from . import teams
+    if a.get('team'):
+        return teams.resolve(a['team'])
+    return teams.team_of_app(a.get('app')) or teams.current()
+
+
 async def propose(tool, a, ctx, why=None, auto=False, incident_id=None):
+    """Every card carries its Liara team (args.team when not the production team) and is built inside that team."""
+    from . import teams
+    a = dict(a)
+    try:
+        tid = _team_of(a)
+    except ValueError as e:
+        return {'refused': True, 'error': str(e), 'status': 'refused', 'note': 'NO approval card was created (unknown team).'}
+    a.pop('team', None)
+    if not teams.is_default(tid):
+        a['team'] = tid
+    with teams.use(tid):
+        res = await _propose(tool, a, ctx, why, auto, incident_id)
+    if isinstance(res, dict) and res.get('id'):
+        res['team'] = teams.label(tid)  # the model and the dashboard always see which team a card belongs to
+    return res
+
+
+async def _propose(tool, a, ctx, why=None, auto=False, incident_id=None):
     from .tools import TOOLS
     a = {k: v for k, v in a.items()}
     secret_value = a.pop('value', None) if tool == 'set_env' else None
@@ -164,6 +190,8 @@ def public(p):
     out = {k: p.get(k) for k in ('id', 'app', 'tool', 'args', 'title', 'why', 'impact', 'rollback', 'status', 'created_at', 'expires_at', 'origin',
                                  'incident_id', 'result', 'verification', 'decided_by', 'decided_at', 'auto')}
     out['decision'] = 'ai' if (p.get('origin') in ('chat', 'mcp') or p.get('tool') in AI_TOOLS) else 'rules'
+    from . import teams
+    out['team'] = teams.label((p.get('args') or {}).get('team') or teams.default_id())
     return out
 
 
@@ -185,6 +213,13 @@ async def reject(pid, actor):
 
 
 async def approve(pid, actor, extra_args=None):
+    from . import teams
+    p = store.get_proposal(pid)
+    with teams.use(((p or {}).get('args') or {}).get('team')):  # fingerprint/guard/execution happen in the card's own team
+        return await _approve(pid, actor, extra_args)
+
+
+async def _approve(pid, actor, extra_args=None):
     p = store.get_proposal(pid)
     if not p:
         return {'error': 'پیشنهاد پیدا نشد'}
@@ -236,13 +271,21 @@ _register_jobs()
 
 
 async def execute(pid, actor, extra_args=None):
+    from . import teams
+    p = store.get_proposal(pid)
+    with teams.use(((p or {}).get('args') or {}).get('team')):
+        return await _execute(pid, actor, extra_args)
+
+
+async def _execute(pid, actor, extra_args=None):
     from .tools import TOOLS, ToolError
     p = store.get_proposal(pid)
     t = TOOLS[p['tool']]
     args = dict(p['args'] or {})
+    args.pop('team', None)  # the team is the execution context, not a tool argument
     if args.get('value_ref'):
         args['value'] = store.kv_get(f"pending_value:{args.pop('value_ref')}")
-    args.update({k: v for k, v in (extra_args or {}).items() if k in t['schema']['properties'] or k == 'confirm_name'})
+    args.update({k: v for k, v in (extra_args or {}).items() if (k in t['schema']['properties'] or k == 'confirm_name') and k != 'team'})
     if (extra_args or {}).get('env_ref'):
         ctx_env_ref = extra_args['env_ref']
     else:

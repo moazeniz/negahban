@@ -65,7 +65,7 @@
      0
     ]
    ],
-   "network_delete_error": "Liara 404 /v1/networks/6adb2bd30e01dbee0eb6b9a8: Not Found",
+   "network_delete_error": "Liara 404 /v1/networks/<liara-test-network-id>: Not Found",
    "networks_after": [
     "negahban-net"
    ],

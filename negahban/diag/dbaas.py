@@ -177,16 +177,20 @@ def connection_env(engine, full, prefix='DB'):
             f'{prefix}_PORT': str(port), f'{prefix}_USER': user, f'{prefix}_PASSWORD': pw, f'{prefix}_NAME': name}
 
 
-def _check_app(app):
-    from .. import store
+async def _check_app(app):
+    from .. import store, teams
     if locked(app):
         raise DiagError(f'{app} is locked (monitor-only); its env vars are not changed')
     if store.policy(app).get('env_lock'):
         raise DiagError(f'env vars of {app} are locked')
+    try:  # cross-team guard: resources of this team are only wired into apps of the same team
+        await teams.require_app_in_team(app, liara)
+    except ValueError as e:
+        raise DiagError(str(e))
 
 
 async def connect(ref, app, prefix='DB', ctx=None):
-    _check_app(app)
+    await _check_app(app)
     d = await find(ref)
     full = await raw_detail(_id(d))
     env = connection_env(full.get('type') or d.get('type'), full, prefix)
@@ -216,7 +220,7 @@ async def wait_status(db_id, want=('RUNNING',), timeout=300, every=8):
 
 async def create(name, engine, version=None, plan=None, bundle='basic', public_network=False, connect_app=None, ctx=None):
     if connect_app:
-        _check_app(connect_app)
+        await _check_app(connect_app)
     if not NAME_RX.match(name or ''):
         raise DiagError('database name: 3-31 chars, lowercase letters, digits and -, starting with a letter')
     if engine not in ENGINES:
@@ -364,9 +368,9 @@ async def _create_impact(a):
     imp = {'downtime': 'ندارد (سرویس جدید)', 'cost': '+' + _cost(pr), 'risk': 'کم؛ هزینه تا حذف دیتابیس ادامه دارد', 'engine': eng, 'version': a.get('version') or 'آخرین نسخه',
            'resources': f"{row['plan']} · {row['cpu']} هسته · {row['ram_gb']} گیگ RAM · {row['disk_gb']} گیگ دیسک · باندل {b}", 'toman_per_hour': pr['toman_per_hour'],
            'backups': 'ندارد (باندل basic)' if not any((row['backup_retention'].get(b) or {}).values()) else row['backup_retention'].get(b),
-           'balance_check': f"موجودی {pre.get('balance') or 0:,.0f} ≥ هزینه‌ی یک هفته {pre.get('need') or 0:,.0f}" if pre['ok'] else pre.get('message_fa')}
+           'balance_check': f"{pre.get('team') or ''}: موجودی {pre.get('balance') or 0:,.0f} ≥ هزینه‌ی یک هفته {pre.get('need') or 0:,.0f}" if pre['ok'] else pre.get('message_fa')}
     if a.get('connect_app'):
-        _check_app(a['connect_app'])
+        await _check_app(a['connect_app'])
         imp['connect_app'] = a['connect_app']
         imp['env_names'] = env_names(eng, a.get('prefix') or 'DB')
         imp['downtime'] = f"برنامه‌ی {a['connect_app']} پس از اتصال یک بار ری‌استارت می‌شود"
@@ -374,7 +378,7 @@ async def _create_impact(a):
 
 
 async def _connect_impact(a):
-    _check_app(a['app'])
+    await _check_app(a['app'])
     d = await find(a['database'])
     names = env_names(d.get('type'), a.get('prefix') or 'DB')
     try:

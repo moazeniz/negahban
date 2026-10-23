@@ -1,6 +1,6 @@
 """Deploy Negahban itself to Liara (run on the operator host). Secrets come from 600-mode env files; never printed.
 usage: python deploy/deploy_negahban.py [message]"""
-import asyncio, os, sys
+import asyncio, json, os, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -37,6 +37,12 @@ async def main():
             **({'LIARA_EXEC_URL': liara_env['EXEC_RELAY_URL'], 'LIARA_EXEC_RELAY_TOKEN': liara_env['EXEC_RELAY_TOKEN']} if liara_env.get('EXEC_RELAY_URL') else {}), 'DATA_DIR': '/data', 'SELF_APP': app, 'DEMO_APP': 'demo-shop', 'ORCH_INTERVAL': '60'}
     scaler = envfile('/root/.meow-scaler.env') if os.path.exists('/root/.meow-scaler.env') else {}
     envs.update({k: v for k, v in {**liara_env, **scaler}.items() if k in ('SCALER_URL', 'SCALER_ADMIN_TOKEN', 'LB_URL', 'LB_READ_TOKEN', 'LB_WRITE_TOKEN') and v})
+    # multi-team: production (LIARA_TEAM_ID) + the test team for create demos; the same Liara user/token works for both,
+    # LIARA_API_TOKEN_2 is an optional per-team override. Names are refreshed from GET /v2/teams at runtime.
+    envs['LIARA_TEAMS'] = json.dumps([{'id': liara_env['LIARA_TEAM_ID'], 'name': 'دوخت'},
+                                      {'id': '<liara-test-team-id>', 'name': 'لیارا', 'token_env': 'LIARA_API_TOKEN_2', 'test': True}], ensure_ascii=False)
+    if liara_env.get('LIARA_API_TOKEN_2'):
+        envs['LIARA_API_TOKEN_2'] = liara_env['LIARA_API_TOKEN_2']
     gh = envfile('/root/.github-tokens.env') if os.path.exists('/root/.github-tokens.env') else {}
     if gh.get('NEGAHBAN_GITHUB_TOKEN'):  # GitOps (read + deploy-workflow dispatch only; allowlist enforced in negahban/gitops.py)
         envs['NEGAHBAN_GITHUB_TOKEN'] = gh['NEGAHBAN_GITHUB_TOKEN']

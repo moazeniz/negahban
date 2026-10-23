@@ -1,6 +1,6 @@
 # Test-team end-to-end run, 2026-10-23 09:36–09:56 UTC
 
-Separate Liara team «لیارا» (`6accfde10841df6d775a401b`), driven through a local **staging** Negahban v1.10.0 on Hetzner
+Separate Liara team «لیارا» (`<liara-test-team-id>`), driven through a local **staging** Negahban v1.10.0 on Hetzner
 (port 18940, own data dir `/root/ngh-staging-data`, `LIARA_API_TOKEN_2`, LLM via the Anthropic gate). Every change went
 through Negahban's real approval cards (`/api/diag/run` / `/api/projects/*` → approve, or typed approval). The main team was not touched.
 No VMs were created.

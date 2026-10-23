@@ -42,7 +42,8 @@ async def tools_(request: Request):
 @router.get('/apps')
 async def apps(request: Request):
     require(request)
-    names = [a['name'] for a in store.apps()]
+    from .. import teams
+    names = [a['name'] for a in store.apps() if teams.app_team(a) == teams.current()]  # the selected team's apps only
     try:
         from ..liara import liara
         names += [p['project_id'] for p in await liara.list_apps() if p['project_id'] not in names]

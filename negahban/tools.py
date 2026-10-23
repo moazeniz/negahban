@@ -9,6 +9,7 @@ from .liara import LiaraError, liara
 from .redact import mask_envs, redact_obj
 
 TOOLS = {}
+TEAM_PARAM = {'type': 'string', 'description': 'Liara team name or id (e.g. «لیارا» test team, «دوخت» production). Omit for the production team.'}
 
 
 def tool(name, risk, desc, params=None, required=(), title=None, impact=None, label_fa=None):
@@ -16,8 +17,9 @@ def tool(name, risk, desc, params=None, required=(), title=None, impact=None, la
     title(args)->str and impact(args)->awaitable (impact_dict, rollback_text) customise approval cards of sensitive tools;
     label_fa is the live step text shown in chat (e.g. 'در حال بررسی گواهی TLS…')."""
     def deco(fn):
+        props = {**(params or {}), 'team': TEAM_PARAM}  # every tool can target a configured Liara team (default: production)
         TOOLS[name] = {'name': name, 'risk': risk, 'desc': desc, 'fn': fn, 'title': title, 'impact': impact, 'label_fa': label_fa,
-                       'schema': {'type': 'object', 'properties': params or {}, 'required': list(required), 'additionalProperties': False}}
+                       'schema': {'type': 'object', 'properties': props, 'required': list(required), 'additionalProperties': False}}
         return fn
     return deco
 
@@ -601,11 +603,25 @@ def validate(name, args):
 
 
 async def run(name, args, ctx):
-    """Run a read/safe tool. Sensitive tools are routed to approvals.propose() and never executed here."""
+    """Run a read/safe tool. Sensitive tools are routed to approvals.propose() and never executed here.
+    The Liara team: args.team, else the registered app's team, else the operation's team (dashboard selection / production)."""
+    from . import teams
     t = validate(name, args)
+    args = dict(args)
+    try:
+        tid = teams.resolve(args.pop('team')) if args.get('team') else (teams.team_of_app(args.get('app')) or teams.current())
+    except ValueError as e:
+        return {'error': str(e)}
+    args.pop('team', None)
+    with teams.use(tid):
+        return await _run(t, name, args, ctx, tid)
+
+
+async def _run(t, name, args, ctx, tid):
+    from . import teams
     if t['risk'] == 'sensitive':
         from .approvals import propose
-        p = await propose(name, args, ctx)
+        p = await propose(name, {**args, 'team': tid}, ctx)  # propose() drops it again for the production team
         if p.get('refused'):
             return {'error': p['error'], 'refused': True, 'note': p['note']}
         return {'proposal': p}

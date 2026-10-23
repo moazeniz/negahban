@@ -421,6 +421,8 @@ async def week_precheck(extra_hourly):
     rate = (usage.get('totalHourlyPrice') or 0) + (extra_hourly or 0)
     need = round(rate * 24 * 7)
     ok = bal is None or bal >= need
-    msg = None if ok else (f'موجودی ({bal:,.0f} تومان) کمتر از هزینه‌ی یک هفته‌ی همه‌ی سرویس‌ها با این مورد جدید ({need:,.0f} تومان) است؛ '
-                           f'لیارا ساخت را با خطای ۴۲۹ رد می‌کند. ابتدا حساب را شارژ کنید.')
-    return {'ok': ok, 'balance': bal, 'need': need, 'run_rate_after': round(rate, 1), 'message_fa': msg}
+    from ..teams import label
+    tl = label()['label_fa']  # the precheck is per team: that team's balance and run-rate
+    msg = None if ok else (f'{tl}: موجودی ({bal:,.0f} تومان) کمتر از هزینه‌ی یک هفته‌ی همه‌ی سرویس‌های این تیم با این مورد جدید ({need:,.0f} تومان) است؛ '
+                           f'لیارا ساخت را با خطای ۴۲۹ رد می‌کند. ابتدا حساب این تیم را شارژ کنید یا در تیم دیگری بسازید.')
+    return {'ok': ok, 'balance': bal, 'need': need, 'run_rate_after': round(rate, 1), 'message_fa': msg, 'team': tl}

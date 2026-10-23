@@ -80,6 +80,9 @@ class Liara:
             body["network"] = network_id
         return await self.req("POST", "/v1/projects", body, what=f"create {name}")
 
+    async def resize(self, app: str, plan: str) -> dict:
+        return await self.req("POST", f"/v1/projects/{app}/resize", {"planID": plan}, what=f"resize {app} to {plan}")
+
     async def delete_app(self, name: str) -> None:
         await self.req("DELETE", f"/v1/projects/{name}", what=f"delete {name}")
 

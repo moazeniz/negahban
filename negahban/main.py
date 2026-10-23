@@ -44,6 +44,24 @@ LIMITATIONS = [
 
 
 @app.middleware('http')
+async def team_scope(request: Request, call_next):
+    """Per-request Liara team: an app's own team for /api/apps/<name>…, else the dashboard's X-Ngh-Team header, else production."""
+    from . import teams
+    tid = None
+    parts = request.url.path.split('/')
+    if len(parts) > 3 and parts[1] == 'api' and parts[2] == 'apps' and parts[3] not in ('', 'register'):
+        tid = teams.team_of_app(parts[3])
+    if not tid:
+        h = request.headers.get('x-ngh-team', '')
+        tid = h if h in teams.ids() else None
+    tok = teams.CUR.set(tid or teams.default_id())
+    try:
+        return await call_next(request)
+    finally:
+        teams.CUR.reset(tok)
+
+
+@app.middleware('http')
 async def headers(request: Request, call_next):
     resp = await call_next(request)
     resp.headers['X-Content-Type-Options'] = 'nosniff'
@@ -69,11 +87,17 @@ def bootstrap_registry():
 
 
 async def discover():
+    from . import teams
+    await teams.refresh_names()
+    for t in teams.all_teams():
+        if not t['default']:
+            with teams.use(t['id']):
+                await _discover_extra_team(t['id'])
     try:
-        team = await liara.list_apps()
+        team = await _list_default()
     except LiaraError:
         return
-    reg = {a['name'] for a in store.apps()}
+    reg = {a['name'] for a in store.apps() if teams.app_team(a) == teams.default_id()}
     alive = {p['project_id'] for p in team}
     for name in reg - alive:  # app deleted on Liara: drop it from the registry (and its policy) so the name can be reused
         a = store.get_app(name)
@@ -104,6 +128,29 @@ async def discover():
         else:
             store.upsert_app(n, 'off', None, '/', 8080)
             store.set_policy(n, {'write_lock': True})
+
+
+async def _list_default():
+    from . import teams
+    with teams.use(teams.default_id()):
+        return await liara.list_apps()
+
+
+async def _discover_extra_team(tid):
+    """A non-production team (e.g. the test team): its apps are registered for read-only monitoring (autopilot off by default)."""
+    from . import teams
+    try:
+        alive = {p['project_id'] for p in await liara.list_apps()}
+    except LiaraError:
+        return
+    for a in store.apps():
+        if teams.app_team(a) == tid and a['name'] not in alive:
+            store.remove_app(a['name']); store.x('delete from policies where app=?', (a['name'],))
+            store.audit('negahban', 'app_unregistered', a['name'], {'reason': 'no longer exists on Liara', 'team': tid})
+    for n in alive:
+        if not store.get_app(n):
+            store.upsert_app(n, 'monitored', None, '/', 8080, {'team': tid})
+            store.set_policy(n, {'autopilot': False, 'resize': False, 'restart_on_crash': False})
 
 
 @app.on_event('startup')
@@ -140,7 +187,7 @@ async def healthz():
 def _asset_version():
     import hashlib
     h = hashlib.sha1()
-    for f in ('app.js', 'style.css', 'charts.js', 'templates.js', 'diag.js', 'servers.js', 'data.js', 'extras.js'):
+    for f in ('app.js', 'style.css', 'charts.js', 'templates.js', 'diag.js', 'servers.js', 'data.js', 'teams.js', 'extras.js'):
         p = STATIC / f
         if p.exists():
             h.update(p.read_bytes())
@@ -218,7 +265,11 @@ async def overview(request: Request):
     except LiaraError:
         pass
     cards = []
+    from . import teams
+    cur_team = teams.current()
     for a in store.apps():
+        if teams.app_team(a) != cur_team:
+            continue
         c = _app_card(a)
         p = team.get(a['name'], {})
         c['liara'] = {'plan': p.get('planID'), 'bundle': p.get('bundlePlanID'), 'status': p.get('status'), 'scale': p.get('scale'),
@@ -226,9 +277,39 @@ async def overview(request: Request):
         cards.append(c)
     unregistered = [n for n in team if not store.get_app(n)]
     burn = sum(c['liara']['toman_h'] or 0 for c in cards if c['liara'].get('scale'))
-    return {'apps': cards, 'unregistered': unregistered, 'incidents': store.incidents(30), 'pending': [approvals.public(p) for p in store.proposals('pending', 30)],
+    return {'team': teams.label(cur_team), 'apps': cards, 'unregistered': unregistered, 'incidents': store.incidents(30), 'pending': [approvals.public(p) for p in store.proposals('pending', 30)],
             'orchestrator': {k: v for k, v in orchestrator.STATE.items() if k != 'apps'}, 'burn_toman_h': round(burn), 'watchdog': store.kv_get('watchdog_ping'),
             'llm': __import__('negahban.llm', fromlist=['llm']).llm.info()}
+
+
+_TEAMS_CACHE = {'t': 0, 'v': None}
+
+
+@app.get('/api/teams')
+async def teams_view(request: Request, fresh: int = 0):
+    """Configured Liara teams with name, balance, run-rate, apps and the one-week headroom (cached 60 s)."""
+    require(request)
+    from . import teams
+    if _TEAMS_CACHE['v'] and not fresh and time.time() - _TEAMS_CACHE['t'] < 60:
+        return {**_TEAMS_CACHE['v'], 'selected': teams.current()}
+    await teams.refresh_names()
+
+    async def one(t):
+        row = {**teams.label(t['id']), 'apps': None, 'balance': None, 'burn_toman_h': None}
+        with teams.use(t['id']):
+            try:
+                me, usage, apps = await asyncio.gather(liara.billing(), liara.usage_report(), liara.list_apps())
+                row['balance'] = (me.get('team') or me.get('user') or {}).get('balance')
+                row['burn_toman_h'] = round(usage.get('totalHourlyPrice') or 0, 1)
+                row['apps'] = len(apps)
+                row['week_need'] = round((usage.get('totalHourlyPrice') or 0) * 24 * 7)
+                row['week_headroom'] = round(row['balance'] - row['week_need']) if row['balance'] is not None else None
+            except LiaraError as e:
+                row['error'] = e.fa()
+        return row
+    v = {'teams': list(await asyncio.gather(*(one(t) for t in teams.all_teams()))), 'default': teams.default_id()}
+    _TEAMS_CACHE.update(t=time.time(), v=v)
+    return {**v, 'selected': teams.current()}
 
 
 @app.get('/api/apps/{name}')
@@ -1042,8 +1123,9 @@ async def status_vantage(request: Request):
         raise HTTPException(401)
     iso = lambda t: time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(t)) if t else None
     out = []
+    from . import teams
     for a in store.apps():
-        if a['role'] == 'off':
+        if a['role'] == 'off' or teams.app_team(a) != teams.default_id():  # the public status covers the production team only
             continue
         r = store.q('select * from samples where app=? order by ts desc limit 1', (a['name'],), one=True)
         out.append({'name': a['name'], 'ok': bool(r and r['ok']), 'status': r['status'] if r else None, 'latency_ms': r['latency_ms'] if r else None,
