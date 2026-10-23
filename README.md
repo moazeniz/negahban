@@ -88,7 +88,6 @@ See [docs/EVIDENCE.md](docs/EVIDENCE.md) for the criterion → feature → live-
 - [docs/SECURITY.md](docs/SECURITY.md): secrets, auth, human-in-the-loop, prompt-injection defences.
 - [docs/LIMITATIONS.md](docs/LIMITATIONS.md): what Liara's API can't do, and MVP limits.
 - [docs/DIAGNOSTICS.md](docs/DIAGNOSTICS.md): the diagnostics toolkit.
-- [docs/DEMO_SCRIPT_FA.md](docs/DEMO_SCRIPT_FA.md): a 5-minute demo video script with exact clicks.
 
 ### Repository layout
 ```

@@ -11,7 +11,6 @@
 > | 🧪 **implemented & tested** | The code exists and automated tests pass, but we did not exercise it end-to-end on the live app. |
 > | 🚧 **in progress** | Not finished yet. |
 >
-> At this snapshot Negahban has about 10,070 lines of Python in 45 modules (core plus the diagnostics toolkit `negahban/diag/`). It has **228 passing automated tests** (22 test files, 26.5 s). It runs on Liara and watches the team's four apps. A demo-video script with verified clicks is in [`DEMO_VIDEO_SCRIPT.fa.md`](DEMO_VIDEO_SCRIPT.fa.md).
 
 ---
 
@@ -31,7 +30,7 @@ The same tools are exposed to IDE agents over **MCP**. Since v1.4–1.5 there is
 
 ## 2. The problem (from the official brief)
 
-On Liara today, the owner charges the account, picks a plan, uploads the code or connects GitHub, sets the env vars and then connects a domain. After that, an SRE has to watch the site. When it gets slow, fails or throws 500s, someone must read the logs, find the cause and fix it. The challenge video says it plainly: build an agent that guides a developer who "knows nothing about deploy" and also acts as an **SRE agent**. When the site gets slow or fails, it should read the logs, report, suggest, work with a coding agent and even fix the problem itself. The human must stay in the loop.
+On Liara today, the owner charges the account, picks a plan, uploads the code or connects GitHub, sets the env vars and then connects a domain. After that, an SRE has to watch the site. When it gets slow, fails or throws 500s, someone must read the logs, find the cause and fix it. The challenge video says it plainly: build an agent that guides a developer who "knows nothing about deploy" and also acts as an **SRE agent**. When the site gets slow or fails, it should read the logs, report, suggest, hand fixes to a code-repair workflow and even fix the problem itself. The human must stay in the loop.
 
 The brief asks for:
 
@@ -615,7 +614,6 @@ The deploy recipe was verified by the team with the operator CLI and used to dep
 
 11. **Container terminal and log explorer** for hands-on diagnosis (§4.18), and the public **/status** page for anyone.
 
-*(Every step above was opened in the live app on 2026-10-22. The verified click path is in [`DEMO_VIDEO_SCRIPT.fa.md`](DEMO_VIDEO_SCRIPT.fa.md).)*
 
 ---
 
@@ -643,7 +641,6 @@ The deploy recipe was verified by the team with the operator CLI and used to dep
 | Agent, MCP or both | Both, on one tool registry | ✅ agent live · MCP endpoint live (token-protected) · 🧪 tests |
 | MVP showing a real scenario | `demo-shop` + 7 one-click scenarios | ✅ live (end-to-end runs recorded in incidents/approvals) |
 | Markdown doc (architecture, API connection, limitations, interaction) | This guide (§5, §6, §13, §8) | ✅ |
-| ~5-minute demo video | Click-by-click Persian script ([`DEMO_VIDEO_SCRIPT.fa.md`](DEMO_VIDEO_SCRIPT.fa.md)) with screenshots | ✅ script · 🚧 video recording |
 
 ## 10. Judging criteria
 
@@ -771,7 +768,6 @@ Negahban's whole job is operating apps on Liara, so these rules are built into i
 
 ## 15. Roadmap
 
-1. Record the 5-minute demo video from [`DEMO_VIDEO_SCRIPT.fa.md`](DEMO_VIDEO_SCRIPT.fa.md). 🚧
 2. Fix the small inconsistencies listed in §13. 🚧
 3. Exercise rollback, new-app creation and a real domain end-to-end on the live app. 🚧
 5. Later: Liara notification channels (SMS, email, Telegram) for incidents; more stacks in the log rules; per-app cost reports; scoped tokens if Liara adds them.
