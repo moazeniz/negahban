@@ -1,0 +1,145 @@
+{
+ "steps": [
+  {
+   "name": "reconnect:card",
+   "at": "09:52:00",
+   "http": 200,
+   "card": {
+    "id": "prp_db3a008b83f2",
+    "title": "اتصال پایگاه‌داده‌ی ngh-test-pg به ngh-test-app",
+    "impact": {
+     "downtime": "برنامه یک بار ری‌استارت می‌شود (ENV_UPDATE)",
+     "cost": "بدون هزینه",
+     "risk": "کم؛ مقادیر محرمانه فقط به لیارا ارسال می‌شود",
+     "env_names": [
+      "DATABASE_URL",
+      "DB_HOST",
+      "DB_PORT",
+      "DB_USER",
+      "DB_PASSWORD",
+      "DB_NAME"
+     ],
+     "overwrites": [
+      "DATABASE_URL",
+      "DB_HOST",
+      "DB_NAME",
+      "DB_PASSWORD",
+      "DB_PORT",
+      "DB_USER"
+     ],
+     "values": "نمایش داده نمی‌شود",
+     "label": "connect_database",
+     "session": "dashboard"
+    },
+    "error": null,
+    "refused": null,
+    "detail": null
+   }
+  },
+  {
+   "name": "reconnect:result",
+   "at": "09:52:06",
+   "seconds": 5,
+   "status": "done",
+   "result": {
+    "app": "ngh-test-app",
+    "database": "ngh-test-pg",
+    "env_names": [
+     "DATABASE_URL",
+     "DB_HOST",
+     "DB_NAME",
+     "DB_PASSWORD",
+     "DB_PORT",
+     "DB_USER"
+    ],
+    "overwritten": [
+     "DATABASE_URL",
+     "DB_HOST",
+     "DB_NAME",
+     "DB_PASSWORD",
+     "DB_PORT",
+     "DB_USER"
+    ],
+    "values": "hidden",
+    "note": "the app restarts with the new variables (ENV_UPDATE release)"
+   },
+   "verification": null
+  },
+  {
+   "name": "env_after_reconnect",
+   "at": "09:52:06",
+   "DB_NAME": "postgres",
+   "url_ends_with_db": true,
+   "names": [
+    "DATABASE_URL",
+    "DB_HOST",
+    "DB_NAME",
+    "DB_PASSWORD",
+    "DB_PORT",
+    "DB_USER"
+   ]
+  },
+  {
+   "name": "backup_card_refused_up_front",
+   "at": "09:52:07",
+   "http": 400,
+   "resp": {
+    "detail": "باندل basic پشتیبان‌گیری دستی ندارد؛ برای پشتیبان‌گیری باندل را به standard یا pro ارتقا دهید (resize_database با bundle)."
+   }
+  },
+  {
+   "name": "inspector_query:card",
+   "at": "09:52:07",
+   "http": 200,
+   "card": {
+    "id": "prp_a8ec287bafc7",
+    "title": "اجرای کوئری فقط‌خواندنی روی دیتابیس 6adb2c6e3825",
+    "impact": {
+     "downtime": "ندارد",
+     "cost": "بدون هزینه",
+     "risk": "کم (فقط SELECT) اما ممکن است داده‌ی کاربران را نشان دهد",
+     "query": "select version()",
+     "label": "db_query",
+     "session": "dashboard"
+    },
+    "error": null,
+    "refused": null,
+    "detail": null
+   }
+  },
+  {
+   "name": "inspector_query:result",
+   "at": "09:52:12",
+   "seconds": 5,
+   "status": "failed",
+   "result": {
+    "error": "بازرس پایگاه‌داده‌ی لیارا موتور postgres را پشتیبانی نمی‌کند؛ برای این دیتابیس کوئری از طریق نگهبان ممکن نیست."
+   },
+   "verification": null
+  },
+  {
+   "name": "price_consistency",
+   "at": "09:52:13",
+   "list_per_hour": 1041.66,
+   "details_per_hour": 1041.66,
+   "details_version": "18.4"
+  },
+  {
+   "name": "db_round2:leak_scan",
+   "at": "09:52:16",
+   "places_scanned": [
+    "/api/apps/ngh-test-app",
+    "/api/audit?limit=300",
+    "/api/diag/databases",
+    "/api/diag/storage",
+    "/api/diag/storage/keys",
+    "/api/overview",
+    "/api/proposals",
+    "negahban.db",
+    "server.log"
+   ],
+   "secrets_checked": 2,
+   "leaks": {}
+  }
+ ]
+}

@@ -203,3 +203,25 @@ def test_tools_via_registry_redact_and_route_sensitive(api, fresh_db, monkeypatc
     card = run(tools.run('connect_database', {'database': 'shop-db', 'app': 'demo-shop'}, {'actor': 't', 'origin': 'chat'}))
     assert card['proposal']['status'] == 'pending_approval' and 'env_names' in card['proposal']['impact']
     assert 'DB_PASSWORD' not in api.envs['demo-shop'] and not leak(card)  # nothing executed before approval
+
+
+# ---- regressions found in the live test-team run (2026-10-23)
+def test_live_regressions_db_name_price_and_secret_once_survives_redaction():
+    from negahban.redact import redact_obj
+    env = dbaas.connection_env('postgres', {'hostname': 'pg1', 'internalPort': 5432, 'username': 'root', 'root_password': 'pw-123456'})
+    assert env['DB_NAME'] == 'postgres' and env['DATABASE_URL'].endswith(':5432/postgres')
+    row = dbaas.summarize({'planID': 'small-g2', 'bundlePlanID': 'basic', 'hourlyPrice': 659.72, 'bundleHourlyPrice': 381.94})
+    assert row['toman_per_hour'] == 1041.66  # plan + bundle, not the plan part only
+    out = redact_obj({'secret_once': '/api/diag/secret/abc123', 'secret_key': 'hidden-value', 'access_key': '***'})
+    assert out['secret_once'] == '/api/diag/secret/abc123' and out['secret_key'] == '***'
+
+
+def test_addons_skip_when_app_already_connected(monkeypatch):
+    from negahban.liara import liara as L
+    from negahban.diag import addons
+
+    async def envs(app):
+        return {'DATABASE_URL': 'postgresql://x', 'LIARA_BUCKET_NAME': 'b'}
+    monkeypatch.setattr(L, 'envs', envs)
+    cards = run(addons.propose_addons('shop', {'database': {'engine': 'postgres'}, 'storage': {}}, {}))
+    assert [c.get('skipped') for c in cards] == [True, True]

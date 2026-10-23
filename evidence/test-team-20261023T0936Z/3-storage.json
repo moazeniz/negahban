@@ -1,0 +1,497 @@
+{
+ "steps": [
+  {
+   "name": "create_bucket:card",
+   "at": "09:45:56",
+   "http": 200,
+   "card": {
+    "id": "prp_c901a03253b5",
+    "title": "ساخت باکت «ngh-test-bkt-7164» و اتصال به ngh-test-app",
+    "impact": {
+     "downtime": "برنامه‌ی ngh-test-app پس از اتصال یک بار ری‌استارت می‌شود",
+     "cost": "+660 تومان در ساعت (~474,998 تومان در ماه)",
+     "risk": "کم",
+     "space": "20 گیگ",
+     "permission": "private",
+     "toman_per_hour": 659.72,
+     "balance_check": "موجودی 1,998,854 ≥ هزینه‌ی یک هفته 460,831",
+     "connect_app": "ngh-test-app",
+     "env_names": [
+      "LIARA_ENDPOINT",
+      "LIARA_BUCKET_NAME",
+      "LIARA_ACCESS_KEY",
+      "LIARA_SECRET_KEY"
+     ],
+     "label": "create_bucket",
+     "session": "dashboard"
+    },
+    "error": null,
+    "refused": null,
+    "detail": null
+   }
+  },
+  {
+   "name": "create_bucket:result",
+   "at": "09:46:01",
+   "seconds": 5,
+   "status": "done",
+   "result": {
+    "bucket": "ngh-test-bkt-7164",
+    "plan": "20g-g2",
+    "permission": "private",
+    "endpoint": "https://storage.iran.liara.space",
+    "toman_per_hour": 659.72,
+    "toman_per_month": 474998,
+    "connected": {
+     "app": "ngh-test-app",
+     "bucket": "ngh-test-bkt-7164",
+     "env_names": [
+      "LIARA_ACCESS_KEY",
+      "LIARA_BUCKET_NAME",
+      "LIARA_ENDPOINT",
+      "LIARA_SECRET_KEY"
+     ],
+     "overwritten": [],
+     "access_key": "***",
+     "values": "hidden",
+     "note": "a dedicated key (read/put/list/delete on this bucket only) was created; the app restarts"
+    }
+   },
+   "verification": null
+  },
+  {
+   "name": "app_env_names_after_connect",
+   "at": "09:46:02",
+   "env_names": [
+    "LIARA_ACCESS_KEY",
+    "LIARA_BUCKET_NAME",
+    "LIARA_ENDPOINT",
+    "LIARA_SECRET_KEY"
+   ]
+  },
+  {
+   "name": "dashboard_env_view",
+   "at": "09:46:02",
+   "values_as_shown": {
+    "LIARA_ENDPOINT": "https://storage.iran.liara.space",
+    "LIARA_BUCKET_NAME": "ngh-test-bkt-7164",
+    "LIARA_ACCESS_KEY": "•••ku",
+    "LIARA_SECRET_KEY": "•••27"
+   }
+  },
+  {
+   "name": "create_storage_key:card",
+   "at": "09:46:02",
+   "http": 200,
+   "card": {
+    "id": "prp_fd54b32c854e",
+    "title": "کلید دسترسی برای ngh-test-bkt-7164",
+    "impact": {
+     "downtime": "ندارد",
+     "cost": "بدون هزینه",
+     "risk": "متوسط: هر کس کلید را داشته باشد به باکت دسترسی دارد",
+     "buckets": [
+      "ngh-test-bkt-7164"
+     ],
+     "permissions": [
+      "read",
+      "put",
+      "list",
+      "delete"
+     ],
+     "secret": "کلید محرمانه فقط یک بار در همین کارت نمایش داده می‌شود",
+     "label": "create_storage_key",
+     "session": "dashboard"
+    },
+    "error": null,
+    "refused": null,
+    "detail": null
+   }
+  },
+  {
+   "name": "create_storage_key:result",
+   "at": "09:46:07",
+   "seconds": 5,
+   "status": "done",
+   "result": {
+    "access_key": "***",
+    "buckets": [
+     "ngh-test-bkt-7164"
+    ],
+    "permissions": [
+     "read",
+     "put",
+     "list",
+     "delete"
+    ],
+    "secret_key": "***",
+    "secret_once": "***"
+   },
+   "verification": null
+  },
+  {
+   "name": "owner_key_revealed_once",
+   "at": "09:46:07",
+   "got_pair": false,
+   "second_reveal_http": 404
+  },
+  {
+   "name": "upload_via_s3",
+   "at": "09:46:16",
+   "ok": false,
+   "out": "end\n    raise ConnectionClosedError(\n        error=e, request=request, endpoint_url=request.url\n    )\nbotocore.exceptions.ConnectionClosedError: Connection was closed before we received a valid response from endpoint URL: \"https://storage.iran.liara.space/ngh-test-bkt-7164/negahban-test/hello.txt\".\n"
+  },
+  {
+   "name": "bucket_objects",
+   "at": "09:46:19",
+   "view": {
+    "error": "خطای لیارا — An internal server error occurred",
+    "status": 500
+   }
+  },
+  {
+   "name": "file_link:card",
+   "at": "09:46:20",
+   "http": 200,
+   "card": {
+    "id": "prp_2d2ea8b4784a",
+    "title": "لینک موقت negahban-test/hello.txt از ngh-test-bkt-7164",
+    "impact": {
+     "downtime": "ندارد",
+     "cost": "بدون تغییر",
+     "risk": "متوسط: هر کس لینک را داشته باشد فایل را دارد",
+     "bucket": "ngh-test-bkt-7164",
+     "permission_now": "private",
+     "label": "bucket_file_link",
+     "session": "dashboard"
+    },
+    "error": null,
+    "refused": null,
+    "detail": null
+   }
+  },
+  {
+   "name": "file_link:result",
+   "at": "09:46:25",
+   "seconds": 5,
+   "status": "done",
+   "result": {
+    "bucket": "ngh-test-bkt-7164",
+    "key": "negahban-test/hello.txt",
+    "expiry_s": 600,
+    "link": "hidden",
+    "secret_once": "***"
+   },
+   "verification": null
+  },
+  {
+   "name": "temp_link_fetch",
+   "at": "09:46:25",
+   "got_link": false,
+   "content_ok": false,
+   "body": ""
+  },
+  {
+   "name": "perm_public:card",
+   "at": "09:46:25",
+   "http": 200,
+   "card": {
+    "id": "prp_1281cf0e5a11",
+    "title": "تغییر دسترسی ngh-test-bkt-7164 به public",
+    "impact": {
+     "downtime": "ندارد",
+     "cost": "بدون تغییر",
+     "risk": "زیاد: فایل‌ها عمومی می‌شوند",
+     "bucket": "ngh-test-bkt-7164",
+     "permission_now": "private",
+     "label": "bucket_permission",
+     "session": "dashboard"
+    },
+    "error": null,
+    "refused": null,
+    "detail": null
+   }
+  },
+  {
+   "name": "perm_public:result",
+   "at": "09:46:30",
+   "seconds": 5,
+   "status": "done",
+   "result": {
+    "bucket": "ngh-test-bkt-7164",
+    "permission": "public"
+   },
+   "verification": null
+  },
+  {
+   "name": "list_after_public",
+   "at": "09:46:41",
+   "buckets": {
+    "count": 1,
+    "buckets": [
+     {
+      "name": "ngh-test-bkt-7164",
+      "plan": "20g-g2",
+      "space_gb": 20,
+      "permission": "public",
+      "status": "ACTIVE",
+      "created_at": "2026-10-23T09:45:58.095Z",
+      "used_mb": null,
+      "objects": null,
+      "toman_per_hour": 659.72,
+      "endpoint": "https://storage.iran.liara.space"
+     }
+    ],
+    "total_toman_per_hour": 659.7,
+    "endpoint": "https://storage.iran.liara.space"
+   }
+  },
+  {
+   "name": "perm_private:card",
+   "at": "09:46:41",
+   "http": 200,
+   "card": {
+    "id": "prp_aa9ea41075ee",
+    "title": "تغییر دسترسی ngh-test-bkt-7164 به private",
+    "impact": {
+     "downtime": "ندارد",
+     "cost": "بدون تغییر",
+     "risk": "کم",
+     "bucket": "ngh-test-bkt-7164",
+     "permission_now": "public",
+     "label": "bucket_permission",
+     "session": "dashboard"
+    },
+    "error": null,
+    "refused": null,
+    "detail": null
+   }
+  },
+  {
+   "name": "perm_private:result",
+   "at": "09:46:46",
+   "seconds": 5,
+   "status": "done",
+   "result": {
+    "bucket": "ngh-test-bkt-7164",
+    "permission": "private"
+   },
+   "verification": null
+  },
+  {
+   "name": "empty_via_s3",
+   "at": "09:46:58",
+   "ok": false,
+   "out": "  raise ConnectionClosedError(\n        error=e, request=request, endpoint_url=request.url\n    )\nbotocore.exceptions.ConnectionClosedError: Connection was closed before we received a valid response from endpoint URL: \"https://storage.iran.liara.space/ngh-test-bkt-7164?list-type=2&encoding-type=url\".\n"
+  },
+  {
+   "name": "keys_before_cleanup",
+   "at": "09:46:58",
+   "keys": {
+    "count": 2,
+    "keys": [
+     {
+      "access_key": "***",
+      "id": "6adb2cdacfa2222c805d30f1",
+      "description": "ngh-test-owner",
+      "status": "ACTIVE",
+      "buckets": [
+       "ngh-test-bkt-7164"
+      ],
+      "permissions": [
+       "read",
+       "put",
+       "list",
+       "delete"
+      ],
+      "created_at": "2026-10-23T09:46:02.915Z"
+     },
+     {
+      "access_key": "***",
+      "id": "6adb2cd6f8baed28dbc8fab1",
+      "description": "negahban: ngh-test-app -> ngh-test-bkt-7164",
+      "status": "ACTIVE",
+      "buckets": [
+       "ngh-test-bkt-7164"
+      ],
+      "permissions": [
+       "read",
+       "put",
+       "list",
+       "delete"
+      ],
+      "created_at": "2026-10-23T09:45:58.761Z"
+     }
+    ]
+   }
+  },
+  {
+   "name": "revoke_key:card",
+   "at": "09:46:59",
+   "http": 200,
+   "card": {
+    "id": "prp_a4a54041ecd6",
+    "title": "چرخش کلید دسترسی 6adb2cdacfa2222c805d30f1",
+    "impact": {
+     "downtime": "ندارد",
+     "cost": "بدون هزینه",
+     "risk": "زیاد: برنامه‌هایی که از این کلید استفاده می‌کنند قطع می‌شوند",
+     "access_key": "lunn…e8",
+     "buckets": [
+      "ngh-test-bkt-7164"
+     ],
+     "label": "revoke_storage_key",
+     "session": "dashboard"
+    },
+    "error": null,
+    "refused": null,
+    "detail": null
+   }
+  },
+  {
+   "name": "revoke_key:result",
+   "at": "09:47:04",
+   "seconds": 5,
+   "status": "done",
+   "result": {
+    "access_key": "***",
+    "revoked": true,
+    "secret_key": "***",
+    "note": "apps using the old secret stop working until reconnected",
+    "secret_once": "***"
+   },
+   "verification": null
+  },
+  {
+   "name": "delete_key_ngh-test-owner:card",
+   "at": "09:47:04",
+   "http": 200,
+   "card": {
+    "id": "prp_095cc26c73f2",
+    "title": "حذف کلید دسترسی 6adb2cdacfa2222c805d30f1",
+    "impact": {
+     "downtime": "ندارد",
+     "cost": "بدون هزینه",
+     "risk": "زیاد: برنامه‌هایی که از این کلید استفاده می‌کنند قطع می‌شوند",
+     "access_key": "lunn…e8",
+     "buckets": [
+      "ngh-test-bkt-7164"
+     ],
+     "label": "delete_storage_key",
+     "session": "dashboard"
+    },
+    "error": null,
+    "refused": null,
+    "detail": null
+   }
+  },
+  {
+   "name": "delete_key_ngh-test-owner:result",
+   "at": "09:47:09",
+   "seconds": 5,
+   "status": "done",
+   "result": {
+    "access_key": "***",
+    "deleted": true
+   },
+   "verification": null
+  },
+  {
+   "name": "delete_key_negahban: ngh-test-app -> ngh-test-bkt-7164:card",
+   "at": "09:47:09",
+   "http": 200,
+   "card": {
+    "id": "prp_9d4f38ccafab",
+    "title": "حذف کلید دسترسی 6adb2cd6f8baed28dbc8fab1",
+    "impact": {
+     "downtime": "ندارد",
+     "cost": "بدون هزینه",
+     "risk": "زیاد: برنامه‌هایی که از این کلید استفاده می‌کنند قطع می‌شوند",
+     "access_key": "bqt0…ku",
+     "buckets": [
+      "ngh-test-bkt-7164"
+     ],
+     "label": "delete_storage_key",
+     "session": "dashboard"
+    },
+    "error": null,
+    "refused": null,
+    "detail": null
+   }
+  },
+  {
+   "name": "delete_key_negahban: ngh-test-app -> ngh-test-bkt-7164:result",
+   "at": "09:47:14",
+   "seconds": 5,
+   "status": "done",
+   "result": {
+    "access_key": "***",
+    "deleted": true
+   },
+   "verification": null
+  },
+  {
+   "name": "delete_bucket:card",
+   "at": "09:47:17",
+   "http": 400,
+   "card": {
+    "id": null,
+    "title": null,
+    "impact": null,
+    "error": null,
+    "refused": null,
+    "detail": "Liara 500 /buckets/ngh-test-bkt-7164/objects/: An internal server error occurred"
+   }
+  },
+  {
+   "name": "final_buckets",
+   "at": "09:47:29",
+   "buckets": {
+    "count": 1,
+    "buckets": [
+     {
+      "name": "ngh-test-bkt-7164",
+      "plan": "20g-g2",
+      "space_gb": 20,
+      "permission": "private",
+      "status": "ACTIVE",
+      "created_at": "2026-10-23T09:45:58.095Z",
+      "used_mb": null,
+      "objects": null,
+      "toman_per_hour": 659.72,
+      "endpoint": "https://storage.iran.liara.space"
+     }
+    ],
+    "total_toman_per_hour": 659.7,
+    "endpoint": "https://storage.iran.liara.space"
+   },
+   "keys": {
+    "count": 0,
+    "keys": []
+   }
+  },
+  {
+   "name": "storage:leak_scan",
+   "at": "09:47:42",
+   "places_scanned": [
+    "/api/apps/ngh-test-app",
+    "/api/audit?limit=300",
+    "/api/diag/databases",
+    "/api/diag/storage",
+    "/api/diag/storage/keys",
+    "/api/overview",
+    "/api/proposals",
+    "negahban.db",
+    "server.log"
+   ],
+   "secrets_checked": 1,
+   "leaks": {}
+  },
+  {
+   "name": "done",
+   "at": "09:47:42",
+   "bucket": "ngh-test-bkt-7164",
+   "total_seconds": 107
+  }
+ ]
+}

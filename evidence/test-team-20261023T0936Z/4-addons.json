@@ -1,0 +1,233 @@
+{
+ "steps": [
+  {
+   "name": "propose_addons_tool",
+   "at": "09:52:32",
+   "http": 200,
+   "resp": {
+    "app": "ngh-test-app",
+    "cards": [
+     {
+      "id": "prp_89263b3ba051",
+      "title": "ساخت پایگاه‌داده‌ی postgres «ngh-test-app-db» و اتصال به ngh-test-app",
+      "status": "pending_approval",
+      "impact": {
+       "downtime": "برنامه‌ی ngh-test-app پس از اتصال یک بار ری‌استارت می‌شود",
+       "cost": "+1,042 تومان در ساعت (~749,995 تومان در ماه)",
+       "risk": "کم؛ هزینه تا حذف دیتابیس ادامه دارد",
+       "engine": "postgres",
+       "version": "آخرین نسخه",
+       "resources": "small-g2 · 0.5 هسته · 0.5 گیگ RAM · 5 گیگ دیسک · باندل basic",
+       "toman_per_hour": 1041.66,
+       "backups": "ندارد (باندل basic)",
+       "balance_check": "موجودی 1,997,403 ≥ هزینه‌ی یک هفته 524,997",
+       "connect_app": "ngh-test-app",
+       "env_names": [
+        "DATABASE_URL",
+        "DB_HOST",
+        "DB_PORT",
+        "DB_USER",
+        "DB_PASSWORD",
+        "DB_NAME"
+       ],
+       "label": "create_database",
+       "session": "dashboard"
+      },
+      "rollback": "حذف دیتابیس با کارت «حذف» (تایپ نام)؛ اتصال برنامه با حذف همین متغیرها برمی‌گردد.",
+      "note": "Shown to the owner as an approval card; NOT executed yet."
+     },
+     {
+      "id": "prp_2b16b790c261",
+      "title": "ساخت باکت «ngh-test-app-files» و اتصال به ngh-test-app",
+      "status": "pending_approval",
+      "impact": {
+       "downtime": "برنامه‌ی ngh-test-app پس از اتصال یک بار ری‌استارت می‌شود",
+       "cost": "+660 تومان در ساعت (~474,998 تومان در ماه)",
+       "risk": "کم",
+       "space": "20 گیگ",
+       "permission": "private",
+       "toman_per_hour": 659.72,
+       "balance_check": "موجودی 1,997,403 ≥ هزینه‌ی یک هفته 460,831",
+       "connect_app": "ngh-test-app",
+       "env_names": [
+        "LIARA_ENDPOINT",
+        "LIARA_BUCKET_NAME",
+        "LIARA_ACCESS_KEY",
+        "LIARA_SECRET_KEY"
+       ],
+       "label": "create_bucket",
+       "session": "dashboard"
+      },
+      "rollback": "حذف باکت با کارت «حذف» (تایپ نام، باکت باید خالی باشد).",
+      "note": "Shown to the owner as an approval card; NOT executed yet."
+     }
+    ]
+   }
+  },
+  {
+   "name": "chat_sent",
+   "at": "09:52:32",
+   "http": 200,
+   "resp": {
+    "ok": true,
+    "session": "addons-test"
+   }
+  },
+  {
+   "name": "chat_answer",
+   "at": "09:52:56",
+   "seconds": 24,
+   "answer": "ngh-test-app از قبل Postgres دارد، بنابراین دیتابیس جدیدی ایجاد نکردم. هیچ تغییری اعمال نشده است.\n\n**وضعیت فعلی**\n- دیتابیس **`ngh-test-pg`** (PostgreSQL 18.4، بسته small-g2 / basic) **در حال اجرا** است و اپلیکیشن از قبل به آن متصل است.\n- متغیرهای محیطی اپلیکیشن شامل `DATABASE_URL`، `DB_HOST=ngh-test-pg`، `DB_PORT=5432`، `DB_USER=root`، `DB_NAME=postgres` و `DB_PASSWORD` (پنهان‌شده) هستند. این‌ها تنظیمات اتصال هستند.\n- حدود ۱٪ از دیسک (دیسک ۵ گیگابایتی) استفاده شده و حدود ۱۱۳ مگابایت حافظه در حال استفاده است.\n- اپلیکیشن با HTTP 200 و حدود ۴۵۴ میلی‌ثانیه پاسخ می‌دهد.\n\n**نکات قابل توجه**\n- **بسته basic هیچ بک‌آپی ندارد** (۰ بک‌آپ دستی، ۰ بک‌آپ روزانه). اگر به حفاظت از داده نیاز دارید، بسته standard را در نظر بگیرید (حدود ۱٬۳۲۰ تومان در ساعت برای دیتابیس؛ قبل از هر تغییر کارت را بررسی کنید).\n"
+  },
+  {
+   "name": "pending_cards",
+   "at": "09:52:56",
+   "cards": [
+    {
+     "id": "prp_2b16b790c261",
+     "tool": "create_bucket",
+     "title": "ساخت باکت «ngh-test-app-files» و اتصال به ngh-test-app",
+     "origin": "dashboard",
+     "cost": "+660 تومان در ساعت (~474,998 تومان در ماه)",
+     "args": {
+      "name": "ngh-test-app-files",
+      "plan": "20g-g2",
+      "permission": "private",
+      "style": "liara",
+      "connect_app": "ngh-test-app"
+     }
+    },
+    {
+     "id": "prp_89263b3ba051",
+     "tool": "create_database",
+     "title": "ساخت پایگاه‌داده‌ی postgres «ngh-test-app-db» و اتصال به ngh-test-app",
+     "origin": "dashboard",
+     "cost": "+1,042 تومان در ساعت (~749,995 تومان در ماه)",
+     "args": {
+      "name": "ngh-test-app-db",
+      "engine": "postgres",
+      "bundle": "basic",
+      "prefix": "DB",
+      "connect_app": "ngh-test-app"
+     }
+    }
+   ]
+  },
+  {
+   "name": "reject",
+   "at": "09:52:56",
+   "id": "prp_2b16b790c261",
+   "tool": "create_bucket",
+   "http": 200
+  },
+  {
+   "name": "reject",
+   "at": "09:52:56",
+   "id": "prp_89263b3ba051",
+   "tool": "create_database",
+   "http": 200
+  },
+  {
+   "name": "usage",
+   "at": "09:52:56",
+   "llm": {
+    "days": [
+     {
+      "day": "2026-10-23",
+      "calls": 8,
+      "tokens_in": 16896,
+      "tokens_out": 4378,
+      "cache_read": 31250,
+      "cache_write": 15625,
+      "cost_usd": 0.00614,
+      "by_feature": {
+       "chat": {
+        "calls": 3,
+        "cost_usd": 0.0039737
+       },
+       "diagnose": {
+        "calls": 2,
+        "cost_usd": 0.0013672
+       },
+       "translate": {
+        "calls": 1,
+        "cost_usd": 0.00054
+       },
+       "report": {
+        "calls": 1,
+        "cost_usd": 0.0002353
+       },
+       "guard": {
+        "calls": 1,
+        "cost_usd": 2.81e-05
+       }
+      },
+      "cache_hit_pct": 49.0
+     }
+    ],
+    "rows": [
+     {
+      "day": "2026-10-23",
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5",
+      "feature": "chat",
+      "calls": 3,
+      "tokens_in": 12335,
+      "tokens_out": 949,
+      "cache_read": 31250,
+      "cache_write": 15625,
+      "cost_usd": 0.0039737
+     },
+     {
+      "day": "2026-10-23",
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5",
+      "feature": "diagnose",
+      "calls": 2,
+      "tokens_in": 3397,
+      "tokens_out": 2055,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 0.0013672
+     },
+     {
+      "day": "2026-10-23",
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5",
+      "feature": "translate",
+      "calls": 1,
+      "tokens_in": 550,
+      "tokens_out": 970,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 0.00054
+     },
+     {
+      "day": "2026-10-23",
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5",
+      "feature": "report",
+      "calls": 1,
+      "tokens_in": 353,
+      "tokens_out": 400,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 0.0002353
+     },
+     {
+      "day": "2026-10-23",
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5",
+      "feature": "guard",
+      "calls": 1,
+      "tokens_in": 261,
+      "tokens_out": 4,
+      "cache_read": 0,
+      "cache_write": 0,
+      "cost_usd": 2.81e-05
+     }
+    ]
+   }
+  }
+ ]
+}

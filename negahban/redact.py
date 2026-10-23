@@ -29,7 +29,7 @@ def redact_obj(o):
     if isinstance(o, str):
         return redact(o)
     if isinstance(o, dict):
-        return {k: ('***' if isinstance(v, str) and SENSITIVE_ENV.search(str(k)) and k not in ('key', 'url', 'publicUrl') and len(v) > 3 else redact_obj(v)) for k, v in o.items()}
+        return {k: ('***' if isinstance(v, str) and SENSITIVE_ENV.search(str(k)) and k not in ('key', 'url', 'publicUrl', 'secret_once') and len(v) > 3 else redact_obj(v)) for k, v in o.items()}
     if isinstance(o, (list, tuple)):
         return [redact_obj(x) for x in o]
     return o

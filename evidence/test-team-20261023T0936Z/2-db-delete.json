@@ -1,0 +1,62 @@
+{
+ "steps": [
+  {
+   "name": "delete:card",
+   "at": "09:54:45",
+   "http": 200,
+   "card": {
+    "proposal": {
+     "id": "prp_a6f298f56406",
+     "title": "حذف دائمی پایگاه‌داده‌ی ngh-test-pg",
+     "status": "pending_approval",
+     "impact": {
+      "downtime": "دیتابیس و همه‌ی داده‌هایش حذف می‌شود",
+      "cost": "- تومان در ساعت",
+      "risk": "بسیار زیاد (برگشت‌ناپذیر)",
+      "database": "ngh-test-pg",
+      "confirm": "برای تأیید باید نام «ngh-test-pg» را تایپ کنید",
+      "label": "delete_database",
+      "session": "dashboard"
+     },
+     "rollback": "برگشت‌ناپذیر است؛ پیش از آن از دیتابیس پشتیبان بگیرید.",
+     "note": "Shown to the owner as an approval card; NOT executed yet."
+    }
+   }
+  },
+  {
+   "name": "wrong_name_refused",
+   "at": "09:54:45",
+   "resp": [
+    400,
+    {
+     "detail": "برای تأیید، نام را دقیقاً تایپ کنید"
+    }
+   ]
+  },
+  {
+   "name": "plain_approve_refused",
+   "at": "09:54:45",
+   "resp": [
+    400,
+    {
+     "detail": "برای حذف، نام را دقیقاً تایپ کنید"
+    }
+   ]
+  },
+  {
+   "name": "delete:result",
+   "at": "09:54:50",
+   "seconds": 5,
+   "status": "done",
+   "result": {
+    "deleted": "ngh-test-pg",
+    "id": "6adb2c6e38253e6cdf4800b5"
+   }
+  },
+  {
+   "name": "databases_left_on_liara",
+   "at": "09:54:50",
+   "left": []
+  }
+ ]
+}
