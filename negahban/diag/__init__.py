@@ -3,8 +3,9 @@ runbooks and web search for unknown errors. Each module declares tool specs with
 into the core registry (tools.tool) wrapped with a timeout, an audit row and an output-size cap. See docs/DIAGNOSTICS.md."""
 import asyncio, functools, importlib, time
 
-MODULES = ('exec', 'probes', 'liara_data', 'analytics', 'logintel', 'runbooks', 'websearch', 'iaas', 'server_templates')
+MODULES = ('exec', 'probes', 'liara_data', 'analytics', 'logintel', 'runbooks', 'websearch', 'iaas', 'server_templates', 'dbaas', 'storage', 'addons')
 LABELS, SENSITIVE = {}, set()
+TYPED_CONFIRM = {'delete_server': 'server', 'delete_database': 'database', 'restore_database_backup': 'database', 'delete_bucket': 'bucket'}  # tool -> arg the owner must type
 
 
 def all_specs():
@@ -48,3 +49,12 @@ def register(tool):
 
 # importing the core registry here (after register() exists) makes `import negahban.diag.<module>` safe in any order
 from .. import tools as _tools  # noqa: E402,F401
+
+
+def limitations():
+    """(title_fa, text_fa) rows for the in-app limitations page."""
+    import importlib
+    out = []
+    for m in ('dbaas', 'storage'):
+        out += list(getattr(importlib.import_module(f'{__name__}.{m}'), 'LIMITATIONS', []))
+    return out

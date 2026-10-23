@@ -558,3 +558,34 @@ then `apply`. Downgrade plans within `scaling.min`.
   - probe state transitions, SLO maths and HTML escaping
 
   They run against in-process fakes of the Liara API and file browser on every push.
+
+## 13. Release to the public repositories
+
+The public repositories (`bazargard`, `negahban`, `wallex-ai-trader`) follow the build host's source of record
+automatically. A publish job runs on the operator host every 30 minutes (`meow-publish.timer`) and on demand
+(`publish.py <project>`). For each project it does the following:
+
+1. **Merge the source of record into the working repository.** A three-way merge is used: the base is the source
+   at the last sync, so the repository's own platform and doc files are kept.
+   - Bazargard comes from its application tree.
+   - Negahban comes from its git `HEAD`.
+   - Wallex comes from the `liara-live` branch, with a path mapping (for example `docs/wallex-arena.md` →
+     `docs/components/arena.md`).
+   - A merge conflict stops the run for a human to resolve.
+2. **Export a public copy.** Deployment-specific values (server addresses, absolute host paths, account
+   identifiers, contact addresses) are replaced by placeholders. Workflows get public-repository guards: Liara
+   jobs run only in the canonical repository and never for pull requests.
+3. **Gates. Any finding stops the publish**, and the finding is logged:
+   - gitleaks over the tree;
+   - a deny list of private values (hosts, identifiers, addresses);
+   - checks for absolute host paths and for files that must not ship.
+4. **Pull request.** If the exported tree differs from the public `main`, the job makes one commit with a plain
+   change summary, pushes it on a branch, opens a pull request and waits for the **required checks** (the same CI
+   as here). It then **rebase-merges**, which keeps linear history and the commit author, and deletes the branch.
+   Branch protection is never relaxed.
+5. **Verify.** The tree of the merged commit must equal the exported tree. The job waits for CI on `main` and
+   records the result.
+
+If nothing changed, the job commits nothing. Logs and the last result are kept on the operator host
+(`/opt/<ops>/public/logs`). The job runs once more right after a scheduled production deploy, so the public
+repository follows the release within minutes.

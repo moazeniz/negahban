@@ -405,3 +405,20 @@ async def dns_zones_tool(a, ctx):
       {'app': {'type': 'string'}, 'tls': {'type': 'boolean'}}, timeout=60)
 async def domains_health_tool(a, ctx):
     return await domains_health(a.get('app'), a.get('tls', True))
+
+
+# ---------------------------------------------------------------- balance precheck before creating anything
+async def week_precheck(extra_hourly):
+    """Liara refuses new resources (HTTP 429) unless the credit covers about one week of the team's run-rate including the
+    new resource. Returns {ok, balance, need, run_rate_after, message_fa}; never raises for API errors (ok=None)."""
+    try:
+        bill, usage = await asyncio.gather(liara.billing(), liara.usage_report())
+    except LiaraError as e:
+        return {'ok': None, 'message_fa': f'بررسی موجودی ممکن نشد ({e.status})'}
+    bal = (bill.get('team') or bill.get('user') or {}).get('balance')
+    rate = (usage.get('totalHourlyPrice') or 0) + (extra_hourly or 0)
+    need = round(rate * 24 * 7)
+    ok = bal is None or bal >= need
+    msg = None if ok else (f'موجودی ({bal:,.0f} تومان) کمتر از هزینه‌ی یک هفته‌ی همه‌ی سرویس‌ها با این مورد جدید ({need:,.0f} تومان) است؛ '
+                           f'لیارا ساخت را با خطای ۴۲۹ رد می‌کند. ابتدا حساب را شارژ کنید.')
+    return {'ok': ok, 'balance': bal, 'need': need, 'run_rate_after': round(rate, 1), 'message_fa': msg}
