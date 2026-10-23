@@ -252,6 +252,8 @@ async def db_query(db_id, query, database=None, max_rows=100):
     try:  # console form first, then the published spec form
         r = await liara.post(f'/databases/{db_id}/v1/{db}/queries', {'query': q}, base=base)
     except LiaraError as e:
+        if e.status == 400 and 'not a supported database server' in str(e.message):  # verified live for postgres 18 (2026-10-23)
+            raise DiagError(f"بازرس پایگاه‌داده‌ی لیارا موتور {d.get('type')} را پشتیبانی نمی‌کند؛ برای این دیتابیس کوئری از طریق نگهبان ممکن نیست.")
         if e.status != 404:
             raise
         r = await liara.post(f'/v1/databases/{db_id}/queries', {'query': q}, base=base)

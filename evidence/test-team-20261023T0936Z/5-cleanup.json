@@ -1,0 +1,75 @@
+{
+ "steps": [
+  {
+   "name": "delete_app:card_via_diag_run",
+   "at": "09:55:28",
+   "http": 404,
+   "resp": {
+    "detail": "ابزار عیب‌یابی پیدا نشد"
+   }
+  },
+  {
+   "name": "chat_sent",
+   "at": "09:55:28",
+   "resp": [
+    200,
+    {
+     "ok": true,
+     "session": "cleanup"
+    }
+   ]
+  },
+  {
+   "name": "delete_app:card_from_chat",
+   "at": "09:55:36",
+   "seconds": 8,
+   "id": "prp_d5e61e6df4e3",
+   "answer": ""
+  },
+  {
+   "name": "wrong_name_refused",
+   "at": "09:55:36",
+   "resp": [
+    400,
+    {
+     "detail": "برای حذف، نام را دقیقاً تایپ کنید"
+    }
+   ]
+  },
+  {
+   "name": "approve_typed",
+   "at": "09:55:37",
+   "resp": 200
+  },
+  {
+   "name": "delete_app:result",
+   "at": "09:55:42",
+   "seconds": 5,
+   "status": "done",
+   "result": {
+    "deleted": "ngh-test-app"
+   }
+  },
+  {
+   "name": "team_state",
+   "at": "09:55:45",
+   "projects": [],
+   "databases": [],
+   "buckets": [],
+   "storage_keys": 0,
+   "vms": "n/a (Liara 404 /v1/vms: Route GET:/v1/vms?teamID=6accfde10841df6d)",
+   "networks_before_cleanup": [
+    [
+     "negahban-net",
+     0,
+     0
+    ]
+   ],
+   "network_delete_error": "Liara 404 /v1/networks/6adb2bd30e01dbee0eb6b9a8: Not Found",
+   "networks_after": [
+    "negahban-net"
+   ],
+   "balance": null
+  }
+ ]
+}

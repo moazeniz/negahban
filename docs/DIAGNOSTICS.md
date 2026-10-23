@@ -263,7 +263,7 @@ No real database or bucket has been created. Everything here is tested against a
 | Object storage | `https://storage-service.liara.ir/api/v1`, same token, `?teamID=` | `/v1/me` `plans.objectStorage[plan].price` (toman/h) |
 
 - **Database versions:** `/v1/me` `databaseVersions`. Engines available to the team: postgres, mysql, mariadb, mongodb, redis, mssql, elasticsearch, rabbitmq and clickhouse.
-- **S3 endpoint:** `https://storage.iran.liara.space`. Override it with `LIARA_S3_ENDPOINT`.
+- **S3 endpoint:** the bucket's own `cluster.endPoint` (verified live: `https://storage.iran.liara.site`). The fallback can be overridden with `LIARA_S3_ENDPOINT`.
 
 **Database calls that the console uses but the spec does not list**
 

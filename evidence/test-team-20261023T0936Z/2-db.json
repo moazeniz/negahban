@@ -1,0 +1,74 @@
+{
+ "steps": [
+  {
+   "http": 200,
+   "card": {
+    "proposal": {
+     "id": "prp_17bec680386f",
+     "title": "ساخت پایگاه‌داده‌ی postgres «ngh-test-pg» و اتصال به ngh-test-app",
+     "status": "pending_approval",
+     "impact": {
+      "downtime": "برنامه‌ی ngh-test-app پس از اتصال یک بار ری‌استارت می‌شود",
+      "cost": "+1,042 تومان در ساعت (~749,995 تومان در ماه)",
+      "risk": "کم؛ هزینه تا حذف دیتابیس ادامه دارد",
+      "engine": "postgres",
+      "version": "آخرین نسخه",
+      "resources": "small-g2 · 0.5 هسته · 0.5 گیگ RAM · 5 گیگ دیسک · باندل basic",
+      "toman_per_hour": 1041.66,
+      "backups": "ندارد (باندل basic)",
+      "balance_check": "موجودی 1,998,854 ≥ هزینه‌ی یک هفته 349,998",
+      "connect_app": "ngh-test-app",
+      "env_names": [
+       "DATABASE_URL",
+       "DB_HOST",
+       "DB_PORT",
+       "DB_USER",
+       "DB_PASSWORD",
+       "DB_NAME"
+      ],
+      "label": "create_database",
+      "session": "dashboard"
+     },
+     "rollback": "حذف دیتابیس با کارت «حذف» (تایپ نام)؛ اتصال برنامه با حذف همین متغیرها برمی‌گردد.",
+     "note": "Shown to the owner as an approval card; NOT executed yet."
+    }
+   },
+   "name": "create_card",
+   "at": "09:44:13"
+  },
+  {
+   "seconds": 70,
+   "status": "done",
+   "result": {
+    "database": "ngh-test-pg",
+    "id": "6adb2c6e38253e6cdf4800b5",
+    "engine": "postgres",
+    "version": "18.4",
+    "plan": "small-g2",
+    "bundle": "basic",
+    "running": true,
+    "status": "RUNNING",
+    "toman_per_hour": 1041.66,
+    "toman_per_month": 749995,
+    "connected": {
+     "app": "ngh-test-app",
+     "database": "ngh-test-pg",
+     "env_names": [
+      "DATABASE_URL",
+      "DB_HOST",
+      "DB_NAME",
+      "DB_PASSWORD",
+      "DB_PORT",
+      "DB_USER"
+     ],
+     "overwritten": [],
+     "values": "hidden",
+     "note": "the app restarts with the new variables (ENV_UPDATE release)"
+    }
+   },
+   "verification": null,
+   "name": "create_result",
+   "at": "09:45:23"
+  }
+ ]
+}

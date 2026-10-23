@@ -219,3 +219,28 @@ def test_dashboard_routes_secret_once_and_typed_approval(api, monkeypatch):
     assert c.post(f'/api/diag/approve-typed/{pid}', json={'confirm_name': 'shop-files'}, headers=h).status_code == 200
     assert seen == [(pid, {'confirm_name': 'shop-files'})]
     assert any('ذخیره‌سازی' in x['title'] for x in c.get('/api/diag/limitations').json())
+
+
+
+def test_list_objects_never_sends_page_1(monkeypatch):
+    # verified live: storage-service answers 500 to ?page=1 (this blocked the empty-check before delete_bucket)
+    seen = []
+
+    async def fake_get(path, **kw):
+        seen.append(kw.get('params'))
+        return {'data': {'objects': {'Contents': [], 'KeyCount': 0}}}
+
+    async def fake_find(name):
+        return {'name': name}
+    monkeypatch.setattr(storage, 'get', fake_get)
+    monkeypatch.setattr(storage, 'find', fake_find)
+    run(storage.list_objects('b1', limit=1))
+    run(storage.list_objects('b1', limit=500, page=2))
+    assert seen == [{'number': 1}, {'number': 50, 'page': 2}]
+
+
+def test_bucket_endpoint_from_cluster(monkeypatch):
+    async def fake_get(path, **kw):
+        return {'bucket': {'name': 'b1', 'cluster': {'endPoint': 'storage.iran.liara.site'}}}
+    monkeypatch.setattr(storage, 'get', fake_get)
+    assert run(storage.bucket_endpoint('b1')) == 'https://storage.iran.liara.site'

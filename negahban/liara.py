@@ -138,10 +138,24 @@ class Liara:
     async def app(self, name):
         return (await self.get(f'/v1/projects/{name}')).get('project', {})
 
+    async def network_id(self, create=True):
+        """Private network for g2 apps/databases: LIARA_NETWORK_ID, else the team's first network, else a new free one named
+        'negahban-net'. (A team without a network otherwise fails with: "network" is not allowed to be empty.)"""
+        if settings.liara_network:
+            return settings.liara_network
+        nets = (await self.get('/v1/networks')).get('networks') or []
+        if not nets and create:
+            await self.post('/v1/networks', {'networkName': 'negahban-net'})
+            nets = (await self.get('/v1/networks')).get('networks') or []
+        if not nets:
+            raise LiaraError(400, 'this team has no private network and one could not be created', '/v1/networks')
+        settings.liara_network = nets[0]['_id']
+        return settings.liara_network
+
     async def create_app(self, name, plan, bundle='basic', platform='docker', network=None):
         body = {'name': name, 'planID': plan, 'bundlePlanID': bundle, 'platform': platform}
         if 'g2' in plan:
-            body['network'] = network or settings.liara_network
+            body['network'] = network or await self.network_id()
         return await self.post('/v1/projects', body)
 
     async def delete_app(self, name):

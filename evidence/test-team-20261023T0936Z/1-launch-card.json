@@ -1,0 +1,96 @@
+{
+ "analysis": {
+  "platform": "docker",
+  "framework": "FastAPI",
+  "port": 8000,
+  "env_vars": [],
+  "databases": [],
+  "files": 5,
+  "size_mb": 0.0,
+  "has_dockerfile": false,
+  "estimate": {
+   "cpu": 0.3,
+   "ram_gb": 0.35
+  },
+  "recommended_plan": "small-g2",
+  "notes": [
+   "برای FastAPI یک Dockerfile استاندارد ساخته می‌شود"
+  ],
+  "dockerfile_generated": true,
+  "pricing": {
+   "small-g2": {
+    "hour": 1041.66,
+    "month": 749995,
+    "cpu": 0.5,
+    "ram": 0.5,
+    "name_fa": "زمین (Earth)"
+   },
+   "medium-g2": {
+    "hour": 1805.55,
+    "month": 1299996,
+    "cpu": 1,
+    "ram": 1,
+    "name_fa": "مریخ (Mars)"
+   },
+   "standard-base-g2": {
+    "hour": 3194.44,
+    "month": 2299997,
+    "cpu": 1,
+    "ram": 2,
+    "name_fa": "مشتری (Jupiter)"
+   },
+   "standard-plus-g2": {
+    "hour": 5729.16,
+    "month": 4124995,
+    "cpu": 2,
+    "ram": 4,
+    "name_fa": "زحل (Saturn)"
+   }
+  },
+  "recommendation_fa": "پیشنهاد: پلن زمین (Earth) (small-g2) با باندل برنزی — 1٬042 تومان در ساعت (حدود 749٬995 تومان در ماه). برآورد نیاز: 0.3 هسته و 0.35 گیگ رم با ۳۰٪ حاشیه‌ی اطمینان.",
+  "env_schema": [],
+  "bundle": "basic",
+  "reasoning": [
+   "نوع پروژه: FastAPI (5 فایل، 0.0 مگابایت)",
+   "یک Dockerfile استاندارد ساخته شد",
+   "پورت برنامه: 8000",
+   "برآورد منابع: 0.3 هسته و 0.35 گیگ رم؛ کوچک‌ترین پلنی که ۳۰٪ حاشیه دارد small-g2 است",
+   "باندل برنزی (basic) کافی است: ۲۰ استقرار در روز و SSL رایگان؛ برای استقرار بدون قطعی، نقره‌ای لازم است"
+  ],
+  "health_path": "/",
+  "project_id": "proj_beed1724d8cf"
+ },
+ "card": {
+  "proposal": {
+   "id": "prp_92ccd24088d9",
+   "title": "راه‌اندازی ngh-test-app روی لیارا (small-g2)",
+   "status": "pending_approval",
+   "impact": {
+    "downtime": "ندارد (برنامه‌ی جدید)",
+    "cost": "+1٬042 تومان در ساعت (≈749٬995 تومان در ماه)",
+    "risk": "کم",
+    "resources": "small-g2 (0.5 هسته، 0.5 گیگ رم) · باندل basic",
+    "deploys": "یک استقرار از سهمیه‌ی روزانه",
+    "steps": [
+     "ساخت برنامه در لیارا",
+     "بارگذاری سورس و بیلد (لاگ بیلد زنده نمایش داده می‌شود)",
+     "تنظیم متغیرهای محیطی",
+     "بررسی سلامت پس از استقرار",
+     "فعال بودن زیردامنه‌ی رایگان .liara.run",
+     "ذخیره به‌عنوان قالب"
+    ],
+    "env_names": [],
+    "secrets_provided": [],
+    "secrets_missing": [],
+    "env_missing": [],
+    "framework": "FastAPI",
+    "url": "https://ngh-test-app.liara.run",
+    "hourly": 1041.66,
+    "monthly": 749995,
+    "label": "launch_project"
+   },
+   "rollback": "حذف برنامه با کارت «حذف» (نام را تایپ کنید)؛ سورس در آرشیو نگهبان می‌ماند.",
+   "note": "Shown to the owner as an approval card; NOT executed yet."
+  }
+ }
+}

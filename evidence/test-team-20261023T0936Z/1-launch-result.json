@@ -1,0 +1,91 @@
+{
+ "proposal": {
+  "id": "prp_92ccd24088d9",
+  "app": "ngh-test-app",
+  "tool": "launch_project",
+  "args": {
+   "project_id": "proj_beed1724d8cf",
+   "app": "ngh-test-app",
+   "plan": "small-g2",
+   "bundle": "basic",
+   "envs": {}
+  },
+  "title": "راه‌اندازی ngh-test-app روی لیارا (small-g2)",
+  "why": "راه‌اندازی اولیه از ویزارد",
+  "impact": {
+   "downtime": "ندارد (برنامه‌ی جدید)",
+   "cost": "+1٬042 تومان در ساعت (≈749٬995 تومان در ماه)",
+   "risk": "کم",
+   "resources": "small-g2 (0.5 هسته، 0.5 گیگ رم) · باندل basic",
+   "deploys": "یک استقرار از سهمیه‌ی روزانه",
+   "steps": [
+    "ساخت برنامه در لیارا",
+    "بارگذاری سورس و بیلد (لاگ بیلد زنده نمایش داده می‌شود)",
+    "تنظیم متغیرهای محیطی",
+    "بررسی سلامت پس از استقرار",
+    "فعال بودن زیردامنه‌ی رایگان .liara.run",
+    "ذخیره به‌عنوان قالب"
+   ],
+   "env_names": [],
+   "secrets_provided": [],
+   "secrets_missing": [],
+   "env_missing": [],
+   "framework": "FastAPI",
+   "url": "https://ngh-test-app.liara.run",
+   "hourly": 1041.66,
+   "monthly": 749995,
+   "label": "launch_project"
+  },
+  "rollback": "حذف برنامه با کارت «حذف» (نام را تایپ کنید)؛ سورس در آرشیو نگهبان می‌ماند.",
+  "status": "done",
+  "created_at": 1792748498.4331028,
+  "expires_at": 1792749698.4331036,
+  "origin": "wizard",
+  "incident_id": null,
+  "result": {
+   "app": "ngh-test-app",
+   "created_app": true,
+   "release_id": "6adb2bd40e01dbee0eb6b9cb",
+   "release_state": "READY",
+   "failReason": null,
+   "url": "https://ngh-test-app.liara.run",
+   "env_names": [],
+   "template": {
+    "id": "ngh-test-app-tpl",
+    "name": "ngh-test-app (Dockerfile)"
+   },
+   "next_steps": [
+    "آدرس رایگان https://ngh-test-app.liara.run فعال است",
+    "برای دامنه‌ی اختصاصی: صفحه‌ی «دامنه» یا در گفتگو بگویید «دامنه‌ی example.ir را به ngh-test-app وصل کن» — رکوردهای DNS و مراحل ایرنیک نمایش داده می‌شود",
+    "خودران و بودجه‌ی این برنامه را در «خودران و بودجه» تنظیم کنید"
+   ]
+  },
+  "verification": {
+   "passed": true,
+   "checks": [
+    {
+     "name": "سلامت HTTP",
+     "ok": true,
+     "detail": "HTTP 200 در 349ms"
+    },
+    {
+     "name": "زمان پاسخ",
+     "ok": true,
+     "detail": "349ms (حد مجاز 2500ms)"
+    },
+    {
+     "name": "خطای جدید در لاگ",
+     "ok": true,
+     "detail": "0 پاسخ 5xx، 0 traceback از زمان اقدام"
+    }
+   ],
+   "attempts": 4,
+   "ts": 1792748635.5812442
+  },
+  "decided_by": "owner",
+  "decided_at": 1792748498.849496,
+  "auto": 0,
+  "decision": "rules"
+ },
+ "seconds_from_approve": 141
+}
