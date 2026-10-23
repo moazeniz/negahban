@@ -501,7 +501,7 @@ async def delete_app(a, ctx):
 
 # extension modules register more tools with the same decorator
 import importlib as _il
-for _m in ('tools_templates', 'tools_extra', 'onboarding', 'tools_reports', 'tools_scaler'):
+for _m in ('tools_templates', 'tools_extra', 'onboarding', 'tools_reports', 'tools_scaler', 'tools_gitops'):
     try:
         _il.import_module(f'negahban.{_m}')
     except ModuleNotFoundError as _e:

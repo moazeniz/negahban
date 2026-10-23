@@ -248,3 +248,102 @@ Custom templates support create, edit (each edit is a new version), clone, resto
 - «سرور X را خاموش کن» → `server_power {server:"X", action:"stop"}`.
 
 **Live proof (2026-10-22):** `deploy/iaas_e2e.py`. Evidence is in `evidence/iaas-e2e-*.json` and `evidence/iaas-e2e-readtools-20261022.txt`.
+
+## Managed databases (`dbaas.py`) and object storage (`storage.py`), plus add-ons (`addons.py`)
+
+No real database or bucket has been created. Everything here is tested against a mocked API (`tests/test_diag_dbaas.py`, `tests/test_diag_storage.py`). The only live calls were read-only: lists, plans and prices, all on 2026-10-23.
+
+### API facts
+
+**Hosts and prices**
+
+| Service | Base URL | Prices |
+|---|---|---|
+| Databases | `https://api.iran.liara.ir`, same token, `?teamID=` | `/v1/me` `plans.databases[plan].price` + `plans.databaseBundlePlans[plan][bundle].price` (toman/h) |
+| Object storage | `https://storage-service.liara.ir/api/v1`, same token, `?teamID=` | `/v1/me` `plans.objectStorage[plan].price` (toman/h) |
+
+- **Database versions:** `/v1/me` `databaseVersions`. Engines available to the team: postgres, mysql, mariadb, mongodb, redis, mssql, elasticsearch, rabbitmq and clickhouse.
+- **S3 endpoint:** `https://storage.iran.liara.space`. Override it with `LIARA_S3_ENDPOINT`.
+
+**Database calls that the console uses but the spec does not list**
+
+| Call | Notes |
+|---|---|
+| `POST /v1/databases` | Body `{hostname, type, version, planID, bundlePlanID, network, publicNetwork}`; returns `{databaseID}`. g2 plans need `network`. |
+| `PATCH /v2/databases/{id}/reset-password` | Rate-limited (429). |
+| `POST /v1/databases/{id}/{type}-bak {url}` | Restores from a backup file URL (the backup's download link). |
+| `POST /v1/databases/{id}/resize-bundle-plan` | Changes the bundle. |
+
+**Storage calls that the console uses but the spec does not list**
+
+| Call | Notes |
+|---|---|
+| `POST /buckets` | Body `{name, plan, permission}`. The permission is `private` or `public`; the default plan is `20g-g2`. |
+| `PATCH /buckets/{b}/type/{private\|public}` | Changes the permission. |
+| `PATCH /buckets/{b}/upgrade/{plan}` | Upgrades the plan. |
+| `POST /keys` | Body `{buckets:[names], description, permissions:[read,put,list,delete]}`; returns `{data:{accessKey, secretKey}}`. |
+| `PATCH /keys/{accessKey}/revoke` | Returns a new secret. |
+| `DELETE /keys/{accessKey}` | Deletes the key. |
+| `GET /buckets/{b}/download/{key}?expiry=` | Returns a signed URL. |
+
+**Platform rules**
+
+- **No restart endpoint.** A database restart is scale 0 then scale 1.
+- **No backups on the basic bundle.** The basic database bundle includes no backups.
+- **Bucket plans only grow.** A bucket plan can be upgraded but not downgraded.
+- **One-week balance rule.** Liara answers **429** to any new resource unless the credit covers one week of the team's run-rate, new resource included. `liara_data.week_precheck(extra_hourly)` checks this before every create card and again at execution. On 2026-10-23 the balance was 1,786,953 toman. One week at the run-rate including a small Postgres was 1,748,048 toman, so there is room for about one more small resource.
+
+### Secrets
+
+| Secret | How it is handled |
+|---|---|
+| `root_password`, `password`, connection strings and `user:pass@` in any string | Removed by `strip_secrets` before any output: tools, UI, LLM, audit and logs. |
+| New database password, backup download link, storage secret key, signed file link | Revealed once: `POST /api/diag/secret/{token}` (15 min, one use). Never sent to chat, the LLM context or the audit log. |
+| Credentials for `connect_*` | Read at execution time and written straight into the app's env through `update-envs`, merged with the existing variables (Liara replaces the whole list). Cards and results show variable **names** only and list which existing names will be overwritten. |
+
+`connect_bucket` creates a dedicated key limited to that bucket, with read, put, list and delete permissions.
+
+### Tools
+
+| Tool | Risk | What it does |
+|---|---|---|
+| `list_databases`, `database_details`, `database_plans`, `database_backups` | read | List, details (host and port to use, no password), live prices and versions, backups. |
+| `create_database` | **sensitive** | Creates a database. Optional `connect_app` creates and connects in one card. The card shows cost per hour and per month, the balance check, and backup retention. |
+| `connect_database` | **sensitive** | Writes `DATABASE_URL` (or `MONGODB_URI` / `REDIS_URL`) plus `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` and `DB_NAME` into the app, merged. The prefix is configurable. The app restarts once. |
+| `database_power` | **sensitive** | `start`, `stop` or `restart`. |
+| `resize_database` | **sensitive** | Changes the plan; the card shows the price delta. |
+| `backup_database` | **sensitive** | Takes a backup now. |
+| `database_backup_link` | **sensitive** | Creates a backup download link (revealed once). |
+| `restore_database_backup` | **sensitive** | Restores from a backup. The owner must type the name. |
+| `reset_database_password` | **sensitive** | Resets the password (revealed once). Apps must be reconnected afterwards. |
+| `database_public_network` | **sensitive** | Turns public network access on or off. |
+| `delete_database` | **sensitive** | Deletes the database. The owner must type the name. |
+| `db_query` | **sensitive** | Existing read-only database-inspector query (see above). |
+| `list_buckets`, `storage_plans`, `bucket_objects`, `storage_keys` | read | Usage and object count, live prices, the first N objects, keys with masked access keys. |
+| `create_bucket` | **sensitive** | Creates a bucket. Optional `connect_app`. |
+| `connect_bucket` | **sensitive** | Writes `LIARA_ENDPOINT`, `LIARA_BUCKET_NAME`, `LIARA_ACCESS_KEY` and `LIARA_SECRET_KEY` into the app. With `style=aws` it writes `AWS_ENDPOINT_URL_S3`, `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_DEFAULT_REGION` instead. |
+| `bucket_permission` | **sensitive** | Makes a bucket private or public. |
+| `resize_bucket` | **sensitive** | Upgrades the plan. |
+| `delete_bucket` | **sensitive** | Deletes the bucket. The owner must type the name, and the bucket must be empty. |
+| `create_storage_key` / `revoke_storage_key` | **sensitive** | Creates a key or rotates its secret (revealed once). |
+| `delete_storage_key` | **sensitive** | Deletes a key. |
+| `bucket_file_link` | **sensitive** | Creates a signed temporary link (revealed once). |
+| `propose_addons` | safe | Only creates cards: `create_database` and/or `create_bucket`, each with `connect_app`. |
+
+**Typed-name approvals.** For `delete_server`, `delete_database`, `restore_database_backup` and `delete_bucket`, `confirm_name` is not a tool parameter, so the LLM cannot fill it in. The dashboard approves with `POST /api/diag/approve-typed/{pid} {confirm_name}`; `diag.TYPED_CONFIRM` maps each tool to the argument the owner must type.
+
+**Add-ons.**
+
+- **Adding them:** templates and the setup wizard can carry `addons = {'database': {engine, plan, bundle, prefix}, 'storage': {plan, permission, style}}`. `addons.validate()` normalises them.
+- **Suggestions:** `addons.suggest(analysis)` derives add-ons from `analyze_project` output. For example, psycopg or `DATABASE_URL` suggests postgres, and `S3_*`/`AWS_*` variables suggest storage.
+- **Cards:** `await addons.propose_addons(app, addons, ctx)` creates the cards.
+
+**Dashboard.** `static/data.js` provides `VIEWS.databases` («پایگاه‌داده») and `VIEWS.storage` («ذخیره‌سازی»). Both show lists, details, actions through cards, typed approvals, one-time reveals and the access keys.
+
+**Chat examples:**
+
+- «یک پایگاه‌داده‌ی Postgres برای demo-shop بساز و وصلش کن» → `create_database {name:"demo-shop-db", engine:"postgres", connect_app:"demo-shop"}`.
+- «یک فضای ذخیره‌سازی برای bazargard-ai بساز» → `create_bucket {name, connect_app}`.
+- «این پروژه Postgres لازم دارد» → `propose_addons {app, database:"postgres"}`.
+
+**In-app limitations.** `diag.limitations()` returns `(title_fa, text_fa)` rows for these limits.

@@ -51,6 +51,12 @@ How you work:
 - INITIAL SETUP: «این ریپو رو دیپلوی کن: <git URL>» → analyze_project(git_url) → explain the recommended plan/bundle, price and
   reasoning → launch_project(project_id, app, plan, bundle, envs with NON-secret values) which creates ONE approval card; secret
   env values are typed by the owner on that card. After it runs, give the URL and the custom-domain next step.
+- GITOPS: apps with a GitHub repo (bazargard-ai, negahban-sre, meowmeow-wallex; account moazeniz) → cicd_status for CI/live-vs-main,
+  git_what_changed for "what changed", deploy_incident_correlation for "did a deploy cause this", ci_run_details for a failing run.
+  To publish a new version of an app that has a repo («از گیت‌هاب منتشر کن») use release_via_pipeline (approval card; CI + smoke test +
+  auto-rollback), not deploy_workspace. You can NEVER commit, push, open PRs or edit files in these repos (code-level allowlist).
+- DATA SERVICES: «یک پایگاه‌داده‌ی Postgres برای demo-shop بساز و وصلش کن» → create_database {name:'demo-shop-db', engine:'postgres',
+  connect_app:'demo-shop'}; «باکت ذخیره‌سازی برای bazargard-ai بساز» → create_bucket {name, connect_app}. Cards show cost/hour+month.
 - REPORTS: «گزارش امروز» → daily_report. Horizontal scaling of demo-shop is done by the deterministic controller (scaler_status);
   you may only propose scaler_override cards.
 - ACTIONS: when the owner asks for a change (restart, resize, deploy, rollback, env, on/off, delete, subdomain…), call the
@@ -264,7 +270,11 @@ EXTRA_KEYS = [(r'(?i)(exec|shell|ترمینال|دستور|command|ps\b|پردا
               (r'(?i)(tls|ssl|گواهی|certificate|dns|دامنه|domain|resolve)', {'tls_check', 'dns_lookup', 'domains_health', 'list_domains', 'domain_setup_guide', 'add_domain', 'enable_ssl', 'dns_zones', 'create_dns_zone'}),
               (r'(?i)(load|بار|stress|فشار)', {'load_test'}),
               (r'(?i)(disk|دیسک|فایل|file|backup|پشتیبان|bucket|storage)', {'disks_info', 'disk_files', 'disk_file_read', 'storage_buckets'}),
-              (r'(?i)(database|دیتابیس|پایگاه|sql|db\b|query)', {'databases_status', 'db_query'}),
+              (r'(?i)(database|دیتابیس|پایگاه|sql|db\b|query|postgres|mysql|mongo|redis|بکاپ|backup)', {'databases_status', 'db_query', 'list_databases', 'database_details', 'database_plans',
+                  'database_backups', 'create_database', 'connect_database', 'database_power', 'resize_database', 'backup_database', 'database_backup_link',
+                  'restore_database_backup', 'reset_database_password', 'database_public_network', 'delete_database', 'propose_addons'}),
+              (r'(?i)(bucket|باکت|storage|ذخیره‌سازی|ذخیره سازی|s3|object|آبجکت|فایل)', {'list_buckets', 'storage_plans', 'bucket_objects', 'storage_keys', 'bucket_file_link',
+                  'create_bucket', 'connect_bucket', 'bucket_permission', 'resize_bucket', 'delete_bucket', 'create_storage_key', 'revoke_storage_key', 'delete_storage_key', 'propose_addons'}),
               (r'(?i)(forecast|پیش‌بینی|budget|بودجه|invoice|فاکتور|صورتحساب|billing|slo|uptime|دسترس‌پذیری)', {'cost_forecast', 'resource_forecast', 'slo_report', 'billing_details'}),
               (r'(?i)(network|شبکه|traffic|ترافیک|event|رویداد|release|ریلیز|نسخه|deploy|استقرار|مستقر|دیپلوی|منتشر|انتشار|archive|آرشیو)', {'network_metrics', 'events_timeline', 'release_details', 'deploy_impact', 'deploy_workspace', 'redeploy_archive', 'list_archives', 'toggle_zero_downtime'}),
               (r'(?i)(llm|توکن|token|مدل|کش|cache)', {'llm_usage', 'llm_usage_report'}),
@@ -273,6 +283,8 @@ EXTRA_KEYS = [(r'(?i)(exec|shell|ترمینال|دستور|command|ps\b|پردا
               (r'(?i)(server|سرور|vm\b|ماشین مجازی|iaas|ubuntu|اوبونتو|debian)', {'list_servers', 'server_details', 'server_traffic', 'server_plans', 'server_images', 'server_templates',
                   'create_server', 'server_power', 'resize_server', 'server_add_disk', 'server_extend_disk', 'server_reset_password', 'server_reset_network', 'delete_server'}),
               (r'(?i)(project|پروژه|git|zip)', {'analyze_project', 'deploy_project'}),
+              (r'(?i)(github|گیت|\bci\b|cd\b|pipeline|پایپ|workflow|commit|کامیت|منتشر|انتشار|release|ریلیز|نسخه|تغییر|changed|عقب|behind|tag|تگ)',
+               {'cicd_status', 'git_what_changed', 'deploy_incident_correlation', 'ci_run_details', 'release_via_pipeline'}),
               (r'(?i)(fix|وصله|patch)', {'apply_code_fix'})]
 
 

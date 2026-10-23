@@ -190,10 +190,15 @@ function propCard(p, live) {
   const secIn = p.tool === 'launch_project' && st === 'pending' && ((im.secrets_missing || []).length || (im.env_missing || []).length) ? `<div class="form small"><b>مقادیر متغیرهای لازم (مقادیر محرمانه در هیچ گزارشی نمایش داده نمی‌شود)</b>
     ${[...(im.secrets_missing || []).map(n => [n, 1]), ...(im.env_missing || []).map(n => [n, 0])].map(([n, sec]) => `<label class="ltr">${esc(n)}${sec ? ' 🔒' : ''}<input ${sec ? 'type="password"' : ''} data-secin="${esc(p.id)}" data-name="${esc(n)}" autocomplete="off"></label>`).join('')}</div>` : '';
   const steps = p.tool === 'launch_project' && im.steps ? `<ol class="small">${im.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : '';
-  const build = ['launch_project', 'deploy_workspace', 'apply_code_fix', 'deploy_template', 'deploy_project'].includes(p.tool) ? `<div class="logbox small hidden" data-buildfor="${esc(p.id)}" style="max-height:180px"></div>` : '';
+  const build = ['launch_project', 'deploy_workspace', 'apply_code_fix', 'deploy_template', 'deploy_project', 'release_via_pipeline'].includes(p.tool) ? `<div class="logbox small hidden" data-buildfor="${esc(p.id)}" style="max-height:180px"></div>` : '';
   const nxt = p.result && p.result.next_steps ? `<div class="small"><b>گام‌های بعدی:</b><ul>${p.result.next_steps.map(x => `<li>${esc(x)}</li>`).join('')}</ul>${p.result.url ? `<a class="btn sm primary" href="${esc(p.result.url)}" target="_blank" rel="noopener">باز کردن سایت ↗</a>` : ''}</div>` : '';
   const envIn = p.tool === 'set_env' && st === 'pending' && !(p.args || {}).restore ? `<label class="small">مقدار متغیر ${esc((p.args || {}).key)} (محرمانه می‌ماند)<input type="password" data-envval="${esc(p.id)}" autocomplete="off"></label>` : '';
-  const delIn = (p.tool === 'delete_app' || p.tool === 'delete_server') && st === 'pending' ? `<label class="small">برای تأیید حذف، نام برنامه را تایپ کنید<input data-delname="${esc(p.id)}" class="ltr"></label>` : '';
+  const pp = im.pipeline, rr = p.result || {};
+  const pipe = pp ? `<div class="small" style="margin:6px 0"><div>🔁 <b>پایپ‌لاین:</b> <span class="ltr">${esc(pp.repo)}</span> · ${esc(pp.workflow)} · شاخه/تگ <code>${esc(pp.ref)}</code> · ورودی‌ها <code class="ltr">${esc(JSON.stringify(pp.inputs || {}))}</code>${pp.github_reachable === false ? ' <span class="chip bad">گیت‌هاب در دسترس نیست</span>' : ''}</div>
+    ${pp.changes && !pp.changes.error ? `<details><summary>${pp.changes.note ? esc(pp.changes.note) + ' · ' : fa(pp.changes.n_commits || 0) + ' کامیت جدید نسبت به نسخه‌ی فعلی · '}${fa(pp.changes.files_total || 0)} فایل (+${fa(pp.changes.additions || 0)} / −${fa(pp.changes.deletions || 0)})</summary><div class="tl">${(pp.changes.commits || []).map(c => `<div><code>${esc(c.sha)}</code> ${esc(c.message)}</div>`).join('')}</div></details>` : ''}
+    ${pp.fallback ? `<div class="chip warn">${esc(pp.fallback)}</div>` : ''}${im.gh_env_note ? `<div class="muted">${esc(im.gh_env_note)}</div>` : ''}
+    ${rr.run_url ? `<div><a class="ltr" href="${esc(rr.run_url)}" target="_blank" rel="noopener">اجرای GitHub ↗</a> · نتیجه: <span class="chip ${rr.conclusion === 'success' ? 'ok' : 'bad'}">${esc(rr.conclusion || '—')}</span></div>${(rr.jobs || []).map(j => `<div>${j.conclusion === 'success' ? '✅' : j.conclusion === 'skipped' ? '⏭' : '❌'} ${esc(j.name)} <span class="muted">${(j.steps || []).filter(s => s.conclusion && s.conclusion !== 'skipped').map(s => esc(s.name)).slice(-6).join(' · ')}</span></div>`).join('')}` : ''}</div>` : '';
+  const delIn = ['delete_app', 'delete_server', 'delete_database', 'restore_database_backup', 'delete_bucket'].includes(p.tool) && st === 'pending' ? `<label class="small">برای تأیید حذف، نام برنامه را تایپ کنید<input data-delname="${esc(p.id)}" class="ltr"></label>` : '';
   return `<div class="prop ${esc(st)}" data-prop="${esc(p.id)}">
     <div class="row"><span class="t">${esc(p.title)}</span><span class="chip ${st === 'pending' ? 'warn' : st === 'done' ? 'ok' : ['failed', 'rejected', 'stale', 'unverified', 'expired'].includes(st) ? 'bad' : 'info'}">${esc(STATUS_FA[st] || st)}</span>
       ${p.auto ? '<span class="chip ok">🤖 خودران</span>' : ''}${p.decision === 'rules' ? '<span class="chip" title="تصمیم بر اساس قواعد قطعی، بدون مدل زبانی">⚙️ قاعده‌محور</span>' : p.decision === 'ai' ? '<span class="chip info" title="پیشنهاد با کمک هوش مصنوعی">🧠 با کمک AI</span>' : ''}<span class="right muted small">${esc(ORIGIN_FA[p.origin] || p.origin)} · ${ago(p.created_at)}</span></div>
@@ -202,7 +207,7 @@ function propCard(p, live) {
     <div class="facts"><div class="fact"><small>قطعی</small>${esc(im.downtime || '—')}</div><div class="fact"><small>هزینه</small>${esc(im.cost || '—')}</div>
       <div class="fact"><small>ریسک</small>${esc(im.risk || '—')}</div>${im.resources ? `<div class="fact"><small>منابع</small>${esc(im.resources)}</div>` : ''}${im.deploys ? `<div class="fact"><small>سهمیه</small>${esc(im.deploys)}</div>` : ''}</div>
     ${p.rollback ? `<div class="small"><b>برنامه‌ی بازگشت:</b> ${esc(p.rollback)}</div>` : ''}
-    ${before}${tests}${steps}${diff}${envIn}${secIn}${delIn}${build}
+    ${before}${pipe}${tests}${steps}${diff}${envIn}${secIn}${delIn}${build}
     ${['executing', 'verifying'].includes(st) ? `<div class="row small"><span class="spin"></span><span data-opfor="${esc(p.id)}">${st === 'verifying' ? 'در حال راستی‌آزمایی…' : 'در حال اجرا…'}</span></div>` : ''}
     ${ver}${res}${nxt}${p.result && p.result.secret_once ? `<button class="btn sm" data-secret="${esc(p.result.secret_once)}">🔑 نمایش یک‌باره‌ی رمز</button><span class="mono small" data-secretout="${esc(p.result.secret_once)}"></span>` : ''}
     ${st === 'pending' ? `<div class="row"><button class="btn primary" data-approve="${esc(p.id)}">✔ تأیید و اجرا</button><button class="btn" data-reject="${esc(p.id)}">رد</button><span class="muted small right">مهلت: ${left(p.expires_at)}</span></div>` : ''}
@@ -516,7 +521,7 @@ VIEWS.scenarios = async () => {
 };
 
 /* ---------------------------------------------------------------- audit + limits + more */
-const ACT_FA = {propose: 'پیشنهاد', approve: 'تأیید', reject: 'رد', verify: 'راستی‌آزمایی', restart_app: 'ری‌استارت', resize_app: 'تغییر پلن', set_env: 'تنظیم متغیر', login: 'ورود', login_failed: 'ورود ناموفق',
+const ACT_FA = {release_via_pipeline: 'انتشار از پایپ‌لاین گیت‌هاب', propose: 'پیشنهاد', approve: 'تأیید', reject: 'رد', verify: 'راستی‌آزمایی', restart_app: 'ری‌استارت', resize_app: 'تغییر پلن', set_env: 'تنظیم متغیر', login: 'ورود', login_failed: 'ورود ناموفق',
   incident_open: 'رخداد جدید', policy_update: 'تغییر سیاست', prepare_fix: 'آماده‌سازی وصله', apply_code_fix: 'اعمال وصله', rollback_release: 'بازگشت نسخه', autoscale_down: 'کاهش خودکار پلن', diagnose: 'عیب‌یابی', chat_blocked: 'بستن گفتگو'};
 VIEWS.audit = async () => {
   const v = $('#view'); const [rows, J] = await Promise.all([api('/api/audit'), api('/api/jobs').catch(() => null)]);
@@ -553,7 +558,7 @@ VIEWS.limits = async () => {
     <div class="muted small">پس از پایان پنجره (۴۰۳) یا فعال شدن قطع اضطراری (۵۰۳)، نگهبان خودکار به BoxAPI جابه‌جا می‌شود.</div></div><div class="grid g2">${L.map(x => `<div class="card"><h3>⚠️ ${esc(x.title)}</h3><div>${esc(x.text)}</div></div>`).join('')}</div>`;
 };
 VIEWS.more = () => {
-  $('#view').innerHTML = `<div class="grid g3">${['wizard', 'reports', 'alerts', 'autopilot', 'templates', 'servers', 'terminal', 'logs', 'memory', 'domains', 'scenarios', 'audit', 'limits'].map(k => `<button class="card btn" style="justify-content:center;padding:18px" data-act="go" data-arg="${k}">${esc(TITLES[k])}</button>`).join('')}
+  $('#view').innerHTML = `<div class="grid g3">${['wizard', 'reports', 'alerts', 'autopilot', 'templates', 'servers', 'databases', 'storage', 'terminal', 'logs', 'memory', 'domains', 'scenarios', 'audit', 'limits'].map(k => `<button class="card btn" style="justify-content:center;padding:18px" data-act="go" data-arg="${k}">${esc(TITLES[k])}</button>`).join('')}
   <button class="card btn" style="justify-content:center;padding:18px" data-act="logout">خروج</button></div>`;
 };
 

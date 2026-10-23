@@ -37,6 +37,9 @@ async def main():
             **({'LIARA_EXEC_URL': liara_env['EXEC_RELAY_URL'], 'LIARA_EXEC_RELAY_TOKEN': liara_env['EXEC_RELAY_TOKEN']} if liara_env.get('EXEC_RELAY_URL') else {}), 'DATA_DIR': '/data', 'SELF_APP': app, 'DEMO_APP': 'demo-shop', 'ORCH_INTERVAL': '60'}
     scaler = envfile('/root/.meow-scaler.env') if os.path.exists('/root/.meow-scaler.env') else {}
     envs.update({k: v for k, v in {**liara_env, **scaler}.items() if k in ('SCALER_URL', 'SCALER_ADMIN_TOKEN', 'LB_URL', 'LB_READ_TOKEN', 'LB_WRITE_TOKEN') and v})
+    gh = envfile('/root/.github-tokens.env') if os.path.exists('/root/.github-tokens.env') else {}
+    if gh.get('NEGAHBAN_GITHUB_TOKEN'):  # GitOps (read + deploy-workflow dispatch only; allowlist enforced in negahban/gitops.py)
+        envs['NEGAHBAN_GITHUB_TOKEN'] = gh['NEGAHBAN_GITHUB_TOKEN']
     tb = make_tarball(ROOT, extra_skip=('data', 'evidence', 'docs', 'deploy', 'tests', 'scaler', 'infra', 'ops', '.github'))
     print('source', len(tb), 'bytes')
     sid = await li.upload_source(app, tb)
