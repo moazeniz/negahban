@@ -1,0 +1,70 @@
+{
+ "id": "prp_85c331077c91",
+ "app": "ngh-accept-api",
+ "tool": "deploy_template",
+ "args": {
+  "template_id": "fastapi",
+  "app": "ngh-accept-api",
+  "plan": "small-g2"
+ },
+ "title": "استقرار ngh-accept-api از قالب fastapi روی پلن small-g2",
+ "why": "",
+ "impact": {
+  "downtime": "چند ثانیه هنگام جابه‌جایی نسخه",
+  "cost": "بدون تغییر پلن برنامه‌ی موجود",
+  "risk": "متوسط — سورس فعلی برنامه با فایل‌های قالب جایگزین می‌شود",
+  "resources": "small-g2 (0.5 هسته، 0.5 گیگ رم) · باندل basic",
+  "deploys": "یکی از سهمیه‌ی استقرار روزانه مصرف می‌شود",
+  "diff": "+++ Dockerfile\n+FROM python:3.12-slim\n+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1\n+WORKDIR /app\n+COPY requirements.txt .\n+RUN pip install --no-cache-dir -r requirements.txt\n+COPY . .\n+EXPOSE 8000\n+CMD [\"sh\", \"-c\", \"exec uvicorn main:app --host 0.0.0.0 --port 8000 --proxy-headers --workers ${WEB_CONCURRENCY:-1}\"]\n+++ main.py\n+import os\n+\n+from fastapi import FastAPI\n+\n+app = FastAPI(title='ngh-accept-api')\n+\n+\n+@app.get('/')\n+def index():\n+    return {'app': 'ngh-accept-api', 'env': os.getenv('APP_ENV', 'production'), 'message': 'سلام از لیارا! این برنامه با قالب FastAPI نگهبان ساخته شد.'}\n+\n+\n+@app.get('/health')\n+def health():\n+    return {'status': 'ok'}\n+++ requirements.txt\n+fastapi>=0.110,<1\n+uvicorn[standard]>=0.29,<1\n+++ healthcheck.py\n+\"\"\"Liara healthCheck probe: healthy while the web server answers below 500.\"\"\"\n+import sys, urllib.error, urllib.request\n+\n+try:\n+    urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4)\n+except urllib.error.HTTPError as e:\n+    sys.exit(0 if e.code < 500 else 1)\n+except Exception:\n+    sys.exit(1)\n+++ liara.json\n+{\n+  \"platform\": \"docker\",\n+  \"app\": \"ngh-accept-api\",\n+  \"port\": 8000,\n+  \"healthCheck\": {\n+    \"command\": [\n+      \"CMD-SHELL\",\n+      \"python healthcheck.py\"\n+    ],\n+    \"interval\": 30000,\n+    \"timeout\": 5000,\n+    \"retries\": 3,\n+    \"startPeriod\": 20000\n+  }\n+}\n+++ متغیرهای محیطی (env)\n+APP_ENV=production\n+WEB_CONCURRENCY=1\n+SECRET_KEY=<محرمانه: روی همین کارت یا بعداً با set_env وارد شود>",
+  "template": "fastapi",
+  "template_version": 1,
+  "hourly": 1041.66,
+  "monthly": 749995,
+  "app_exists": true,
+  "env_schema": [
+   {
+    "name": "APP_ENV",
+    "required": false,
+    "secret": false,
+    "description": "محیط اجرا",
+    "value": "production"
+   },
+   {
+    "name": "WEB_CONCURRENCY",
+    "required": false,
+    "secret": false,
+    "description": "تعداد پردازه‌های uvicorn",
+    "value": "1"
+   },
+   {
+    "name": "SECRET_KEY",
+    "required": false,
+    "secret": true,
+    "description": "کلید امضای برنامه",
+    "value": ""
+   }
+  ],
+  "secrets_needed": [
+   "SECRET_KEY"
+  ],
+  "autoscale": {
+   "min_plan": "small-g2",
+   "max_plan": "medium-g2",
+   "max_toman_day": 60000
+  },
+  "label": "استقرار از قالب"
+ },
+ "rollback": "سورس فعلی در آرشیو نگهبان ذخیره است؛ با «بازگشت به نسخه‌ی قبلی» برمی‌گردد.",
+ "status": "failed",
+ "created_at": 1792692190.109496,
+ "expires_at": 1792693390.1094968,
+ "origin": "e2e",
+ "incident_id": null,
+ "result": {
+  "error": "خطای لیارا — \"healthCheck.startPeriod\" must be less than or equal to 3000"
+ },
+ "verification": null,
+ "decided_by": "owner-e2e",
+ "decided_at": 1792692190.8179445,
+ "auto": 0
+}

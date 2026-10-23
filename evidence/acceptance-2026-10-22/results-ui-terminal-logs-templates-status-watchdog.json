@@ -1,0 +1,252 @@
+[
+ {
+  "check": "login (desktop)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "page overview (desk)",
+  "ok": true,
+  "detail": "2027 chars, hscroll=False"
+ },
+ {
+  "check": "page chat (desk)",
+  "ok": true,
+  "detail": "479 chars, hscroll=False"
+ },
+ {
+  "check": "page approvals (desk)",
+  "ok": true,
+  "detail": "16040 chars, hscroll=False"
+ },
+ {
+  "check": "page incidents (desk)",
+  "ok": true,
+  "detail": "1789 chars, hscroll=False"
+ },
+ {
+  "check": "page autopilot (desk)",
+  "ok": true,
+  "detail": "4771 chars, hscroll=False"
+ },
+ {
+  "check": "page wizard (desk)",
+  "ok": true,
+  "detail": "262 chars, hscroll=False"
+ },
+ {
+  "check": "page templates (desk)",
+  "ok": true,
+  "detail": "2962 chars, hscroll=False"
+ },
+ {
+  "check": "page terminal (desk)",
+  "ok": true,
+  "detail": "662 chars, hscroll=False"
+ },
+ {
+  "check": "page logs (desk)",
+  "ok": true,
+  "detail": "348 chars, hscroll=False"
+ },
+ {
+  "check": "page domains (desk)",
+  "ok": true,
+  "detail": "805 chars, hscroll=False"
+ },
+ {
+  "check": "page scenarios (desk)",
+  "ok": true,
+  "detail": "984 chars, hscroll=False"
+ },
+ {
+  "check": "page audit (desk)",
+  "ok": true,
+  "detail": "32142 chars, hscroll=False"
+ },
+ {
+  "check": "page limits (desk)",
+  "ok": true,
+  "detail": "2014 chars, hscroll=False"
+ },
+ {
+  "check": "page app:demo-shop (desk)",
+  "ok": true,
+  "detail": "9078 chars, hscroll=False"
+ },
+ {
+  "check": "page app:bazargard-ai (desk)",
+  "ok": true,
+  "detail": "32319 chars, hscroll=False"
+ },
+ {
+  "check": "provider chip shows Anthropic/haiku",
+  "ok": true,
+  "detail": "🛰️ پایشگر: لحظاتی پیش | 🐕 نگهبانِ نگهبان: ۱ دقیقه پیش | 🧠 Anthropic ·\nclaude-haiku-5-5"
+ },
+ {
+  "check": "no JS errors (desk)",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "login (mobile)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "page overview (mob)",
+  "ok": true,
+  "detail": "2026 chars, hscroll=False"
+ },
+ {
+  "check": "page chat (mob)",
+  "ok": true,
+  "detail": "479 chars, hscroll=False"
+ },
+ {
+  "check": "page approvals (mob)",
+  "ok": true,
+  "detail": "16041 chars, hscroll=False"
+ },
+ {
+  "check": "page incidents (mob)",
+  "ok": true,
+  "detail": "1789 chars, hscroll=False"
+ },
+ {
+  "check": "page autopilot (mob)",
+  "ok": true,
+  "detail": "4771 chars, hscroll=False"
+ },
+ {
+  "check": "page wizard (mob)",
+  "ok": true,
+  "detail": "262 chars, hscroll=False"
+ },
+ {
+  "check": "page templates (mob)",
+  "ok": true,
+  "detail": "2962 chars, hscroll=False"
+ },
+ {
+  "check": "page terminal (mob)",
+  "ok": true,
+  "detail": "662 chars, hscroll=False"
+ },
+ {
+  "check": "page logs (mob)",
+  "ok": true,
+  "detail": "485 chars, hscroll=False"
+ },
+ {
+  "check": "page domains (mob)",
+  "ok": true,
+  "detail": "805 chars, hscroll=False"
+ },
+ {
+  "check": "page scenarios (mob)",
+  "ok": true,
+  "detail": "984 chars, hscroll=False"
+ },
+ {
+  "check": "page audit (mob)",
+  "ok": true,
+  "detail": "32525 chars, hscroll=False"
+ },
+ {
+  "check": "page limits (mob)",
+  "ok": true,
+  "detail": "2014 chars, hscroll=False"
+ },
+ {
+  "check": "page app:demo-shop (mob)",
+  "ok": true,
+  "detail": "10597 chars, hscroll=False"
+ },
+ {
+  "check": "page app:bazargard-ai (mob)",
+  "ok": true,
+  "detail": "33752 chars, hscroll=False"
+ },
+ {
+  "check": "no JS errors (mob)",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "terminal: 'cat /proc/loadavg' -> ran",
+  "ok": true,
+  "detail": "{\"verdict\": \"read\", \"label\": \"فقط‌خواندنی؛ بی‌درنگ اجرا می‌شود\", \"result\": {\"app\": \"demo-shop\", \"command\": \"cat /proc/loadavg\", \"risk\": \"read\", \"output\": \"19.64 21.15 20.90 31/12180 13\\n\", \"ms\": 1108,"
+ },
+ {
+  "check": "terminal: 'pip install requests' -> card",
+  "ok": true,
+  "detail": "{\"verdict\": \"sensitive\", \"label\": \"نیاز به تأیید مالک دارد (کارت تأیید ساخته می‌شود)\", \"result\": {\"proposal\": {\"id\": \"prp_ac625848ec52\", \"title\": \"اجرای فرمان در کانتینر demo-shop: pip install request"
+ },
+ {
+  "check": "terminal: 'rm -rf /' -> refused",
+  "ok": true,
+  "detail": "این فرمان ممنوع است (recursive/forced rm) و هرگز اجرا نمی‌شود"
+ },
+ {
+  "check": "terminal UI runs allowlisted command",
+  "ok": true,
+  "detail": ":        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:    13913488 kB\nDirectMap2M:    53194752 kB\n\n— ۱٬۰۷۱ ms\n"
+ },
+ {
+  "check": "log explorer API",
+  "ok": true,
+  "detail": "{\"lines\": 101, \"levels\": {\"info\": 20}, \"kinds\": {\"text\": 19, \"access\": 1}, \"structured_ratio\": 0, \"requests\": 1, \"errors_5xx\": 0, \"error_rate\": 0, \"error_groups\": [{\"fingerprint\": \"ZeroDivisionError@p"
+ },
+ {
+  "check": "log explorer UI",
+  "ok": true,
+  "detail": "485 chars"
+ },
+ {
+  "check": "template clone",
+  "ok": true,
+  "detail": "tpl_81fc886ac4df"
+ },
+ {
+  "check": "template edit → new version",
+  "ok": true,
+  "detail": "2"
+ },
+ {
+  "check": "template validation rejects bad port",
+  "ok": true,
+  "detail": "پورت باید بین 1 و 65535 باشد"
+ },
+ {
+  "check": "template restore v1",
+  "ok": true,
+  "detail": "3"
+ },
+ {
+  "check": "template delete needs exact name",
+  "ok": true,
+  "detail": "برای حذف، نام قالب را دقیقاً تایپ کنید / True"
+ },
+ {
+  "check": "builtin template is read-only",
+  "ok": true,
+  "detail": "قالب‌های پیش‌فرض فقط‌خواندنی‌اند؛ ابتدا از آن یک کپی بسازید"
+ },
+ {
+  "check": "external watchdog pinged < 5 min ago",
+  "ok": true,
+  "detail": "{'ts': 1792695871.8798885, 'host': 'ubuntu-8gb-hel1-3', 'note': 'healthz ok, orchestrator lag 2s'}"
+ },
+ {
+  "check": "public /status (no auth)",
+  "ok": true,
+  "detail": "200 rows=5"
+ },
+ {
+  "check": "healthz + orchestrator alive",
+  "ok": true,
+  "detail": "{'ok': True, 'version': '1.6.4', 'uptime_s': 484, 'orchestrator_last_cycle_s': 56}"
+ }
+]

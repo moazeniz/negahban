@@ -1,0 +1,1031 @@
+{
+ "incidents": [
+  {
+   "id": "inc_505f0a0841d7",
+   "app": "demo-shop",
+   "kind": "errors",
+   "severity": "high",
+   "title": "خطای کد (ZeroDivisionError) در pricing.py:7",
+   "status": "resolved",
+   "opened_at": 1792686796.9748418,
+   "updated_at": 1792686898.9866157,
+   "resolved_at": 1792686898.9866157,
+   "diagnosis": {
+    "app": "demo-shop",
+    "ts": 1792686805.4623141,
+    "healthy": false,
+    "hypotheses": [
+     {
+      "id": "code_exception",
+      "title": "خطای کد (ZeroDivisionError) در pricing.py:7",
+      "confidence": 0.9,
+      "evidence": [
+       "ZeroDivisionError: division by zero",
+       "محل خطا: /app/shop/pricing.py:7 در تابع discount_percent",
+       "تکرار: 1 بار",
+       "خطاها پس از استقرار نسخه‌ی v8 (refactor: simplify discount (by developer)) شروع شده‌اند"
+      ],
+      "fixes": [
+       {
+        "tool": "propose_code_fix",
+        "args": {
+         "app": "demo-shop"
+        },
+        "label": "اصلاح خودکار کد + تست + استقرار"
+       },
+       {
+        "tool": "rollback_release",
+        "args": {
+         "app": "demo-shop"
+        },
+        "label": "بازگشت به نسخه‌ی قبلی (سریع)"
+       }
+      ],
+      "kind": "code",
+      "explanation": "خطای ZeroDivisionError دقیقاً در خط ۷ فایل pricing.py ثبت شده، در مسیر صفحه اصلی قرار دارد و زمان شروع آن با استقرار v8 هم‌زمان است، بنابراین بسیار محتمل است."
+     }
+    ],
+    "summary": "صفحه اصلی سایت فروشگاه شما خطای ۵۰۰ برمی‌گرداند و بازدیدکنندگان صفحه را نمی‌بینند. علت یک خطای برنامه‌نویسی (تقسیم بر صفر) در محاسبه درصد تخفیف است که بعد از استقرار نسخه v8 با عنوان «ساده‌سازی تخفیف» ظاهر شده است. پیشنهاد می‌شود کد این بخش را اصلاح کنید یا فوراً به نسخه سالم قبلی برگردید.",
+    "next_steps": [
+     "کد تابع discount_percent در فایل shop/pricing.py را بررسی کنید و پیش از تقسیم، مقدار قیمت قدیمی را از صفر بودن یا خالی بودن کنترل کنید.",
+     "اگر اصلاح سریع ممکن نیست، سایت را به نسخه پایدار قبل از v8 (مثلاً v5) بازگردانید تا صفحه اصلی دوباره کار کند.",
+     "پس از اعمال تغییر یا بازگشت به نسخه قبل، آدرس صفحه اصلی سایت را در مرورگر باز کنید و مطمئن شوید که خطا برطرف شده است.",
+     "قبل از انتشار نسخه بعدی، یک آزمایش برای حالتی که قیمت قدیمی صفر است به مجموعه تست‌ها اضافه کنید."
+    ],
+    "evidence": {
+     "status": {
+      "status": "ACTIVE",
+      "scale": 1,
+      "planID": "medium-g2",
+      "bundlePlanID": "standard",
+      "zeroDowntime": true,
+      "hourlyPrice": 1145.83,
+      "bundleHourlyPrice": 1145.83,
+      "isDeployed": true
+     },
+     "probe": {
+      "url": "https://demo-shop.liara.run/",
+      "status": 500,
+      "latency_ms": 72,
+      "ok": false,
+      "body_snippet": "Internal Server Error",
+      "error": null
+     },
+     "env_keys": [
+      "APP_VERSION",
+      "CHAOS_TOKEN",
+      "PAYMENT_GATEWAY_KEY"
+     ],
+     "env_removed_since_last_seen": [],
+     "releases": [
+      {
+       "_id": "6ada39fcb8e65d29b96efcd6",
+       "tag": "v8",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "refactor: simplify discount (by developer)",
+       "createdAt": "2026-10-22T16:29:48.765Z",
+       "finishedAt": "2026-10-22T16:30:48.512Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada36d90e01dbee0e991576",
+       "tag": "v7",
+       "type": "ENV_UPDATE",
+       "state": "READY",
+       "message": "Negahban fix 46d482e",
+       "createdAt": "2026-10-22T16:16:25.652Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada367d38253e6cdf2cdd17",
+       "tag": "v6",
+       "type": "ENV_UPDATE",
+       "state": "UNHEALTHY",
+       "message": "Negahban fix 46d482e",
+       "createdAt": "2026-10-22T16:14:53.133Z",
+       "finishedAt": null,
+       "failReason": "APP_CRASHED"
+      },
+      {
+       "_id": "6ada2e6c2c3f63ca36ec8d4b",
+       "tag": "v5",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "Negahban fix 46d482e",
+       "createdAt": "2026-10-22T15:40:28.906Z",
+       "finishedAt": "2026-10-22T15:41:35.781Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada2db0b8e65d29b96d34e0",
+       "tag": "v4",
+       "type": "DEPLOY",
+       "state": "FAILED",
+       "message": "feat: invoices (by developer)",
+       "createdAt": "2026-10-22T15:37:20.648Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada2c5c0e01dbee0e9715e3",
+       "tag": "v3",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "Negahban fix 9f7ef47",
+       "createdAt": "2026-10-22T15:31:40.900Z",
+       "finishedAt": "2026-10-22T15:32:14.224Z",
+       "failReason": null
+      }
+     ],
+     "build": null,
+     "events": [
+      {
+       "time": 1792685848,
+       "action": "destroy",
+       "id": "d58b0f83c02cb3423565530907b828e02f72afac7ebb71ad7f737562f67c3ddc",
+       "release": "6ada2c5c0e01dbee0e9715e3",
+       "tag": "v3"
+      },
+      {
+       "time": 1792685848,
+       "action": "destroy",
+       "id": "39d3be73b03171578c86f81263cd7cdf287d10ad0e684d6f15cc1ee6f832df38",
+       "release": "6ada2e6c2c3f63ca36ec8d4b",
+       "tag": "v5"
+      },
+      {
+       "time": 1792685848,
+       "action": "destroy",
+       "id": "fdb890c7d1e71588708b085e4689626f668f786da94dbf1759f296f5d15b87b4",
+       "release": "6ada2e6c2c3f63ca36ec8d4b",
+       "tag": "v5"
+      },
+      {
+       "time": 1792685848,
+       "action": "destroy",
+       "id": "463b8c919d93a3d5a807b4b345fe25913828999e93bea080774f442bcbe7cc62",
+       "release": "6ada2e6c2c3f63ca36ec8d4b",
+       "tag": "v5"
+      },
+      {
+       "time": 1792686602,
+       "action": "destroy",
+       "id": "79e1072c297b1cea4783c601999dadd6a69d5764300a31dd4a6db841432bb1ee",
+       "release": "6ada2e6c2c3f63ca36ec8d4b",
+       "tag": "v5"
+      },
+      {
+       "time": 1792686666,
+       "action": "create",
+       "id": "fe060d0214ca2aca33e5922577bdf23cf01b4a03783213b80f9e8f8dadb4d866",
+       "release": "6ada39fcb8e65d29b96efcd6",
+       "tag": "v8"
+      },
+      {
+       "time": 1792686668,
+       "action": "start",
+       "id": "fe060d0214ca2aca33e5922577bdf23cf01b4a03783213b80f9e8f8dadb4d866",
+       "release": "6ada39fcb8e65d29b96efcd6",
+       "tag": "v8"
+      },
+      {
+       "time": 1792686681,
+       "action": "rename",
+       "id": "fe060d0214ca2aca33e5922577bdf23cf01b4a03783213b80f9e8f8dadb4d866",
+       "release": "6ada39fcb8e65d29b96efcd6",
+       "tag": "v8"
+      },
+      {
+       "time": 1792686682,
+       "action": "update",
+       "id": "fe060d0214ca2aca33e5922577bdf23cf01b4a03783213b80f9e8f8dadb4d866",
+       "release": "6ada39fcb8e65d29b96efcd6",
+       "tag": "v8"
+      },
+      {
+       "time": 1792686694,
+       "action": "kill",
+       "id": "e232fc2dc028c5b0260ac6c7aa664de65a57f8ca26ecc579394260e42467ee76",
+       "release": "6ada36d90e01dbee0e991576",
+       "tag": "v7"
+      },
+      {
+       "time": 1792686695,
+       "action": "die",
+       "id": "e232fc2dc028c5b0260ac6c7aa664de65a57f8ca26ecc579394260e42467ee76",
+       "release": "6ada36d90e01dbee0e991576",
+       "tag": "v7"
+      },
+      {
+       "time": 1792686695,
+       "action": "stop",
+       "id": "e232fc2dc028c5b0260ac6c7aa664de65a57f8ca26ecc579394260e42467ee76",
+       "release": "6ada36d90e01dbee0e991576",
+       "tag": "v7"
+      }
+     ],
+     "cpu": {
+      "n": 59,
+      "last": 0.0082495690515727,
+      "mean": 0.1411050544183676,
+      "peak": 0.8620757041168216,
+      "min": 0.0025549027320819484,
+      "slope_per_min": -0.020213687520097307,
+      "monotonic_rise": 0.43,
+      "limit": 1,
+      "util_last": 0.008,
+      "util_peak": 0.862,
+      "sustained_high": false,
+      "sustained_low": true
+     },
+     "mem": {
+      "n": 61,
+      "last": 0.07197952270507812,
+      "mean": 0.05315999515721055,
+      "peak": 0.13002395629882812,
+      "min": 0.031475067138671875,
+      "slope_per_min": -0.0015066851893787596,
+      "monotonic_rise": 0.33,
+      "limit": 1,
+      "util_last": 0.072,
+      "util_peak": 0.13,
+      "sustained_high": false,
+      "sustained_low": true
+     },
+     "cpu_series": [
+      [
+       1792684997,
+       0.3472810246076904
+      ],
+      [
+       1792685027,
+       0.43424428683626043
+      ],
+      [
+       1792685057,
+       0.5191797223873591
+      ],
+      [
+       1792685087,
+       0.6058026379622082
+      ],
+      [
+       1792685117,
+       0.6922483827920235
+      ],
+      [
+       1792685147,
+       0.7802098783771894
+      ],
+      [
+       1792685177,
+       0.8620757041168216
+      ],
+      [
+       1792685207,
+       0.8088797672374096
+      ],
+      [
+       1792685237,
+       0.7124202902045624
+      ],
+      [
+       1792685267,
+       0.6192826823250905
+      ],
+      [
+       1792685297,
+       0.5223245917984911
+      ],
+      [
+       1792685327,
+       0.42930735499588
+      ],
+      [
+       1792685357,
+       0.32438362852905794
+      ],
+      [
+       1792685387,
+       0.27065292717287565
+      ],
+      [
+       1792685417,
+       0.13321382505612675
+      ],
+      [
+       1792685447,
+       0.07425426869531256
+      ],
+      [
+       1792685477,
+       0.0025549027320819484
+      ],
+      [
+       1792685507,
+       0.0026995746475902203
+      ],
+      [
+       1792685537,
+       0.0026548167483861664
+      ],
+      [
+       1792685567,
+       0.002664789144135231
+      ],
+      [
+       1792685597,
+       0.002663829948443073
+      ],
+      [
+       1792685627,
+       0.00264344354056276
+      ],
+      [
+       1792685657,
+       0.0026607561668164593
+      ],
+      [
+       1792685687,
+       0.002640185227268603
+      ],
+      [
+       1792685717,
+       0.0026338758400045845
+      ],
+      [
+       1792685747,
+       0.002637475945059143
+      ],
+      [
+       1792685837,
+       0.0071697424420971234
+      ],
+      [
+       1792685867,
+       0.006741139658268775
+      ],
+      [
+       1792685897,
+       0.0070014548692760095
+      ],
+      [
+       1792685927,
+       0.007668768400476458
+      ],
+      [
+       1792685957,
+       0.007828521831804611
+      ],
+      [
+       1792685987,
+       0.008057837265817632
+      ],
+      [
+       1792686017,
+       0.00781256122631984
+      ],
+      [
+       1792686047,
+       0.008024065944044869
+      ],
+      [
+       1792686077,
+       0.008211163903522355
+      ],
+      [
+       1792686107,
+       0.00881517422309833
+      ],
+      [
+       1792686137,
+       0.00280303729980479
+      ],
+      [
+       1792686167,
+       0.002801325220026323
+      ],
+      [
+       1792686197,
+       0.0027842800323697034
+      ],
+      [
+       1792686227,
+       0.0028038890180855447
+      ],
+      [
+       1792686257,
+       0.0028115381011079624
+      ],
+      [
+       1792686287,
+       0.0027639672383088904
+      ],
+      [
+       1792686317,
+       0.0027537106531250336
+      ],
+      [
+       1792686347,
+       0.00270158020105205
+      ],
+      [
+       1792686377,
+       0.0026813470470894466
+      ],
+      [
+       1792686407,
+       0.0026696063390315825
+      ],
+      [
+       1792686437,
+       0.002663658669477611
+      ],
+      [
+       1792686467,
+       0.002669227220547371
+      ],
+      [
+       1792686497,
+       0.002652948759265226
+      ],
+      [
+       1792686527,
+       0.002654171578541327
+      ],
+      [
+       1792686557,
+       0.002667077518407711
+      ],
+      [
+       1792686587,
+       0.002662176828425273
+      ],
+      [
+       1792686617,
+       0.0026440370774953367
+      ],
+      [
+       1792686647,
+       0.002637756306161915
+      ],
+      [
+       1792686677,
+       0.0026281625314635033
+      ],
+      [
+       1792686707,
+       0.00945095308975083
+      ],
+      [
+       1792686737,
+       0.00877217146787999
+      ],
+      [
+       1792686767,
+       0.00796875763128255
+      ],
+      [
+       1792686797,
+       0.008007778055555555
+      ]
+     ],
+     "mem_series": [
+      [
+       1792685027,
+       0.13
+      ],
+      [
+       1792685057,
+       0.123
+      ],
+      [
+       1792685087,
+       0.129
+      ],
+      [
+       1792685117,
+       0.124
+      ],
+      [
+       1792685147,
+       0.13
+      ],
+      [
+       1792685177,
+       0.066
+      ],
+      [
+       1792685207,
+       0.065
+      ],
+      [
+       1792685237,
+       0.04
+      ],
+      [
+       1792685267,
+       0.04
+      ],
+      [
+       1792685297,
+       0.04
+      ],
+      [
+       1792685327,
+       0.04
+      ],
+      [
+       1792685357,
+       0.04
+      ],
+      [
+       1792685387,
+       0.04
+      ],
+      [
+       1792685417,
+       0.04
+      ],
+      [
+       1792685447,
+       0.04
+      ],
+      [
+       1792685477,
+       0.04
+      ],
+      [
+       1792685507,
+       0.04
+      ],
+      [
+       1792685537,
+       0.04
+      ],
+      [
+       1792685567,
+       0.04
+      ],
+      [
+       1792685597,
+       0.04
+      ],
+      [
+       1792685627,
+       0.04
+      ],
+      [
+       1792685657,
+       0.04
+      ],
+      [
+       1792685687,
+       0.04
+      ],
+      [
+       1792685717,
+       0.04
+      ],
+      [
+       1792685747,
+       0.04
+      ],
+      [
+       1792685777,
+       0.047
+      ],
+      [
+       1792685807,
+       0.047
+      ],
+      [
+       1792685837,
+       0.078
+      ],
+      [
+       1792685867,
+       0.078
+      ],
+      [
+       1792685897,
+       0.078
+      ],
+      [
+       1792685927,
+       0.078
+      ],
+      [
+       1792685957,
+       0.079
+      ],
+      [
+       1792685987,
+       0.079
+      ],
+      [
+       1792686017,
+       0.079
+      ],
+      [
+       1792686047,
+       0.039
+      ],
+      [
+       1792686077,
+       0.031
+      ],
+      [
+       1792686107,
+       0.032
+      ],
+      [
+       1792686137,
+       0.032
+      ],
+      [
+       1792686167,
+       0.032
+      ],
+      [
+       1792686197,
+       0.032
+      ],
+      [
+       1792686227,
+       0.032
+      ],
+      [
+       1792686257,
+       0.032
+      ],
+      [
+       1792686287,
+       0.032
+      ],
+      [
+       1792686317,
+       0.032
+      ],
+      [
+       1792686347,
+       0.032
+      ],
+      [
+       1792686377,
+       0.032
+      ],
+      [
+       1792686407,
+       0.032
+      ],
+      [
+       1792686437,
+       0.032
+      ],
+      [
+       1792686467,
+       0.032
+      ],
+      [
+       1792686497,
+       0.032
+      ],
+      [
+       1792686527,
+       0.032
+      ],
+      [
+       1792686557,
+       0.032
+      ],
+      [
+       1792686587,
+       0.032
+      ],
+      [
+       1792686617,
+       0.032
+      ],
+      [
+       1792686647,
+       0.032
+      ],
+      [
+       1792686677,
+       0.037
+      ],
+      [
+       1792686707,
+       0.071
+      ],
+      [
+       1792686737,
+       0.071
+      ],
+      [
+       1792686767,
+       0.073
+      ],
+      [
+       1792686797,
+       0.073
+      ]
+     ],
+     "log_tail": [
+      "20:02:15 std     await route.handle(scope, receive, send)",
+      "20:02:15 std   File \"/usr/local/lib/python3.12/site-packages/starlette/routing.py\", line 288, in handle",
+      "20:02:15 std     await self.app(scope, receive, send)",
+      "20:02:15 std   File \"/usr/local/lib/python3.12/site-packages/starlette/routing.py\", line 76, in app",
+      "20:02:15 std     await wrap_app_handling_exceptions(app, request)(scope, receive, send)",
+      "20:02:15 std   File \"/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py\", line 53, in wrapped_app",
+      "20:02:15 std     raise exc",
+      "20:02:15 std   File \"/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py\", line 42, in wrapped_app",
+      "20:02:15 std     await app(scope, receive, sender)",
+      "20:02:15 std   File \"/usr/local/lib/python3.12/site-packages/starlette/routing.py\", line 73, in app",
+      "20:02:15 std     response = await f(request)",
+      "20:02:15 std                ^^^^^^^^^^^^^^^^",
+      "20:02:15 std   File \"/usr/local/lib/python3.12/site-packages/fastapi/routing.py\", line 301, in app",
+      "20:02:15 std     raw_response = await run_endpoint_function(",
+      "20:02:15 std                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "20:02:15 std   File \"/usr/local/lib/python3.12/site-packages/fastapi/routing.py\", line 214, in run_endpoint_function",
+      "20:02:15 std     return await run_in_threadpool(dependant.call, **values)",
+      "20:02:15 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "20:02:15 std   File \"/usr/local/lib/python3.12/site-packages/starlette/concurrency.py\", line 39, in run_in_threadpool",
+      "20:02:15 std     return await anyio.to_thread.run_sync(func, *args)",
+      "20:02:15 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "20:02:15 std   File \"/usr/local/lib/python3.12/site-packages/anyio/to_thread.py\", line 65, in run_sync",
+      "20:02:15 std     return await get_async_backend().run_sync_in_worker_thread(",
+      "20:02:15 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "20:02:15 std   File \"/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py\", line 2706, in run_sync_in_worker_thread",
+      "20:02:15 std     return await future",
+      "20:02:15 std            ^^^^^^^^^^^^",
+      "20:02:15 std   File \"/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py\", line 1100, in run",
+      "20:02:15 std     result = context.run(func, *args)",
+      "20:02:15 std              ^^^^^^^^^^^^^^^^^^^^^^^^",
+      "20:02:15 std   File \"/app/main.py\", line 66, in home",
+      "20:02:15 std     for p in map(product_view, PRODUCTS):",
+      "20:02:15 std              ^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "20:02:15 std   File \"/app/main.py\", line 30, in product_view",
+      "20:02:15 std     return {**p, \"discount\": discount_percent(p), \"price_fa\": fmt_price(p[\"price\"])}",
+      "20:02:15 std                              ^^^^^^^^^^^^^^^^^^^",
+      "20:02:15 std   File \"/app/shop/pricing.py\", line 7, in discount_percent",
+      "20:02:15 std     return round(100 * (old - p[\"price\"]) / old)",
+      "20:02:15 std                  ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~",
+      "20:02:15 std ZeroDivisionError: division by zero"
+     ],
+     "recent_ops": [
+      {
+       "ts": 1792686797.058692,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792686587.7770658,
+       "action": "scenario:bad_release",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792685906.457713,
+       "action": "verify",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792685853.1815543,
+       "action": "propose",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792685852.7211866,
+       "action": "prepare_fix",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792685810.7463465,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792685785.710459,
+       "action": "set_env",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792685785.3048384,
+       "action": "approve",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792685774.3608654,
+       "action": "propose",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792685760.0266192,
+       "action": "propose",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792685750.4215262,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792685750.2858815,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792685692.873635,
+       "action": "scenario:missing_env",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792684891.2121499,
+       "action": "verify",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792684867.1933398,
+       "action": "resize_app",
+       "actor": "autopilot"
+      }
+     ],
+     "logs": {
+      "lines": 104,
+      "requests": 0,
+      "status_counts": {},
+      "error_rate": 0.0,
+      "errors_5xx": 0,
+      "paths_5xx": {},
+      "slow": [],
+      "oom": [],
+      "missing_env": {},
+      "conn_errors": [],
+      "startups": 1,
+      "shutdowns": 0,
+      "restart_loop": false,
+      "first_ts": 1792686670.3201897,
+      "last_ts": 1792686735.510622,
+      "previous_release_tracebacks": 5,
+      "tracebacks": [
+       {
+        "signature": "ZeroDivisionError@/app/shop/pricing.py:7",
+        "exc": "ZeroDivisionError",
+        "msg": "division by zero",
+        "count": 1,
+        "top_frame": {
+         "file": "/app/shop/pricing.py",
+         "line": 7,
+         "func": "discount_percent"
+        },
+        "sample": "  File \"/usr/local/lib/python3.12/site-packages/fastapi/routing.py\", line 214, in run_endpoint_function\n    return await run_in_threadpool(dependant.call, **values)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/starlette/concurrency.py\", line 39, in run_in_threadpool\n    return await anyio.to_thread.run_sync(func, *args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/anyio/to_thread.py\", line 65, in run_sync\n    return await get_async_backend().run_sync_in_worker_thread(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py\", line 2706, in run_sync_in_worker_thread\n    return await future\n           ^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py\", line 1100, in run\n    result = context.run(func, *args)\n             ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/app/main.py\", line 66, in home\n    for p in map(product_view, PRODUCTS):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/app/main.py\", line 30, in product_view\n    return {**p, \"discount\": discount_percent(p), \"price_fa\": fmt_price(p[\"price\"])}\n                             ^^^^^^^^^^^^^^^^^^^\n  File \"/app/shop/pricing.py\", line 7, in discount_percent\n    return round(100 * (old - p[\"price\"]) / old)\n                 ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~\nZeroDivisionError: division by zero",
+        "frames": [
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/fastapi/routing.py",
+          "line": 214,
+          "func": "run_endpoint_function"
+         },
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/starlette/concurrency.py",
+          "line": 39,
+          "func": "run_in_threadpool"
+         },
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/anyio/to_thread.py",
+          "line": 65,
+          "func": "run_sync"
+         },
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py",
+          "line": 2706,
+          "func": "run_sync_in_worker_thread"
+         },
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py",
+          "line": 1100,
+          "func": "run"
+         },
+         {
+          "file": "/app/main.py",
+          "line": 66,
+          "func": "home"
+         },
+         {
+          "file": "/app/main.py",
+          "line": 30,
+          "func": "product_view"
+         },
+         {
+          "file": "/app/shop/pricing.py",
+          "line": 7,
+          "func": "discount_percent"
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "llm_used": true
+   },
+   "fingerprint": "errors",
+   "timeline": [
+    {
+     "ts": 1792686796.9748418,
+     "text": "رخداد شناسایی شد: خطای سرور (5xx) در پاسخ‌ها"
+    },
+    {
+     "ts": 1792686805.4638708,
+     "text": "تشخیص: خطای کد (ZeroDivisionError) در pricing.py:7 (اطمینان 90٪)"
+    },
+    {
+     "ts": 1792686805.6123924,
+     "text": "خودترمیمی: در حال آماده‌سازی وصله و اجرای تست‌ها…"
+    },
+    {
+     "ts": 1792686817.448745,
+     "text": "خودترمیمی: proposed — کد تخفیف محصولات در آخرین تغییر، بررسی «روی فروش نبودن محصول» را حذف کرده است. برای محصولی که قیمت قبلی ندارد، محاسبه با صفر تقسیم می‌شود و صفحه اصلی خطا می‌دهد. خطای دوم، یعنی نبودن متغیر محیطی PAYMENT_GATEWAY_KEY، یک مشکل پیکربندی است و با تغییر کد برطرف نمی‌شود؛ این کلید باید در محیط اجرا تنظیم شود."
+    },
+    {
+     "ts": 1792686888.1902556,
+     "text": "اقدام اجرا شد: اعمال اصلاح کد روی demo-shop و استقرار — در حال راستی‌آزمایی"
+    },
+    {
+     "ts": 1792686898.986614,
+     "text": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 63ms)، زمان پاسخ ✓ (63ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)"
+    }
+   ]
+  }
+ ],
+ "proposals": [
+  {
+   "id": "prp_fa853ad1edb0",
+   "app": "demo-shop",
+   "tool": "apply_code_fix",
+   "args": {
+    "app": "demo-shop",
+    "fix_id": "fix_21a376ba1cb1"
+   },
+   "title": "اعمال اصلاح کد روی demo-shop و استقرار",
+   "why": "کد تخفیف محصولات در آخرین تغییر، بررسی «روی فروش نبودن محصول» را حذف کرده است. برای محصولی که قیمت قبلی ندارد، محاسبه با صفر تقسیم می‌شود و صفحه اصلی خطا می‌دهد. خطای دوم، یعنی نبودن متغیر محیطی PAYMENT_GATEWAY_KEY، یک مشکل پیکربندی است و با تغییر کد برطرف نمی‌شود؛ این کلید باید در محیط اجرا تنظیم شود. تست‌ها قبل از وصله: 0 موفق، 0 ناموفق — بعد از وصله: 3 موفق، 0 ناموفق",
+   "impact": {
+    "downtime": "ندارد اگر استقرار بدون قطعی فعال باشد",
+    "cost": "بدون تغییر هزینه",
+    "risk": "متوسط",
+    "deploys": "یکی از سهمیه‌ی استقرار روزانه مصرف می‌شود",
+    "label": "اعمال اصلاح کد و استقرار",
+    "diff": "--- a/shop/pricing.py\n+++ b/shop/pricing.py\n@@ -2,8 +2,10 @@\n \n \n def discount_percent(p):\n-    \"\"\"Percentage off the old price (simplified).\"\"\"\n+    \"\"\"Percentage off the old price; 0 when the product is not on sale.\"\"\"\n     old = p.get(\"old_price\") or 0\n+    if not old or old <= p[\"price\"]:\n+        return 0\n     return round(100 * (old - p[\"price\"]) / old)\n \n \n--- a/tests/test_regression_discount_zero.py\n+++ b/tests/test_regression_discount_zero.py\n@@ -0,0 +1,14 @@\n+from shop.pricing import discount_percent\n+\n+\n+def test_discount_without_old_price_is_zero():\n+    assert discount_percent({\"price\": 100}) == 0\n+    assert discount_percent({\"price\": 100, \"old_price\": 0}) == 0\n+\n+\n+def test_discount_when_not_on_sale_is_zero():\n+    assert discount_percent({\"price\": 120, \"old_price\": 100}) == 0\n+\n+\n+def test_discount_on_sale():\n+    assert discount_percent({\"price\": 80, \"old_price\": 100}) == 20\n",
+    "tests_before": {
+     "passed": false,
+     "summary": "0 موفق، 0 ناموفق"
+    },
+    "tests_after": {
+     "passed": true,
+     "summary": "3 موفق، 0 ناموفق"
+    },
+    "root_cause": "کد تخفیف محصولات در آخرین تغییر، بررسی «روی فروش نبودن محصول» را حذف کرده است. برای محصولی که قیمت قبلی ندارد، محاسبه با صفر تقسیم می‌شود و صفحه اصلی خطا می‌دهد. خطای دوم، یعنی نبودن متغیر محیطی PAYMENT_GATEWAY_KEY، یک مشکل پیکربندی است و با تغییر کد برطرف نمی‌شود؛ این کلید باید در محیط اجرا تنظیم شود.",
+    "technical": "Commit 37157ca removed the `if not old or old <= p['price']: return 0` guard from discount_percent, so products with old_price of 0 or None now divide by zero. The fix restores the guard. Separately, main.py reads os.environ['PAYMENT_GATEWAY_KEY'] at import time, so the process fails to start when that variable is unset; this is an intended hard requirement and is left unchanged."
+   },
+   "rollback": "سورس فعلی در آرشیو نگهبان ذخیره است؛ با «بازگشت به نسخه‌ی قبلی» یا استقرار از آرشیو برمی‌گردد.",
+   "status": "done",
+   "created_at": 1792686817.177128,
+   "expires_at": 1792688017.1771288,
+   "origin": "orchestrator",
+   "incident_id": "inc_505f0a0841d7",
+   "result": {
+    "commit": "54b3bde",
+    "release_id": "6ada3aea2c3f63ca36eea207",
+    "release_state": "READY",
+    "archive_id": "arc_7b00813e7286",
+    "failReason": null
+   },
+   "verification": {
+    "passed": true,
+    "checks": [
+     {
+      "name": "سلامت HTTP",
+      "ok": true,
+      "detail": "HTTP 200 در 63ms"
+     },
+     {
+      "name": "زمان پاسخ",
+      "ok": true,
+      "detail": "63ms (حد مجاز 2500ms)"
+     },
+     {
+      "name": "خطای جدید در لاگ",
+      "ok": true,
+      "detail": "0 پاسخ 5xx، 0 traceback از زمان اقدام"
+     }
+    ],
+    "attempts": 1,
+    "ts": 1792686898.8609962
+   },
+   "decided_by": "owner",
+   "decided_at": 1792686825.4582849,
+   "auto": 0
+  }
+ ]
+}

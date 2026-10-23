@@ -1,0 +1,7 @@
+{
+  "app": "negahban-sre",
+  "platform": "docker",
+  "port": 8080,
+  "disks": [{ "name": "data", "mountTo": "/data" }],
+  "build": { "dockerfile": "./Dockerfile" }
+}

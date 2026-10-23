@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b3b36">
+<title>نگهبان — دستیار هوشمند SRE لیارا</title>
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/style.css?v=1">
+</head>
+<body>
+<div id="login" class="login hidden">
+  <form id="loginForm" class="login-card">
+    <div class="brand big"><span class="logo">🛡️</span><div><b>نگهبان</b><small>همکار هوشمند شما برای سایت‌های روی لیارا</small></div></div>
+    <label>رمز عبور مالک<input id="pw" type="password" autocomplete="current-password" required></label>
+    <button class="btn primary wide" type="submit">ورود</button>
+    <p id="loginErr" class="err"></p>
+  </form>
+</div>
+
+<div id="app" class="shell hidden">
+  <aside class="side">
+    <div class="brand"><span class="logo">🛡️</span><div><b>نگهبان</b><small>SRE هوشمند لیارا</small></div></div>
+    <nav id="nav">
+      <a data-view="overview" class="active"><i>🏠</i><span>داشبورد</span></a>
+      <a data-view="chat"><i>💬</i><span>گفتگو با نگهبان</span></a>
+      <a data-view="approvals"><i>✅</i><span>تأییدها</span><em id="navPending" class="pill hidden">0</em></a>
+      <a data-view="incidents"><i>🚨</i><span>رخدادها</span><em id="navInc" class="pill red hidden">0</em></a>
+      <a data-view="autopilot"><i>🤖</i><span>خودران و بودجه</span></a>
+      <a data-view="wizard"><i>🚀</i><span>راه‌اندازی اولیه</span></a>
+      <a data-view="templates"><i>📦</i><span>قالب‌های استقرار</span></a>
+      <a data-view="domains"><i>🌐</i><span>دامنه</span></a>
+      <a data-view="scenarios"><i>🧪</i><span>سناریوهای نمایشی</span></a>
+      <a data-view="servers"><i>🗄️</i><span>سرورها (IaaS)</span></a>
+      <a data-view="terminal"><i>🖥️</i><span>ترمینال و عیب‌یابی</span></a>
+      <a data-view="logs"><i>🔎</i><span>کاوشگر لاگ</span></a>
+      <a data-view="reports"><i>🗒️</i><span>گزارش روزانه</span></a>
+      <a data-view="alerts"><i>🔔</i><span>قوانین هشدار</span></a>
+      <a data-view="memory"><i>🧠</i><span>حافظه</span></a>
+      <a data-view="audit"><i>📜</i><span>گزارش عملیات</span></a>
+      <a data-view="limits"><i>ℹ️</i><span>محدودیت‌های API</span></a>
+    </nav>
+    <div class="side-foot"><span id="liveDot" class="dot"></span><span id="liveText">در حال اتصال…</span><button id="logout" class="link">خروج</button></div>
+  </aside>
+  <main>
+    <header class="top">
+      <h1 id="viewTitle">داشبورد</h1>
+      <div id="topStats" class="top-stats"></div>
+    </header>
+    <div id="toast" class="toast hidden"></div>
+    <section id="view"></section>
+  </main>
+  <nav id="tabbar" class="tabbar">
+    <a data-view="overview">🏠<span>خانه</span></a><a data-view="chat">💬<span>گفتگو</span></a>
+    <a data-view="approvals">✅<span>تأیید</span><em id="tabPending" class="pill hidden">0</em></a><a data-view="incidents">🚨<span>رخداد</span></a>
+    <a data-view="more">☰<span>بیشتر</span></a>
+  </nav>
+</div>
+<div id="modal" class="modal hidden"><div class="modal-card"><button class="x" id="modalX">✕</button><div id="modalBody"></div></div></div>
+<script src="/static/vendor/pele.global.js?v=1"></script>
+<script src="/static/charts.js?v=1"></script>
+<script src="/static/app.js?v=1"></script>
+<script src="/static/templates.js?v=1"></script>
+<script src="/static/diag.js?v=1"></script>
+<script src="/static/servers.js?v=1"></script>
+<script src="/static/extras.js?v=1"></script>
+</body>
+</html>

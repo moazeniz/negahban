@@ -1,0 +1,28 @@
+[
+ {
+  "check": "login (desktop)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "memory across sessions",
+  "ok": true,
+  "detail": "5s :: اسم شما امیر است و پروژه‌ی اصلی‌تان bazargard-ai است."
+ },
+ {
+  "check": "chat default-subdomain card",
+  "ok": true,
+  "detail": "8s :: کارت تأیید غیرفعال‌سازی زیردامنه‌ی پیش‌فرض demo-shop.liara.run ساخته شد (شناسه: prp_5e3b9cd25785) و منتظر تأیید شماست.\n\n• اثر: آدرس demo-sho"
+ },
+ {
+  "check": "locked app refused without a card",
+  "ok": true,
+  "detail": "در این مورد نمی‌توانم کاری انجام دهم. meowmeow-wallex قفل نوشتن دارد: این اپلیکیشن فقط برای نظارت است (یک ربات معاملاتی با پول واقعی)، بنابراین نگهبان (Negahban"
+ },
+ {
+  "check": "rollback via chat: approve → execute → verify",
+  "ok": true,
+  "detail": "done ✓ سلامت HTTP: HTTP 200 در 35ms | ✓ زمان پاسخ: 35ms (حد مجاز 2500ms) | ✓ خطای جدید در لاگ: 0 پاسخ 5xx، 0 traceback از زمان اقدام",
+  "card": "prp_ca140b5b0833"
+ }
+]

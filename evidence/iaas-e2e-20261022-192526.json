@@ -1,0 +1,155 @@
+{
+ "name": "ngh-e2e-1919",
+ "seconds": 368,
+ "log": [
+  {
+   "t": 0.7,
+   "step": "balance_before",
+   "toman": 1949125.4
+  },
+  {
+   "t": 1.4,
+   "step": "proposed_create",
+   "id": "prp_c93121cd4247",
+   "title": "ساخت سرور مجازی ngh-e2e-1919 از قالب ubuntu-mini",
+   "impact": {
+    "downtime": "ندارد (سرور جدید)",
+    "cost": "+2,326 تومان در ساعت (~1,675,000 تومان در ماه، با IPv4)",
+    "risk": "کم؛ هزینه تا زمان حذف سرور ادامه دارد",
+    "plan": "standard-base-g2",
+    "specs": "1 هسته · 2 گیگ RAM · 20 گیگ دیسک",
+    "os": "ubuntu-24.04",
+    "template": "Ubuntu 24 · ۱ هسته · ۲ گیگ · ۲۰ گیگ (ارزان‌ترین)",
+    "init_script": false,
+    "toman_per_hour": 2326.38,
+    "label": "create_server",
+    "session": "iaas-e2e"
+   }
+  },
+  {
+   "t": 1.4,
+   "step": "approved_create",
+   "status": "executing",
+   "error": null
+  },
+  {
+   "t": 157.6,
+   "step": "executed_create",
+   "status": "done",
+   "result": {
+    "server": "ngh-e2e-1919",
+    "id": "6ada61b792e63212173dbadb",
+    "task_id": "6ada61b792e63212173dbae0",
+    "plan": "standard-base-g2",
+    "os": "ubuntu-24.04",
+    "booted": false,
+    "power": null,
+    "ips": [
+     "203.0.113.10"
+    ],
+    "init_script_id": null,
+    "toman_per_hour": 2326.38,
+    "access": "use the SSH key you gave, or server_reset_password (one-time reveal in the dashboard)",
+    "template": "ubuntu-mini"
+   }
+  },
+  {
+   "t": 158.2,
+   "step": "listed",
+   "server": {
+    "id": "6ada61b792e63212173dbadb",
+    "name": "ngh-e2e-1919",
+    "state": "CREATED",
+    "power": "POWERED_ON",
+    "guest": "RUNNING",
+    "state_fa": "روشن",
+    "plan": "standard-base-g2",
+    "os": "ubuntu-24.04",
+    "cpu": 1,
+    "ram_gb": 2,
+    "disk_gb": 20,
+    "ips": [
+     "203.0.113.10"
+    ],
+    "ssh_port": 22,
+    "toman_per_hour": 2326.38,
+    "toman_per_month": 1675000,
+    "created_at": "2026-10-22T19:19:19.540Z",
+    "protected": false
+   }
+  },
+  {
+   "t": 160.3,
+   "step": "details",
+   "power": "POWERED_ON",
+   "guest": "RUNNING",
+   "ips": [
+    "203.0.113.10"
+   ],
+   "ops": [
+    {
+     "name": "SET_VM_POWER",
+     "state": "SUCCEEDED",
+     "createdAt": "2026-10-22T19:19:39.080Z"
+    }
+   ],
+   "leaked_password": false
+  },
+  {
+   "t": 340.5,
+   "step": "ssh_check",
+   "ip": "203.0.113.10",
+   "banner": "closed (TimeoutError)"
+  },
+  {
+   "t": 341.0,
+   "step": "proposed_delete",
+   "id": "prp_bb642bd91f6d",
+   "title": "حذف دائمی سرور ngh-e2e-1919",
+   "impact": {
+    "downtime": "سرور و همه‌ی داده‌هایش برای همیشه حذف می‌شود",
+    "cost": "-2,326 تومان در ساعت (~1,675,000 تومان در ماه، با IPv4)",
+    "risk": "بسیار زیاد (برگشت‌ناپذیر)",
+    "server": "ngh-e2e-1919",
+    "confirm": "برای تأیید باید نام «ngh-e2e-1919» را تایپ کنید",
+    "label": "delete_server",
+    "session": "iaas-e2e"
+   }
+  },
+  {
+   "t": 344.0,
+   "step": "wrong_name_attempt_is_executed_but_refused",
+   "status": "failed",
+   "result": {
+    "error": "confirmation name does not match the server name"
+   }
+  },
+  {
+   "t": 347.2,
+   "step": "executed_delete",
+   "status": "failed",
+   "result": {
+    "error": "تعارض (احتمالاً وضعیت فعلی همین است) — None"
+   }
+  },
+  {
+   "t": 347.5,
+   "step": "cleanup",
+   "note": "LiaraError: Liara 409 /vm/6ada61b792e63212173dbadb: None"
+  },
+  {
+   "t": 347.6,
+   "step": "servers_after",
+   "servers": [
+    "ngh-e2e-1919"
+   ]
+  },
+  {
+   "t": 368.3,
+   "step": "balance_after",
+   "toman": 1939920.6,
+   "delta": 9204.8,
+   "note": "Liara bills hourly; the charge may post with a delay and is shared with the running apps"
+  }
+ ]
+}

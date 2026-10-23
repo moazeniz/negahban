@@ -1,0 +1,30 @@
+{
+ "id": "prp_d8ba1f0afca1",
+ "app": "ngh-sample-api",
+ "tool": "delete_app",
+ "args": {
+  "app": "ngh-sample-api"
+ },
+ "title": "حذف دائمی ngh-sample-api",
+ "why": "",
+ "impact": {
+  "downtime": "برنامه و همه‌ی داده‌هایش برای همیشه حذف می‌شود",
+  "cost": "بدون تغییر هزینه",
+  "risk": "بسیار زیاد — غیرقابل بازگشت",
+  "label": "حذف برنامه"
+ },
+ "rollback": "ندارد.",
+ "status": "done",
+ "created_at": 1792737745.0561986,
+ "expires_at": 1792738945.056199,
+ "origin": "mcp",
+ "incident_id": null,
+ "result": {
+  "deleted": "ngh-sample-api"
+ },
+ "verification": null,
+ "decided_by": "owner",
+ "decided_at": 1792737747.9303799,
+ "auto": 0,
+ "decision": "ai"
+}

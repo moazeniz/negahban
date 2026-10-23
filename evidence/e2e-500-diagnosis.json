@@ -1,0 +1,845 @@
+{
+ "app": "demo-shop",
+ "ts": 1792683607.2257886,
+ "healthy": false,
+ "hypotheses": [
+  {
+   "id": "build_failed",
+   "title": "بیلد نسخه‌ی جدید شکست خورد — بسته‌ی «persian-invoice-toolkit==4.2.0» پیدا نشد",
+   "confidence": 0.9,
+   "evidence": [
+    "ریلیز v4 در وضعیت FAILED",
+    "لاگ بیلد: ERROR: Could not find a version that satisfies the requirement persian-invoice-toolkit==4.2.0 (from versions: none)\n",
+    "لاگ بیلد: ERROR: No matching distribution found for persian-invoice-toolkit==4.2.0\n",
+    "لاگ بیلد: The command '/bin/sh -c pip install --no-cache-dir -r requirements.txt' returned a non-zero code: 1",
+    "نسخه‌ی قبلی هنوز در حال سرویس‌دهی است (کاربران آسیبی ندیده‌اند)"
+   ],
+   "fixes": [
+    {
+     "tool": "propose_code_fix",
+     "args": {
+      "app": "demo-shop"
+     },
+     "label": "اصلاح خودکار کد/وابستگی و استقرار مجدد"
+    }
+   ],
+   "kind": "build",
+   "explanation": "این علت بسیار محتمل است، چون گزارش ساخت می‌گوید بسته‌ی «persian-invoice-toolkit==4.2.0» پیدا نشده و انتشار نسخه‌ی v4 شکست خورده است."
+  }
+ ],
+ "summary": "ساخت نسخه‌ی جدید به‌دلیل پیدا نشدن بسته‌ی «persian-invoice-toolkit==4.2.0» ناموفق بوده است. نسخه‌ی قبلی همچنان فعال است و سایت پاسخ می‌دهد؛ بنابراین بازدیدکنندگان فعلاً اختلالی ندارند. شماره یا منبع بسته را در فایل نیازمندی‌ها بررسی و پس از اصلاح، نسخه را دوباره منتشر کنید.",
+ "next_steps": [
+  "در فایل requirements.txt نام و شماره‌نسخه‌ی «persian-invoice-toolkit» را بررسی کنید و از درستی آن یا دسترسی به مخزن بسته‌ها مطمئن شوید.",
+  "پس از اصلاح فایل، نسخه‌ی جدید را دوباره منتشر کنید و موفقیت ساخت و پاسخ‌گویی سایت را بررسی کنید.",
+  "تا تأیید انتشار نسخه‌ی جدید، نسخه‌ی فعلی را فعال نگه دارید."
+ ],
+ "evidence": {
+  "status": {
+   "status": "ACTIVE",
+   "scale": 1,
+   "planID": "small-g2",
+   "bundlePlanID": "standard",
+   "zeroDowntime": true,
+   "hourlyPrice": 659.72,
+   "bundleHourlyPrice": 659.72,
+   "isDeployed": true
+  },
+  "probe": {
+   "url": "https://demo-shop.liara.run/",
+   "status": 200,
+   "latency_ms": 487,
+   "ok": true,
+   "body_snippet": "<!doctype html><html lang=\"fa\" dir=\"rtl\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>فروشگاه نمونه</title><style>body{font-family:Tahoma,sans-serif;background:#f6f7fb;margin:0;color:#1d2433}header{background:#0f766e;color:#fff;padding:18px 2",
+   "error": null
+  },
+  "env_keys": [
+   "APP_VERSION",
+   "CHAOS_TOKEN",
+   "PAYMENT_GATEWAY_KEY"
+  ],
+  "env_removed_since_last_seen": [],
+  "releases": [
+   {
+    "_id": "6ada2db0b8e65d29b96d34e0",
+    "tag": "v4",
+    "type": "DEPLOY",
+    "state": "FAILED",
+    "message": "feat: invoices (by developer)",
+    "createdAt": "2026-10-22T15:37:20.648Z",
+    "finishedAt": null,
+    "failReason": null
+   },
+   {
+    "_id": "6ada2c5c0e01dbee0e9715e3",
+    "tag": "v3",
+    "type": "DEPLOY",
+    "state": "READY",
+    "message": "Negahban fix 9f7ef47",
+    "createdAt": "2026-10-22T15:31:40.900Z",
+    "finishedAt": "2026-10-22T15:32:14.224Z",
+    "failReason": null
+   },
+   {
+    "_id": "6ada2bc52c3f63ca36ec5e01",
+    "tag": "v2",
+    "type": "DEPLOY",
+    "state": "READY",
+    "message": "refactor: simplify discount (by developer)",
+    "createdAt": "2026-10-22T15:29:09.475Z",
+    "finishedAt": "2026-10-22T15:29:36.917Z",
+    "failReason": null
+   },
+   {
+    "_id": "6ada25432c3f63ca36eb6329",
+    "tag": "v1",
+    "type": "DEPLOY",
+    "state": "READY",
+    "message": "deploy",
+    "createdAt": "2026-10-22T15:01:23.118Z",
+    "finishedAt": "2026-10-22T15:01:57.625Z",
+    "failReason": null
+   }
+  ],
+  "build": {
+   "error_lines": [
+    "ERROR: Could not find a version that satisfies the requirement persian-invoice-toolkit==4.2.0 (from versions: none)\n",
+    "ERROR: No matching distribution found for persian-invoice-toolkit==4.2.0\n",
+    "The command '/bin/sh -c pip install --no-cache-dir -r requirements.txt' returned a non-zero code: 1"
+   ],
+   "missing_package": "persian-invoice-toolkit==4.2.0",
+   "tail": [
+    "\n",
+    "Step 1/8 : FROM python:3.12-slim",
+    "\n",
+    " ---> a33c10a97f11\n",
+    "Step 2/8 : ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1",
+    "\n",
+    " ---> Using cache\n",
+    " ---> fc05c1978655\n",
+    "Step 3/8 : WORKDIR /app",
+    "\n",
+    " ---> Using cache\n",
+    " ---> 54fc15ac49b9\n",
+    "Step 4/8 : COPY requirements.txt .",
+    "\n",
+    " ---> 572bd15c7f9c\n",
+    "Step 5/8 : RUN pip install --no-cache-dir -r requirements.txt",
+    "\n",
+    "Collecting fastapi==0.115.6 (from -r requirements.txt (line 1))\n",
+    "  Downloading fastapi-0.115.6-py3-none-any.whl.metadata (27 kB)\n",
+    "Collecting uvicorn==0.32.1 (from -r requirements.txt (line 2))\n",
+    "  Downloading uvicorn-0.32.1-py3-none-any.whl.metadata (6.6 kB)\n",
+    "ERROR: Could not find a version that satisfies the requirement persian-invoice-toolkit==4.2.0 (from versions: none)\n",
+    "\n[notice] A new release of pip is available: 25.0.1 -> 26.2.2\n[notice] To update, run: pip install --upgrade pip\n",
+    "ERROR: No matching distribution found for persian-invoice-toolkit==4.2.0\n",
+    "The command '/bin/sh -c pip install --no-cache-dir -r requirements.txt' returned a non-zero code: 1"
+   ],
+   "failReason": null
+  },
+  "events": [
+   {
+    "time": 1792683013,
+    "action": "update",
+    "id": "7f5cc0fd5a051b1b5a7a7c486eaab00d9ef3d2ca57ec5a3b0db00713521fed16",
+    "release": "6ada2bc52c3f63ca36ec5e01",
+    "tag": "v2"
+   },
+   {
+    "time": 1792683027,
+    "action": "kill",
+    "id": "31347edf9d8432c4963cbaba4ffea6903563adfccf53f048df528475d4555a3d",
+    "release": "6ada25432c3f63ca36eb6329",
+    "tag": "v1"
+   },
+   {
+    "time": 1792683029,
+    "action": "die",
+    "id": "31347edf9d8432c4963cbaba4ffea6903563adfccf53f048df528475d4555a3d",
+    "release": "6ada25432c3f63ca36eb6329",
+    "tag": "v1"
+   },
+   {
+    "time": 1792683029,
+    "action": "stop",
+    "id": "31347edf9d8432c4963cbaba4ffea6903563adfccf53f048df528475d4555a3d",
+    "release": "6ada25432c3f63ca36eb6329",
+    "tag": "v1"
+   },
+   {
+    "time": 1792683162,
+    "action": "create",
+    "id": "d58b0f83c02cb3423565530907b828e02f72afac7ebb71ad7f737562f67c3ddc",
+    "release": "6ada2c5c0e01dbee0e9715e3",
+    "tag": "v3"
+   },
+   {
+    "time": 1792683164,
+    "action": "start",
+    "id": "d58b0f83c02cb3423565530907b828e02f72afac7ebb71ad7f737562f67c3ddc",
+    "release": "6ada2c5c0e01dbee0e9715e3",
+    "tag": "v3"
+   },
+   {
+    "time": 1792683178,
+    "action": "update",
+    "id": "d58b0f83c02cb3423565530907b828e02f72afac7ebb71ad7f737562f67c3ddc",
+    "release": "6ada2c5c0e01dbee0e9715e3",
+    "tag": "v3"
+   },
+   {
+    "time": 1792683178,
+    "action": "rename",
+    "id": "d58b0f83c02cb3423565530907b828e02f72afac7ebb71ad7f737562f67c3ddc",
+    "release": "6ada2c5c0e01dbee0e9715e3",
+    "tag": "v3"
+   },
+   {
+    "time": 1792683192,
+    "action": "kill",
+    "id": "7f5cc0fd5a051b1b5a7a7c486eaab00d9ef3d2ca57ec5a3b0db00713521fed16",
+    "release": "6ada2bc52c3f63ca36ec5e01",
+    "tag": "v2"
+   },
+   {
+    "time": 1792683193,
+    "action": "destroy",
+    "id": "31347edf9d8432c4963cbaba4ffea6903563adfccf53f048df528475d4555a3d",
+    "release": "6ada25432c3f63ca36eb6329",
+    "tag": "v1"
+   },
+   {
+    "time": 1792683193,
+    "action": "die",
+    "id": "7f5cc0fd5a051b1b5a7a7c486eaab00d9ef3d2ca57ec5a3b0db00713521fed16",
+    "release": "6ada2bc52c3f63ca36ec5e01",
+    "tag": "v2"
+   },
+   {
+    "time": 1792683193,
+    "action": "stop",
+    "id": "7f5cc0fd5a051b1b5a7a7c486eaab00d9ef3d2ca57ec5a3b0db00713521fed16",
+    "release": "6ada2bc52c3f63ca36ec5e01",
+    "tag": "v2"
+   }
+  ],
+  "cpu": {
+   "n": 62,
+   "last": 0.005525178258023284,
+   "mean": 0.008251900354250009,
+   "peak": 0.02004371774067441,
+   "min": 0.005170669796849768,
+   "slope_per_min": 0.00033980016291400024,
+   "monotonic_rise": 0.51,
+   "limit": 0.5,
+   "util_last": 0.011,
+   "util_peak": 0.04,
+   "sustained_high": false,
+   "sustained_low": true,
+   "minutes_to_limit": 1455.2
+  },
+  "mem": {
+   "n": 81,
+   "last": 0.03174591064453125,
+   "mean": 0.039046016740210264,
+   "peak": 0.044658660888671875,
+   "min": 0.003131866455078125,
+   "slope_per_min": -0.0005262696289760946,
+   "monotonic_rise": 0.31,
+   "limit": 0.5,
+   "util_last": 0.063,
+   "util_peak": 0.089,
+   "sustained_high": false,
+   "sustained_low": true
+  },
+  "cpu_series": [
+   [
+    1792681859,
+    0.005508584107613369
+   ],
+   [
+    1792681889,
+    0.005465408849607698
+   ],
+   [
+    1792681919,
+    0.00545616047011882
+   ],
+   [
+    1792681949,
+    0.005191377560444466
+   ],
+   [
+    1792681979,
+    0.005394204691440262
+   ],
+   [
+    1792682009,
+    0.005384317965195194
+   ],
+   [
+    1792682039,
+    0.005170669796849768
+   ],
+   [
+    1792682069,
+    0.005356546377440962
+   ],
+   [
+    1792682099,
+    0.005325710000254837
+   ],
+   [
+    1792682129,
+    0.005310098768655093
+   ],
+   [
+    1792682159,
+    0.005298219307811515
+   ],
+   [
+    1792682189,
+    0.005295197941713602
+   ],
+   [
+    1792682219,
+    0.005295785205385569
+   ],
+   [
+    1792682249,
+    0.005269875672926856
+   ],
+   [
+    1792682279,
+    0.005275235771562
+   ],
+   [
+    1792682309,
+    0.005291926149241906
+   ],
+   [
+    1792682339,
+    0.005299700362940664
+   ],
+   [
+    1792682369,
+    0.005289389819504413
+   ],
+   [
+    1792682399,
+    0.005305388035469847
+   ],
+   [
+    1792682429,
+    0.005323237431314718
+   ],
+   [
+    1792682459,
+    0.0053549529966405995
+   ],
+   [
+    1792682489,
+    0.005350343106674983
+   ],
+   [
+    1792682519,
+    0.0054170586346950975
+   ],
+   [
+    1792682549,
+    0.005435890894402282
+   ],
+   [
+    1792682579,
+    0.00545041604864245
+   ],
+   [
+    1792682609,
+    0.005438790607912509
+   ],
+   [
+    1792682639,
+    0.0054519921731770275
+   ],
+   [
+    1792682669,
+    0.005434876199857408
+   ],
+   [
+    1792682699,
+    0.0054551947541073365
+   ],
+   [
+    1792682729,
+    0.00527675548280263
+   ],
+   [
+    1792682759,
+    0.005472099360510492
+   ],
+   [
+    1792682789,
+    0.005447829820921793
+   ],
+   [
+    1792682819,
+    0.005463498168040789
+   ],
+   [
+    1792682849,
+    0.005205817531448615
+   ],
+   [
+    1792682879,
+    0.005238386799939973
+   ],
+   [
+    1792682909,
+    0.005376823596420422
+   ],
+   [
+    1792682939,
+    0.005374209447606453
+   ],
+   [
+    1792682969,
+    0.005353134758923949
+   ],
+   [
+    1792682999,
+    0.005377516956434308
+   ],
+   [
+    1792683029,
+    0.005297415460523914
+   ],
+   [
+    1792683029,
+    0.02004371774067441
+   ],
+   [
+    1792683059,
+    0.016778407324050112
+   ],
+   [
+    1792683089,
+    0.01668522954477392
+   ],
+   [
+    1792683119,
+    0.015857767926655837
+   ],
+   [
+    1792683149,
+    0.01589077962399931
+   ],
+   [
+    1792683179,
+    0.016511187909674863
+   ],
+   [
+    1792683209,
+    0.019455069151268864
+   ],
+   [
+    1792683239,
+    0.015059128886533976
+   ],
+   [
+    1792683269,
+    0.015802008106511
+   ],
+   [
+    1792683299,
+    0.016263494665777863
+   ],
+   [
+    1792683329,
+    0.017021703
+   ],
+   [
+    1792683359,
+    0.017529928055555557
+   ],
+   [
+    1792683389,
+    0.018645817942317434
+   ],
+   [
+    1792683419,
+    0.018187733884393823
+   ],
+   [
+    1792683449,
+    0.0188253513336853
+   ],
+   [
+    1792683479,
+    0.005972646145002122
+   ],
+   [
+    1792683509,
+    0.005603274361096104
+   ],
+   [
+    1792683539,
+    0.005562298834258949
+   ],
+   [
+    1792683569,
+    0.005546800356789039
+   ],
+   [
+    1792683599,
+    0.005466435583021864
+   ]
+  ],
+  "mem_series": [
+   [
+    1792682429,
+    0.043
+   ],
+   [
+    1792682459,
+    0.043
+   ],
+   [
+    1792682489,
+    0.043
+   ],
+   [
+    1792682519,
+    0.043
+   ],
+   [
+    1792682549,
+    0.043
+   ],
+   [
+    1792682579,
+    0.043
+   ],
+   [
+    1792682609,
+    0.043
+   ],
+   [
+    1792682639,
+    0.043
+   ],
+   [
+    1792682669,
+    0.043
+   ],
+   [
+    1792682699,
+    0.043
+   ],
+   [
+    1792682729,
+    0.043
+   ],
+   [
+    1792682759,
+    0.043
+   ],
+   [
+    1792682789,
+    0.043
+   ],
+   [
+    1792682819,
+    0.043
+   ],
+   [
+    1792682849,
+    0.043
+   ],
+   [
+    1792682879,
+    0.043
+   ],
+   [
+    1792682909,
+    0.043
+   ],
+   [
+    1792682939,
+    0.043
+   ],
+   [
+    1792682969,
+    0.043
+   ],
+   [
+    1792682999,
+    0.043
+   ],
+   [
+    1792683029,
+    0.031
+   ],
+   [
+    1792683029,
+    0.043
+   ],
+   [
+    1792683059,
+    0.032
+   ],
+   [
+    1792683059,
+    0.043
+   ],
+   [
+    1792683089,
+    0.033
+   ],
+   [
+    1792683089,
+    0.043
+   ],
+   [
+    1792683119,
+    0.033
+   ],
+   [
+    1792683119,
+    0.043
+   ],
+   [
+    1792683149,
+    0.033
+   ],
+   [
+    1792683149,
+    0.043
+   ],
+   [
+    1792683179,
+    0.003
+   ],
+   [
+    1792683179,
+    0.033
+   ],
+   [
+    1792683179,
+    0.043
+   ],
+   [
+    1792683209,
+    0.032
+   ],
+   [
+    1792683209,
+    0.033
+   ],
+   [
+    1792683209,
+    0.043
+   ],
+   [
+    1792683239,
+    0.032
+   ],
+   [
+    1792683239,
+    0.033
+   ],
+   [
+    1792683239,
+    0.043
+   ],
+   [
+    1792683269,
+    0.032
+   ],
+   [
+    1792683269,
+    0.033
+   ],
+   [
+    1792683269,
+    0.043
+   ],
+   [
+    1792683299,
+    0.032
+   ],
+   [
+    1792683299,
+    0.033
+   ],
+   [
+    1792683299,
+    0.043
+   ],
+   [
+    1792683329,
+    0.032
+   ],
+   [
+    1792683329,
+    0.033
+   ],
+   [
+    1792683359,
+    0.032
+   ],
+   [
+    1792683359,
+    0.033
+   ],
+   [
+    1792683389,
+    0.032
+   ],
+   [
+    1792683389,
+    0.033
+   ],
+   [
+    1792683419,
+    0.032
+   ],
+   [
+    1792683419,
+    0.033
+   ],
+   [
+    1792683449,
+    0.032
+   ],
+   [
+    1792683449,
+    0.033
+   ],
+   [
+    1792683479,
+    0.032
+   ],
+   [
+    1792683509,
+    0.032
+   ],
+   [
+    1792683539,
+    0.032
+   ],
+   [
+    1792683569,
+    0.032
+   ],
+   [
+    1792683599,
+    0.032
+   ]
+  ],
+  "log_tail": [
+   "15:32:09 std   File \"/app/main.py\", line 66, in home",
+   "15:32:09 std     for p in map(product_view, PRODUCTS):",
+   "15:32:09 std              ^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+   "15:32:09 std   File \"/app/main.py\", line 30, in product_view",
+   "15:32:09 std     return {**p, \"discount\": discount_percent(p), \"price_fa\": fmt_price(p[\"price\"])}",
+   "15:32:09 std                              ^^^^^^^^^^^^^^^^^^^",
+   "15:32:09 std   File \"/app/shop/pricing.py\", line 7, in discount_percent",
+   "15:32:09 std     return round(100 * (old - p[\"price\"]) / old)",
+   "15:32:09 std                  ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~",
+   "15:32:09 std ZeroDivisionError: division by zero",
+   "15:32:47 std INFO:     Started server process [1]",
+   "15:32:47 std INFO:     Waiting for application startup.",
+   "15:32:47 std INFO:     Application startup complete.",
+   "15:32:47 std INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)",
+   "15:33:08 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:33:10 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:33:12 std INFO:     Shutting down",
+   "15:33:12 std INFO:     Waiting for application shutdown.",
+   "15:33:12 std INFO:     Application shutdown complete.",
+   "15:33:12 std INFO:     Finished server process [1]",
+   "15:33:26 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:33:44 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:34:03 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:34:08 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:34:21 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:34:40 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:34:56 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:35:08 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:35:14 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:35:21 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:35:21 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:35:23 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:36:08 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:37:08 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:38:08 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:38:29 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:38:32 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:38:46 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:39:08 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+   "15:39:09 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK"
+  ],
+  "recent_ops": [
+   {
+    "ts": 1792683439.742597,
+    "action": "scenario:broken_build",
+    "actor": "e2e"
+   },
+   {
+    "ts": 1792683316.1554391,
+    "action": "verify",
+    "actor": "negahban"
+   },
+   {
+    "ts": 1792683177.9633036,
+    "action": "apply_code_fix",
+    "actor": "owner-e2e"
+   },
+   {
+    "ts": 1792683099.5065343,
+    "action": "approve",
+    "actor": "owner-e2e"
+   },
+   {
+    "ts": 1792683099.2057142,
+    "action": "propose",
+    "actor": "agent"
+   },
+   {
+    "ts": 1792683097.93764,
+    "action": "prepare_fix",
+    "actor": "negahban"
+   },
+   {
+    "ts": 1792683067.2883096,
+    "action": "prepare_fix",
+    "actor": "negahban"
+   },
+   {
+    "ts": 1792682948.5325549,
+    "action": "scenario:bad_release",
+    "actor": "e2e"
+   }
+  ],
+  "logs": {
+   "lines": 26,
+   "requests": 22,
+   "status_counts": {
+    "200": 22
+   },
+   "error_rate": 0.0,
+   "errors_5xx": 0,
+   "paths_5xx": {},
+   "slow": [],
+   "oom": [],
+   "missing_env": {},
+   "conn_errors": [],
+   "startups": 1,
+   "shutdowns": 0,
+   "restart_loop": false,
+   "first_ts": 1792683167.5691252,
+   "last_ts": 1792683549.9054441,
+   "previous_release_tracebacks": 11,
+   "tracebacks": []
+  }
+ },
+ "llm_used": true
+}

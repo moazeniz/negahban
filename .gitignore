@@ -1,0 +1,39 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# Runtime state — never commit
+data/
+*.db
+*.sqlite
+*.sqlite3
+*.log
+# Test fixtures are log samples by design
+!tests/fixtures/**/*.log
+evidence/*.png.tmp
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+secrets/
+private/
+_private/
+*.private.md
+*.pem
+*.key
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store

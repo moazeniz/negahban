@@ -1,0 +1,17 @@
+{"t": 10, "requests": 149, "codes": {"200": 149}, "p50_ms": 117.3, "p95_ms": 134.3, "backends": {"demo-shop": 149}}
+{"t": 20, "requests": 150, "codes": {"200": 150}, "p50_ms": 117.1, "p95_ms": 131.4, "backends": {"demo-shop": 150}}
+{"t": 30, "requests": 150, "codes": {"200": 150}, "p50_ms": 117.5, "p95_ms": 135.1, "backends": {"demo-shop": 150}}
+{"t": 40, "requests": 150, "codes": {"200": 150}, "p50_ms": 117.0, "p95_ms": 128.6, "backends": {"demo-shop": 150}}
+{"t": 50, "requests": 150, "codes": {"200": 150}, "p50_ms": 116.6, "p95_ms": 131.0, "backends": {"demo-shop": 150}}
+{"t": 60, "requests": 150, "codes": {"200": 150}, "p50_ms": 115.9, "p95_ms": 131.8, "backends": {"demo-shop": 150}}
+{"t": 70, "requests": 150, "codes": {"200": 150}, "p50_ms": 116.1, "p95_ms": 128.7, "backends": {"demo-shop": 150}}
+{"t": 80, "requests": 150, "codes": {"200": 150}, "p50_ms": 117.8, "p95_ms": 142.7, "backends": {"demo-shop": 150}}
+{"t": 90, "requests": 150, "codes": {"200": 150}, "p50_ms": 117.3, "p95_ms": 135.9, "backends": {"demo-shop": 150}}
+{"t": 100, "requests": 150, "codes": {"200": 150}, "p50_ms": 116.9, "p95_ms": 133.4, "backends": {"demo-shop": 150}}
+{"t": 110, "requests": 150, "codes": {"200": 150}, "p50_ms": 117.4, "p95_ms": 136.0, "backends": {"demo-shop": 150}}
+{"t": 120, "requests": 150, "codes": {"200": 150}, "p50_ms": 117.0, "p95_ms": 131.0, "backends": {"demo-shop": 150}}
+{"t": 130, "requests": 150, "codes": {"200": 150}, "p50_ms": 116.4, "p95_ms": 130.7, "backends": {"demo-shop": 150}}
+{"t": 140, "requests": 150, "codes": {"200": 150}, "p50_ms": 116.7, "p95_ms": 132.5, "backends": {"demo-shop": 150}}
+{"t": 150, "requests": 150, "codes": {"200": 150}, "p50_ms": 117.7, "p95_ms": 132.8, "backends": {"demo-shop": 150}}
+{"t": 160, "requests": 150, "codes": {"200": 150}, "p50_ms": 119.3, "p95_ms": 135.1, "backends": {"demo-shop": 150}}
+{"t": 170, "requests": 150, "codes": {"200": 150}, "p50_ms": 116.9, "p95_ms": 132.3, "backends": {"demo-shop": 150}}

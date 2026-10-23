@@ -1,0 +1,5 @@
+[Unit]
+Description=Pull the latest Negahban state snapshot off-site (from negahban-sre on Liara)
+[Service]
+Type=oneshot
+ExecStart=/opt/negahban/deploy/snapshot_pull.sh

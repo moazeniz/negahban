@@ -1,0 +1,18 @@
+# Read-only run: python3 infra/liara_apply.py plan -f infra/liara.yaml --no-color   (2026-10-22, live Liara team account, GET requests only)
+
+Liara plan for infra/liara.yaml
+
+Note: bazargard-ai: 7 env var(s) not declared in the manifest: ADMIN_TOKEN, ANTHROPIC_LIGHT_MODEL, ANTHROPIC_MODEL, APP_ENV, LOG_LEVEL, RELAY_TOKEN, RELAY_URL
+Note: bazargard-ai: bundle basic has no zero-downtime; the health check still blocks bad releases, but each deploy has a short cutover gap
+Note: bazargard-ai: bundle basic has no native disk backups; covered by the off-platform export (ops/backup)
+Note: bazargard-ai: scaling policy standard-base-g2..standard-plus-g2 (vertical; enforced by Negahban/runbook, Liara has no autoscaling API)
+Note: negahban-sre: bundle basic has no zero-downtime; the health check still blocks bad releases, but each deploy has a short cutover gap
+Note: negahban-sre: bundle basic has no native disk backups; covered by the off-platform export (ops/backup)
+Note: negahban-sre: scaling policy medium-g2..standard-base-g2 (vertical; enforced by Negahban/runbook, Liara has no autoscaling API)
+Note: demo-shop: scaling policy medium-g2..medium-g2 (vertical; enforced by Negahban/runbook, Liara has no autoscaling API)
+Note: meowmeow-wallex: bundle basic has no zero-downtime; the health check still blocks bad releases, but each deploy has a short cutover gap
+Note: meowmeow-wallex: bundle basic has no native disk backups; covered by the off-platform export (ops/backup)
+Note: meowmeow-wallex: scaling policy small-g2..medium-g2 (vertical; enforced by Negahban/runbook, Liara has no autoscaling API)
+Note: cost: 8,333 -> 8,333 toman/hour for declared apps (~6.00M toman / 30 days)
+Note: balance 1,973,684 toman = 237 h (9.9 days) of runway at the declared run-rate (floor 72 h)
+No changes. Liara infrastructure matches the configuration.
