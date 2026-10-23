@@ -4,7 +4,7 @@ private|public} (default plan 20g-g2); PATCH /buckets/{b}/type/{private|public};
 keys: POST /keys {buckets:[names], description, permissions:[read,put,list,delete]} -> {data:{accessKey, secretKey}},
 PATCH /keys/{accessKey}/revoke -> new secret, DELETE /keys/{accessKey}; objects: GET /buckets/{b}/objects/?prefix…&number=&page=;
 temporary link: GET /buckets/{b}/download/{key}?expiry=<s> -> {data:{url}}. Prices: /v1/me plans.objectStorage[plan].price
-(toman per hour). S3 endpoint: https://storage.iran.liara.space (env LIARA_S3_ENDPOINT overrides).
+(toman per hour). S3 endpoint: the bucket's cluster.endPoint (live: https://storage.iran.liara.site; env LIARA_S3_ENDPOINT overrides the fallback).
 Secret keys are never returned: a new secret is shown once in the dashboard; connect_bucket creates a bucket-scoped key at
 execution time and writes it straight into the app env (merged); cards/results list variable names only."""
 import asyncio, os, re, time
@@ -16,7 +16,7 @@ from .iaas import stash_secret
 from .liara_data import week_precheck
 
 BASE = os.environ.get('LIARA_STORAGE_BASE', 'https://storage-service.liara.ir/api/v1').rstrip('/')
-S3_ENDPOINT = os.environ.get('LIARA_S3_ENDPOINT', 'https://storage.iran.liara.space')
+S3_ENDPOINT = os.environ.get('LIARA_S3_ENDPOINT', 'https://storage.iran.liara.site')  # verified live: bucket.cluster.endPoint (.space does not answer)
 NAME_RX = re.compile(r'^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$')
 PERMS = ('private', 'public')
 KEY_PERMS = ('read', 'put', 'list', 'delete')
@@ -84,6 +84,15 @@ async def usage(name):
         return {'used_mb': None, 'objects': None}
 
 
+async def bucket_endpoint(name):
+    """S3 endpoint of a bucket from GET /buckets/{name} -> bucket.cluster.endPoint (verified live), else the default."""
+    try:
+        ep = (((await get(f'/buckets/{name}')).get('bucket') or {}).get('cluster') or {}).get('endPoint')
+    except LiaraError:
+        ep = None
+    return ('https://' + ep if ep and not ep.startswith('http') else ep) or S3_ENDPOINT
+
+
 async def list_buckets():
     bs, ps = await asyncio.gather(raw_buckets(), plans())
     pm = {p['plan']: p for p in ps}
@@ -96,7 +105,10 @@ async def list_buckets():
 async def list_objects(bucket, prefix='', limit=50, page=1):
     await find(bucket)
     path = f"/buckets/{bucket}/objects/{quote(prefix.lstrip('/'), safe='/')}" if prefix else f'/buckets/{bucket}/objects/'
-    d = ((await get(path, params={'number': max(1, min(int(limit), 200)), 'page': max(1, int(page))})).get('data') or {}).get('objects') or {}
+    params = {'number': max(1, min(int(limit), 50))}
+    if int(page) > 1:  # verified live: sending page=1 makes storage-service answer 500
+        params['page'] = int(page)
+    d = ((await get(path, params=params)).get('data') or {}).get('objects') or {}
     files = [{'key': o.get('Key'), 'kb': round((o.get('Size') or 0) / 1024, 1), 'modified': o.get('LastModified')} for o in d.get('Contents') or []]
     return {'bucket': bucket, 'prefix': prefix, 'folders': [p.get('Prefix') for p in d.get('CommonPrefixes') or []], 'objects': files[:limit],
             'truncated': bool(d.get('IsTruncated')), 'count': d.get('KeyCount', len(files))}
@@ -234,9 +246,10 @@ async def connect(bucket, app, style='liara', ctx=None):
     if style not in ENV_STYLES:
         raise DiagError('style must be liara or aws')
     await find(bucket)
+    ep = await bucket_endpoint(bucket)
     _, ak, sk = await create_key([bucket], f'negahban: {app} -> {bucket}', ctx=ctx, reveal=False)
     e, b, a, s = ENV_STYLES[style]
-    env = {e: S3_ENDPOINT, b: bucket, a: ak, s: sk, **({'AWS_DEFAULT_REGION': 'us-east-1'} if style == 'aws' else {})}
+    env = {e: ep, b: bucket, a: ak, s: sk, **({'AWS_DEFAULT_REGION': 'us-east-1'} if style == 'aws' else {})}
     cur = await liara.envs(app)
     await liara.update_envs(app, {**cur, **env})
     audit(ctx, 'storage.connect', app, {'bucket': bucket, 'env_names': sorted(env), 'access_key': mask_key(ak)})

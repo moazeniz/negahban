@@ -106,7 +106,9 @@ def summarize(d, prices=None):
     return strip_secrets({'id': _id(d), 'name': d.get('hostname'), 'engine': d.get('type'), 'version': d.get('version'), 'status': d.get('status'),
                           'status_fa': STATUS_FA.get(d.get('status')), 'scale': d.get('scale'), 'plan': d.get('planID'), 'bundle': d.get('bundlePlanID'),
                           'public_network': d.get('publicNetwork'), 'created_at': d.get('created_at') or d.get('createdAt'),
-                          'toman_per_hour': d.get('hourlyPrice') or pr.get('toman_per_hour'), 'toman_per_month': pr.get('toman_per_month')})
+                          # total = plan + bundle (Liara's hourlyPrice alone is the plan part only)
+                          'toman_per_hour': pr.get('toman_per_hour') or round((d.get('hourlyPrice') or 0) + (d.get('bundleHourlyPrice') or 0), 2) or None,
+                          'toman_per_month': pr.get('toman_per_month')})
 
 
 async def list_databases():
@@ -145,6 +147,7 @@ def endpoint(full):
 
 
 # ---------------------------------------------------------------- connection env (values only ever go to Liara update-envs)
+DEFAULT_DB = {'postgres': 'postgres', 'mongodb': 'admin', 'clickhouse': 'default'}
 DEFAULT_PORTS = {'postgres': 5432, 'mysql': 3306, 'mariadb': 3306, 'mongodb': 27017, 'redis': 6379, 'mssql': 1433, 'elasticsearch': 9200, 'rabbitmq': 5672, 'clickhouse': 9000}
 URL_VAR = {'postgres': 'DATABASE_URL', 'mysql': 'DATABASE_URL', 'mariadb': 'DATABASE_URL', 'mssql': 'DATABASE_URL', 'mongodb': 'MONGODB_URI',
            'redis': 'REDIS_URL', 'elasticsearch': 'ELASTICSEARCH_URL', 'rabbitmq': 'AMQP_URL', 'clickhouse': 'CLICKHOUSE_URL'}
@@ -161,7 +164,9 @@ def env_names(engine, prefix='DB'):
 def connection_env(engine, full, prefix='DB'):
     host, port = endpoint(full)
     port = port or DEFAULT_PORTS.get(engine)
-    user, pw, name = full.get('username') or ('default' if engine == 'redis' else 'root'), full.get('root_password') or full.get('password') or '', full.get('dbName') or ''
+    # Liara returns no dbName for a fresh database; the server's default database is used (postgres: 'postgres', mongodb: 'admin')
+    user, pw = full.get('username') or ('default' if engine == 'redis' else 'root'), full.get('root_password') or full.get('password') or ''
+    name = full.get('dbName') or DEFAULT_DB.get(engine, '')
     if not pw:
         raise DiagError('Liara returned no credentials for this database')
     u, p = quote(str(user), safe=''), quote(str(pw), safe='')
@@ -232,9 +237,7 @@ async def create(name, engine, version=None, plan=None, bundle='basic', public_n
         raise DiagError(pre['message_fa'])
     body = {'hostname': name, 'type': engine, 'version': version, 'planID': row['plan'], 'bundlePlanID': bundle, 'publicNetwork': bool(public_network)}
     if row['g2']:
-        if not settings.liara_network:
-            raise DiagError('g2 database plans need a private network: LIARA_NETWORK_ID is not configured')
-        body['network'] = settings.liara_network
+        body['network'] = await liara.network_id()
     r = await liara.post('/v1/databases', body)
     db_id = (r or {}).get('databaseID') or (r or {}).get('id')
     audit(ctx, 'dbaas.create', connect_app, {'database': name, 'engine': engine, 'version': version, 'plan': row['plan'], 'bundle': bundle})
@@ -388,6 +391,22 @@ async def _simple_impact(a, text, risk='کم', downtime='ندارد'):
     return {'downtime': downtime, 'cost': 'بدون تغییر', 'risk': risk, 'database': d.get('hostname'), 'engine': d.get('type')}, text
 
 
+async def _backup_impact(a):
+    """Refuse up front when the bundle has no manual backups (verified live: basic -> 'Manual backup not available.')."""
+    d = await find(a['database'])
+    b = d.get('bundlePlanID') or 'basic'
+    try:
+        manual = ((await plan_row(d.get('planID'))).get('backup_retention') or {}).get(b, {}).get('manual')
+    except DiagError:
+        manual = None
+    if manual == 0:
+        raise DiagError(f"باندل {b} پشتیبان‌گیری دستی ندارد؛ برای پشتیبان‌گیری باندل را به standard یا pro ارتقا دهید (resize_database با bundle).")
+    imp, rb = await _simple_impact(a, 'نیازی به بازگشت نیست.')
+    if manual:
+        imp['limit'] = f'باندل {b}: حداکثر {manual} پشتیبان دستی نگه داشته می‌شود'
+    return imp, rb
+
+
 async def _resize_impact(a):
     d = await find(a['database'])
     old, new = await plan_row(d.get('planID')), await plan_row(a['plan'])
@@ -401,7 +420,12 @@ async def _resize_impact(a):
 
 async def _typed_impact(a, what):
     d = await find(a['database'])
-    return ({'downtime': what, 'cost': 'بدون تغییر' if 'بازیابی' in what else f"-{d.get('hourlyPrice') or ''} تومان در ساعت", 'risk': 'بسیار زیاد (برگشت‌ناپذیر)',
+    try:  # the list row has no price (live: card showed "- تومان"); use the catalogue: plan + bundle
+        per_hour = price(await plan_row(d.get('planID')), d.get('bundlePlanID') or 'basic')['toman_per_hour']
+    except Exception:
+        per_hour = (d.get('hourlyPrice') or 0) + (d.get('bundleHourlyPrice') or 0)
+    saved = f"صرفه‌جویی {per_hour:,.0f} تومان در ساعت" if per_hour else 'هزینه‌ی دیتابیس قطع می‌شود'
+    return ({'downtime': what, 'cost': 'بدون تغییر' if 'بازیابی' in what else saved, 'risk': 'بسیار زیاد (برگشت‌ناپذیر)',
              'database': d.get('hostname'), 'confirm': f"برای تأیید باید نام «{d.get('hostname')}» را تایپ کنید"}, 'برگشت‌ناپذیر است؛ پیش از آن از دیتابیس پشتیبان بگیرید.')
 
 
@@ -479,7 +503,7 @@ async def resize_database_tool(a, ctx):
 
 
 @spec('backup_database', 'ساخت کارت تأیید برای پشتیبان‌گیری…', 'sensitive', 'Take a manual backup now (limited per hour by the bundle; the basic bundle has none).',
-      DB, ['database'], title=lambda a: f"پشتیبان‌گیری از {a.get('database')}", impact=lambda a: _simple_impact(a, 'نیازی به بازگشت نیست.'))
+      DB, ['database'], title=lambda a: f"پشتیبان‌گیری از {a.get('database')}", impact=lambda a: _backup_impact(a))
 async def backup_database_tool(a, ctx):
     return await create_backup(a['database'])
 

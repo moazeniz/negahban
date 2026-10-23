@@ -23,6 +23,12 @@ Negahban tells the owner clearly when something cannot be done through Liara's A
 | **healthCheck format is undocumented.** | Verified live: `command` must be an array and the durations are seconds (`startPeriod` ≤ 3000). Templates generate this format. |
 | **No source-code access for apps deployed outside Negahban.** | The container shell is limited to diagnostics: allow-listed read-only commands run automatically, anything else needs an approval card, and destructive commands are blocked. Code repair only works for apps whose source lives in Negahban's workspace (the demo app). For other apps Negahban diagnoses the problem and proposes platform-level actions. |
 
+**Data services (verified live in a test team, 2026-10-23):**
+- Liara's database inspector refuses Postgres ("not a supported database server"), so read-only queries through Negahban do not work for Postgres databases.
+- The basic database bundle has no manual backups; the backup card is refused up front and suggests the standard/pro bundle.
+- A team needs a private network for g2 apps and databases. Negahban uses the team's first network or creates a free `negahban-net`; Liara has no API to delete a network.
+- The S3 endpoint is the bucket's `cluster.endPoint` (`storage.iran.liara.site`); it is reachable from outside Iran, unlike some Liara endpoints.
+
 ## Negahban MVP limits
 
 - **GitHub token scope (GitOps).** The token provided (`NEGAHBAN_GITHUB_TOKEN`, a Liara env var on `negahban-sre`, read from a 600-mode file on Hetzner) has more power than Negahban needs. Negahban restricts it in code: `negahban/gitops.py` allows only read endpoints (repo, commits, compare, tags, releases, workflow runs/jobs/logs, check runs, statuses, the deploy workflow file) and exactly one write, `POST /repos/moazeniz/{bazargard|negahban|wallex-ai-trader}/actions/workflows/deploy.yml/dispatches`. Everything else is refused before any network call (`tests/test_gitops.py`, 27 blocked routes). Negahban never commits, pushes, or creates files, branches or PRs in these public repos. A token with only `actions:write` + `contents:read` on the three repos would remove this residual risk.

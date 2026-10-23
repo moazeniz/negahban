@@ -67,6 +67,18 @@ async def propose_addons(app, addons, ctx, why=None):
     from ..approvals import propose
     addons = validate(addons)
     cards = []
+    try:  # an existing app that is already connected gets no duplicate card (found in the live test-team run)
+        from ..liara import liara
+        from .dbaas import URL_VAR
+        cur = await liara.envs(app)
+    except Exception:
+        cur = {}
+    if addons.get('database') and URL_VAR.get(addons['database']['engine'], 'DATABASE_URL') in cur:
+        cards.append({'tool': 'create_database', 'skipped': True, 'note': f"{app} already has {URL_VAR.get(addons['database']['engine'], 'DATABASE_URL')}; no new database proposed"})
+        addons.pop('database')
+    if addons.get('storage') and any(_STORAGE_HINT.match(k) for k in cur):
+        cards.append({'tool': 'create_bucket', 'skipped': True, 'note': f'{app} already has object-storage variables; no new bucket proposed'})
+        addons.pop('storage')
     if addons.get('database'):
         d = addons['database']
         args = {'name': _slug(app, 'db'), 'engine': d['engine'], 'bundle': d['bundle'], 'prefix': d['prefix'], 'connect_app': app}

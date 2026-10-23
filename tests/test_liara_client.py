@@ -75,3 +75,22 @@ def test_tarball_skips_secrets_and_vcs(tmp_path):
     names = tarfile.open(fileobj=io.BytesIO(make_tarball(tmp_path))).getnames()
     assert names == ['a.py']
     assert make_tarball(tmp_path) == make_tarball(tmp_path)  # deterministic
+
+
+def test_create_app_uses_team_network_or_creates_one(monkeypatch):
+    # verified live in the empty test team: '"network" is not allowed to be empty', and POST /v1/networks needs networkName
+    from negahban.config import settings
+    monkeypatch.setattr(settings, 'liara_network', '')
+    nets, seen = [], []
+
+    def h(req):
+        seen.append((req.method, req.url.path, json.loads(req.content) if req.content else None))
+        if req.url.path == '/v1/networks' and req.method == 'GET':
+            return httpx.Response(200, json={'networks': nets})
+        if req.url.path == '/v1/networks':
+            nets.append({'_id': 'net1', 'name': 'negahban-net'})
+            return httpx.Response(201, json={})
+        return httpx.Response(201, json={'ok': True})
+    run(client(h).create_app('a1', 'small-g2'))
+    assert ('POST', '/v1/networks', {'networkName': 'negahban-net'}) in seen
+    assert seen[-1] == ('POST', '/v1/projects', {'name': 'a1', 'planID': 'small-g2', 'bundlePlanID': 'basic', 'platform': 'docker', 'network': 'net1'})

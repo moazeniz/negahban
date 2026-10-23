@@ -1,0 +1,5 @@
+{"team": "6accfde10841df6d775a401b", "window_utc": ["2026-10-23T09:36", "2026-10-23T09:56"], "negahban": "staging v1.10.0 + fixes, 127.0.0.1:18940",
+ "balance_start": 2000000, "balance_end": 1997402.8, "cost_toman": 2597.2,
+ "timings_s": {"analyze": 1.4, "launch_approve_to_verified": 141, "db_create_connect": 70, "storage_full_sequence": 70, "db_delete": 5, "app_delete": 5, "chat_addons_answer": 24},
+ "final_team_state": {"apps": 0, "databases": 0, "buckets": 0, "storage_keys": 0, "vms": 0, "networks": ["negahban-net (free, no delete endpoint)"]},
+ "secret_leaks_found": 0, "bugs_fixed": 9}
