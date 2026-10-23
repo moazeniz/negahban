@@ -65,4 +65,3 @@ Every judging criterion and every expected capability in the challenge brief, ma
 |---|---|
 | Runnable MVP (request → operation/diagnosis) | https://negahban-sre.liara.run; demo app https://demo-shop.liara.run |
 | Markdown documentation | [README.md](../README.md), [ARCHITECTURE.md](ARCHITECTURE.md), [CONTROL_PLANE.md](CONTROL_PLANE.md), [LIARA_API.md](LIARA_API.md), [ALERTS.md](ALERTS.md), [SECURITY.md](SECURITY.md), [LIMITATIONS.md](LIMITATIONS.md), [USER_GUIDE.md](USER_GUIDE.md), [DIAGNOSTICS.md](DIAGNOSTICS.md) |
-| Demo video script | [DEMO_VIDEO_SCRIPT.fa.md](DEMO_VIDEO_SCRIPT.fa.md) (verified clicks and timings), [DEMO_SCRIPT_FA.md](DEMO_SCRIPT_FA.md) |
