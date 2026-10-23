@@ -589,3 +589,9 @@ automatically. A publish job runs on the operator host every 30 minutes (`meow-p
 If nothing changed, the job commits nothing. Logs and the last result are kept on the operator host
 (`/opt/<ops>/public/logs`). The job runs once more right after a scheduled production deploy, so the public
 repository follows the release within minutes.
+
+**Repository hygiene.** Presentation material (video scripts, playbooks, narration, screenshots and recordings) is
+kept outside the repositories: the merge step drops it, `.gitignore` excludes it, and both the working and the
+public repository are gated against it. Every commit uses the team identity and the team message format, with no
+trailers; a `commit-msg` hook in the working copies and a message check in the job enforce it. Review-bot comments
+are removed from pull requests after each run.

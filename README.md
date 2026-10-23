@@ -47,6 +47,21 @@
   - برای برنامه‌های حساس مثل ربات معامله قفل «فقط پایش» دارند.
 - **صداقت درباره‌ی محدودیت‌ها**: صفحه‌ای جدا می‌گوید چه کارهایی با API لیارا ممکن نیست.
 
+## Tests & benchmarks · تست‌ها و بنچمارک
+
+> خلاصه: ۳۳۲ تست خودکار و ۳۶ تست مقیاس‌گذاری در CI سبز است؛ آزمون پذیرش روی لیارای واقعی (عملیات ۵ از ۵، رابط کاربری ۵۰ از ۵۰) و یک اجرای مقیاس افقی زنده با ۱۰٬۸۰۰ درخواست ثبت شده است.
+
+| What | Result | Source |
+|---|---|---|
+| Automated tests | **332 passed** (`pytest -q tests`) and **36** scaler tests (policy simulations, load balancer, replica controller) | [green CI run](https://github.com/moazeniz/negahban/actions/runs/39962970152) |
+| Live acceptance on Liara: operations | **5/5** approve → execute → verify | [results-ops.json](evidence/acceptance-2026-10-22/results-ops.json) |
+| Live acceptance on Liara: UI, terminal, logs, templates, status page, watchdog | **50/50** checks | [results-ui-terminal-logs-templates-status-watchdog.json](evidence/acceptance-2026-10-22/results-ui-terminal-logs-templates-status-watchdog.json) |
+| Live acceptance on Liara: virtual servers (IaaS) | **13/14** checks | [results-servers.json](evidence/acceptance-2026-10-22/results-servers.json) |
+| Horizontal scaling, live run (15 rps for 12 min) | 10,800 requests; replica healthy in **55 s**; traffic split 75 / 75 per 10 s; scale-in after 120 s of calm; Liara's one-week balance rule respected | [SCALING_RUN.md](evidence/SCALING_RUN.md) · [docs/SCALING.md](docs/SCALING.md) |
+| Every judging criterion → feature → live proof | evidence matrix | [docs/EVIDENCE.md](docs/EVIDENCE.md) |
+
+Reproduce: `.venv/bin/python -m pytest -q tests` · `python -m unittest discover -s scaler/tests` (no Liara account needed).
+
 ## English summary
 
 Negahban is an AI SRE and deployment assistant for websites hosted on Liara (Iranian PaaS). It is a FastAPI service with a Persian RTL dashboard and runs on Liara itself. Its main features:
