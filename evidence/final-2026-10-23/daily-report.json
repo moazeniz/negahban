@@ -1,0 +1,471 @@
+{
+ "day": "2026-10-23",
+ "generated_at": 1792739553.168554,
+ "period_hours": 24,
+ "origin": "owner",
+ "apps": [
+  {
+   "app": "demo-shop",
+   "role": "demo",
+   "plan": "medium-g2",
+   "bundle": "standard",
+   "scale": 1,
+   "toman_per_hour": 2291.66,
+   "samples": 962,
+   "uptime_pct": 98.34,
+   "latency_avg_ms": 98,
+   "latency_p95_ms": 194,
+   "cpu_avg_pct": 4.18,
+   "cpu_peak_pct": 199.08,
+   "mem_avg_pct": 9.31,
+   "mem_peak_pct": 91.94,
+   "incidents": [
+    {
+     "title": "سایت از دسترس خارج شده است",
+     "kind": "down",
+     "status": "open",
+     "resolution": "رخداد شناسایی شد: سایت از دسترس خارج شده است"
+    },
+    {
+     "title": "برنامه پاسخ نمی‌دهد (HTTP 502 )",
+     "kind": "alert",
+     "status": "open",
+     "resolution": "کارت تأیید ساخته شد: ری‌استارت demo-shop"
+    },
+    {
+     "title": "برنامه پاسخ نمی‌دهد (HTTP 500 )",
+     "kind": "alert",
+     "status": "resolved",
+     "resolution": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 50ms)، زمان پاسخ ✓ (50ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)، کانتینر جدید بالا آمد ✓ (1 ثانیه پس از اقدام)، مص"
+    },
+    {
+     "title": "خطای کد (ZeroDivisionError) در pricing.py:7",
+     "kind": "errors",
+     "status": "mitigating",
+     "resolution": "اقدام اجرا شد: اعمال اصلاح کد روی demo-shop و استقرار — در حال راستی‌آزمایی"
+    },
+    {
+     "title": "پردازنده در سقف پلن است (ترافیک یا کار سنگین)",
+     "kind": "cpu",
+     "status": "resolved",
+     "resolution": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 284ms)، زمان پاسخ ✓ (284ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)، کانتینر جدید بالا آمد ✓ (12 ثانیه پس از اقدام)،"
+    },
+    {
+     "title": "خطای تقسیم بر صفر در محاسبه درصد تخفیف به دلیل قیمت قدیمی صفر یا خالی",
+     "kind": "errors",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    },
+    {
+     "title": "خطای کد (ZeroDivisionError) در pricing.py:7",
+     "kind": "errors",
+     "status": "resolved",
+     "resolution": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 57ms)، زمان پاسخ ✓ (57ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)"
+    },
+    {
+     "title": "پردازنده در سقف پلن است (ترافیک یا کار سنگین)",
+     "kind": "cpu",
+     "status": "resolved",
+     "resolution": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 336ms)، زمان پاسخ ✓ (336ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)، کانتینر جدید بالا آمد ✓ (11 ثانیه پس از اقدام)،"
+    },
+    {
+     "title": "مصرف حافظه رو به افزایش است (احتمال نشت حافظه)",
+     "kind": "memory",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    },
+    {
+     "title": "مصرف حافظه رو به افزایش است (احتمال نشت حافظه)",
+     "kind": "memory",
+     "status": "resolved",
+     "resolution": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 68ms)، زمان پاسخ ✓ (68ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)، کانتینر جدید بالا آمد ✓ (6 ثانیه پس از اقدام)، مص"
+    },
+    {
+     "title": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+     "kind": "build_failed",
+     "status": "resolved",
+     "resolution": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 403ms)، زمان پاسخ ✓ (403ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)، کانتینر جدید بالا آمد ✓ (0 ثانیه پس از اقدام)، "
+    },
+    {
+     "title": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+     "kind": "crash",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    },
+    {
+     "title": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+     "kind": "errors",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    },
+    {
+     "title": "خطای تقسیم بر صفر در محاسبه درصد تخفیف محصول (فایل pricing.py)",
+     "kind": "errors",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    },
+    {
+     "title": "خطای کد (ZeroDivisionError) در pricing.py:7",
+     "kind": "errors",
+     "status": "resolved",
+     "resolution": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 65ms)، زمان پاسخ ✓ (65ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)"
+    },
+    {
+     "title": "مصرف حافظه رو به افزایش است (احتمال نشت حافظه)",
+     "kind": "memory",
+     "status": "resolved",
+     "resolution": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 38ms)، زمان پاسخ ✓ (38ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)، کانتینر جدید بالا آمد ✓ (6 ثانیه پس از اقدام)، مص"
+    },
+    {
+     "title": "مصرف حافظه رو به افزایش است (احتمال نشت حافظه)",
+     "kind": "memory",
+     "status": "resolved",
+     "resolution": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 81ms)، زمان پاسخ ✓ (81ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)، کانتینر جدید بالا آمد ✓ (11 ثانیه پس از اقدام)، م"
+    },
+    {
+     "title": "حافظه‌ی پلن برای این بار کافی نیست",
+     "kind": "memory",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    },
+    {
+     "title": "خطای سرور (5xx) در پاسخ‌ها",
+     "kind": "errors",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    },
+    {
+     "title": "خطای کد (ZeroDivisionError) در pricing.py:7",
+     "kind": "errors",
+     "status": "resolved",
+     "resolution": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 63ms)، زمان پاسخ ✓ (63ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)"
+    },
+    {
+     "title": "خطای کد (KeyError) در <frozen os>:714",
+     "kind": "crash",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    },
+    {
+     "title": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+     "kind": "build_failed",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    },
+    {
+     "title": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+     "kind": "errors",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    },
+    {
+     "title": "پردازنده در سقف پلن است (ترافیک یا کار سنگین)",
+     "kind": "cpu",
+     "status": "resolved",
+     "resolution": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 280ms)، زمان پاسخ ✓ (280ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)، کانتینر جدید بالا آمد ✓ (19:31:16)، پلن جدید ✓ "
+    },
+    {
+     "title": "بیلد نسخه‌ی جدید شکست خورد",
+     "kind": "build_failed",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    },
+    {
+     "title": "خطای کد (ZeroDivisionError) در pricing.py:7",
+     "kind": "down",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    },
+    {
+     "title": "خطای کد (ZeroDivisionError) در pricing.py:7",
+     "kind": "errors",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    }
+   ],
+   "autopilot_actions": [
+    {
+     "title": "تغییر پلن demo-shop به medium-g2",
+     "status": "done"
+    },
+    {
+     "title": "تغییر پلن demo-shop به small-g2",
+     "status": "done"
+    },
+    {
+     "title": "ری‌استارت demo-shop",
+     "status": "done"
+    },
+    {
+     "title": "ری‌استارت demo-shop",
+     "status": "done"
+    },
+    {
+     "title": "تغییر پلن demo-shop به medium-g2",
+     "status": "done"
+    },
+    {
+     "title": "تغییر پلن demo-shop به small-g2",
+     "status": "done"
+    },
+    {
+     "title": "تغییر پلن demo-shop به medium-g2",
+     "status": "done"
+    },
+    {
+     "title": "ری‌استارت demo-shop",
+     "status": "done"
+    }
+   ],
+   "owner_actions": [
+    {
+     "title": "تنظیم متغیر PAYMENT_GATEWAY_KEY در demo-shop",
+     "status": "unverified"
+    },
+    {
+     "title": "اعمال اصلاح کد روی demo-shop و استقرار",
+     "status": "done"
+    },
+    {
+     "title": "ری‌استارت demo-shop",
+     "status": "done"
+    },
+    {
+     "title": "ری‌استارت demo-shop",
+     "status": "done"
+    },
+    {
+     "title": "ری‌استارت demo-shop",
+     "status": "done"
+    },
+    {
+     "title": "تنظیم متغیر APP_VERSION در demo-shop",
+     "status": "done"
+    },
+    {
+     "title": "تغییر پلن demo-shop به medium-g2",
+     "status": "done"
+    },
+    {
+     "title": "تغییر پلن demo-shop به small-g2",
+     "status": "done"
+    },
+    {
+     "title": "تنظیم متغیر APP_VERSION در demo-shop",
+     "status": "done"
+    },
+    {
+     "title": "تغییر پلن demo-shop به medium-g2",
+     "status": "done"
+    },
+    {
+     "title": "استقرار نسخه‌ی جدید demo-shop",
+     "status": "done"
+    },
+    {
+     "title": "تغییر پلن demo-shop به small-g2",
+     "status": "done"
+    },
+    {
+     "title": "تنظیم متغیر APP_VERSION در demo-shop",
+     "status": "done"
+    },
+    {
+     "title": "بازگشت demo-shop به نسخه‌ی سالم قبلی",
+     "status": "done"
+    },
+    {
+     "title": "اعمال اصلاح کد روی demo-shop و استقرار",
+     "status": "done"
+    },
+    {
+     "title": "تنظیم متغیر PAYMENT_GATEWAY_KEY در demo-shop",
+     "status": "unverified"
+    },
+    {
+     "title": "تنظیم متغیر PAYMENT_GATEWAY_KEY در demo-shop",
+     "status": "done"
+    },
+    {
+     "title": "اعمال اصلاح کد روی demo-shop و استقرار",
+     "status": "done"
+    }
+   ],
+   "locked": false
+  },
+  {
+   "app": "meowmeow-wallex",
+   "role": "monitored",
+   "plan": "small-g2",
+   "bundle": "basic",
+   "scale": 1,
+   "toman_per_hour": 1041.66,
+   "samples": 962,
+   "uptime_pct": 100,
+   "latency_avg_ms": 92,
+   "latency_p95_ms": 167,
+   "cpu_avg_pct": 0.52,
+   "cpu_peak_pct": 2.82,
+   "mem_avg_pct": 8.31,
+   "mem_peak_pct": 19.24,
+   "incidents": [],
+   "autopilot_actions": [],
+   "owner_actions": [],
+   "locked": true
+  },
+  {
+   "app": "negahban-sre",
+   "role": "self",
+   "plan": "medium-g2",
+   "bundle": "basic",
+   "scale": 1,
+   "toman_per_hour": 1805.55,
+   "samples": 962,
+   "uptime_pct": 99.9,
+   "latency_avg_ms": 106,
+   "latency_p95_ms": 210,
+   "cpu_avg_pct": 1.8,
+   "cpu_peak_pct": 27.6,
+   "mem_avg_pct": 7.4,
+   "mem_peak_pct": 24.42,
+   "incidents": [],
+   "autopilot_actions": [],
+   "owner_actions": [],
+   "locked": true
+  },
+  {
+   "app": "bazargard-ai",
+   "role": "monitored",
+   "plan": "standard-base-g2",
+   "bundle": "basic",
+   "scale": 1,
+   "toman_per_hour": 3194.44,
+   "samples": 962,
+   "uptime_pct": 99.9,
+   "latency_avg_ms": 138,
+   "latency_p95_ms": 354,
+   "cpu_avg_pct": 2.84,
+   "cpu_peak_pct": 30.5,
+   "mem_avg_pct": 16.95,
+   "mem_peak_pct": 58.84,
+   "incidents": [
+    {
+     "title": "برنامه پاسخ نمی‌دهد (HTTP 502 )",
+     "kind": "alert",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    },
+    {
+     "title": "بیلد نسخه‌ی جدید شکست خورد",
+     "kind": "build_failed",
+     "status": "resolved",
+     "resolution": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    }
+   ],
+   "autopilot_actions": [],
+   "owner_actions": [],
+   "locked": false
+  },
+  {
+   "app": "demo-shop-r1",
+   "role": "replica",
+   "plan": "small-g2",
+   "bundle": "basic",
+   "scale": 1,
+   "toman_per_hour": 1041.66,
+   "samples": 0,
+   "uptime_pct": null,
+   "latency_avg_ms": null,
+   "latency_p95_ms": null,
+   "cpu_avg_pct": null,
+   "cpu_peak_pct": null,
+   "mem_avg_pct": null,
+   "mem_peak_pct": null,
+   "incidents": [],
+   "autopilot_actions": [],
+   "owner_actions": [],
+   "locked": true
+  }
+ ],
+ "cost": {
+  "balance_toman": 1811282.5,
+  "total_toman_per_hour": 11377.27,
+  "total_toman_per_month": 8191640.2700000005,
+  "hours_left": 159,
+  "apps": [
+   {
+    "project_id": "bazargard-ai",
+    "planID": "standard-base-g2",
+    "bundlePlanID": "basic",
+    "totalHourlyPrice": 3194.44,
+    "totalMonthlyPrice": 2299996.8
+   },
+   {
+    "project_id": "demo-shop",
+    "planID": "medium-g2",
+    "bundlePlanID": "standard",
+    "totalHourlyPrice": 2291.66,
+    "totalMonthlyPrice": 1649995.2
+   },
+   {
+    "project_id": "negahban-sre",
+    "planID": "medium-g2",
+    "bundlePlanID": "basic",
+    "totalHourlyPrice": 1805.55,
+    "totalMonthlyPrice": 1299996
+   },
+   {
+    "project_id": "meowmeow-wallex",
+    "planID": "small-g2",
+    "bundlePlanID": "basic",
+    "totalHourlyPrice": 1041.66,
+    "totalMonthlyPrice": 749995.2
+   },
+   {
+    "project_id": "meow-lb",
+    "planID": "small-g2",
+    "bundlePlanID": "basic",
+    "totalHourlyPrice": 1041.66,
+    "totalMonthlyPrice": 749995.2
+   },
+   {
+    "project_id": "demo-shop-r1",
+    "planID": "small-g2",
+    "bundlePlanID": "basic",
+    "totalHourlyPrice": 1041.66,
+    "totalMonthlyPrice": 749995.2
+   }
+  ]
+ },
+ "llm": {
+  "calls": 25,
+  "tokens_in": 137058,
+  "tokens_out": 12542,
+  "cache_read": 58435,
+  "cost_usd": 0.022,
+  "cache_hit_pct": 28.2,
+  "by_feature": {
+   "chat": 12,
+   "diagnose": 5,
+   "selffix": 1,
+   "report": 1,
+   "guard": 6
+  }
+ },
+ "recommendations": [
+  "دسترس‌پذیری demo-shop در ۲۴ ساعت گذشته 98.34٪ بود؛ رخدادها و علت‌شان را مرور کنید.",
+  "demo-shop به سقف منابع رسیده است (اوج CPU 199.08٪، حافظه 91.94٪)؛ مقیاس خودکار فعال است.",
+  "رخداد «build_failed» روی demo-shop 3 بار تکرار شده؛ علت ریشه‌ای (کد یا پیکربندی) را برطرف کنید.",
+  "رخداد «memory» روی demo-shop 5 بار تکرار شده؛ علت ریشه‌ای (کد یا پیکربندی) را برطرف کنید.",
+  "رخداد «crash» روی demo-shop 2 بار تکرار شده؛ علت ریشه‌ای (کد یا پیکربندی) را برطرف کنید.",
+  "رخداد «down» روی demo-shop 2 بار تکرار شده؛ علت ریشه‌ای (کد یا پیکربندی) را برطرف کنید.",
+  "رخداد «errors» روی demo-shop 10 بار تکرار شده؛ علت ریشه‌ای (کد یا پیکربندی) را برطرف کنید.",
+  "رخداد «alert» روی demo-shop 2 بار تکرار شده؛ علت ریشه‌ای (کد یا پیکربندی) را برطرف کنید.",
+  "رخداد «cpu» روی demo-shop 3 بار تکرار شده؛ علت ریشه‌ای (کد یا پیکربندی) را برطرف کنید.",
+  "اعتبار تیم حدود 6.6 روز دیگر کافی است؛ حساب را شارژ کنید یا برنامه‌های بی‌استفاده را خاموش کنید.",
+  "1 کارت تأیید منتظر تصمیم شماست."
+ ],
+ "pending_cards": 1,
+ "summary": "در ۲۴ ساعت گذشته 5 برنامه پایش شد؛ 29 رخداد و 8 اقدام خودکار ثبت شد. کمترین دسترس‌پذیری مربوط به demo-shop با 98.34٪ بود. هزینه‌ی جاری 11٬377 تومان در ساعت است.",
+ "id": "rep_67a03ff50f63"
+}

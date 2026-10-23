@@ -1,0 +1,29 @@
+{
+ "id": "prp_a7e7cd0988d2",
+ "app": "ngh-accept-api",
+ "tool": "delete_app",
+ "args": {
+  "app": "ngh-accept-api"
+ },
+ "title": "حذف دائمی ngh-accept-api",
+ "why": "",
+ "impact": {
+  "downtime": "برنامه و همه‌ی داده‌هایش برای همیشه حذف می‌شود",
+  "cost": "بدون تغییر هزینه",
+  "risk": "بسیار زیاد — غیرقابل بازگشت",
+  "label": "حذف برنامه"
+ },
+ "rollback": "ندارد.",
+ "status": "done",
+ "created_at": 1792693765.2130506,
+ "expires_at": 1792694965.2130513,
+ "origin": "e2e",
+ "incident_id": null,
+ "result": {
+  "deleted": "ngh-accept-api"
+ },
+ "verification": null,
+ "decided_by": "owner-e2e",
+ "decided_at": 1792693765.961556,
+ "auto": 0
+}

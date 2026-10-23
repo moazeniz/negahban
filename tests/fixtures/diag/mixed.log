@@ -1,0 +1,29 @@
+INFO:     Started server process [1]
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+{"ts":"2026-10-22T10:00:00.100Z","level":"info","app":"shop","env":"prod","release":"v7","event":"http.request","request_id":"req-aaa111","trace_id":"t1","route":"/api/items/42","method":"GET","status":200,"duration_ms":35,"msg":"ok"}
+{"ts":"2026-10-22T10:00:00.200Z","level":"info","app":"shop","event":"http.request","request_id":"req-aaa112","route":"/api/items/43","method":"GET","status":200,"duration_ms":45,"msg":"ok"}
+{"ts":"2026-10-22T10:00:00.300Z","level":"info","app":"shop","event":"llm.call","request_id":"req-bbb222","provider":"boxapi","model":"openai/gpt-6-luna","tokens_in":1200,"tokens_out":300,"cost":0.004,"duration_ms":2100,"msg":"chat"}
+{"ts":"2026-10-22T10:00:00.400Z","level":"error","app":"shop","event":"http.request","request_id":"req-bbb222","route":"/api/checkout","method":"POST","status":500,"duration_ms":2600,"error_type":"ZeroDivisionError","error":"division by zero","stack":"Traceback (most recent call last):\n  File \"/usr/local/lib/python3.12/site-packages/starlette/routing.py\", line 70, in app\n  File \"/app/shop/pricing.py\", line 12, in discount_percent\nZeroDivisionError: division by zero","msg":"unhandled"}
+{"ts":"2026-10-22T10:00:00.500Z","level":"error","app":"shop","event":"llm.call","request_id":"req-ccc333","provider":"anthropic","model":"claude-haiku-5-5","tokens_in":800,"tokens_out":0,"error_type":"TimeoutError","error":"gate timeout","duration_ms":30000,"msg":"llm failed"}
+INFO:     10.0.0.5:51234 - "GET /api/items/44 HTTP/1.1" 200 OK
+INFO:     10.0.0.5:51235 - "POST /api/checkout HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/shop/pricing.py", line 12, in discount_percent
+    return round(100 * off / total)
+                 ~~~~~~~~^~~~~~~
+ZeroDivisionError: division by zero
+10.0.0.9 - - [22/Oct/2026:10:00:01 +0000] "GET /static/app.js HTTP/1.1" 200 5120 "-" "Mozilla/5.0" 0.012
+10.0.0.9 - - [22/Oct/2026:10:00:02 +0000] "GET /api/report HTTP/1.1" 502 0 "-" "curl/8" 3.400
+TypeError: Cannot read properties of undefined (reading 'id')
+    at getUser (/app/src/users.js:41:17)
+    at /app/node_modules/express/lib/router/layer.js:95:5
+WARNING: slow query took 2300 ms
+Killed process 7 (python) total-vm:900000kB, anon-rss:510000kB
+{"ts":"2026-10-22T10:00:03.000Z","level":"warn","app":"shop","event":"external.call","request_id":"req-ddd444","upstream":"api.payments.example","attempt":2,"max_attempts":3,"error_type":"ConnectError","error":"connection refused","msg":"retrying"}
+  File "/app/shop/catalog.py", line 88, in load
+    data = json.load(f)
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)

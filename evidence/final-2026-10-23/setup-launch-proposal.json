@@ -1,0 +1,90 @@
+[
+ {
+  "id": "prp_ec19a43d2ae7",
+  "app": "ngh-sample-api",
+  "tool": "launch_project",
+  "args": {
+   "project_id": "proj_b6dca25196a0",
+   "app": "ngh-sample-api",
+   "plan": "small-g2",
+   "bundle": "basic",
+   "envs": {}
+  },
+  "title": "راه‌اندازی ngh-sample-api روی لیارا (small-g2)",
+  "why": "راه‌اندازی اولیه از ویزارد",
+  "impact": {
+   "downtime": "ندارد (برنامه‌ی جدید)",
+   "cost": "+1٬042 تومان در ساعت (≈749٬995 تومان در ماه)",
+   "risk": "کم",
+   "resources": "small-g2 (0.5 هسته، 0.5 گیگ رم) · باندل basic",
+   "deploys": "یک استقرار از سهمیه‌ی روزانه",
+   "steps": [
+    "ساخت برنامه در لیارا",
+    "بارگذاری سورس و بیلد (لاگ بیلد زنده نمایش داده می‌شود)",
+    "تنظیم متغیرهای محیطی",
+    "بررسی سلامت پس از استقرار",
+    "فعال بودن زیردامنه‌ی رایگان .liara.run",
+    "ذخیره به‌عنوان قالب"
+   ],
+   "env_names": [],
+   "secrets_provided": [],
+   "secrets_missing": [],
+   "env_missing": [],
+   "framework": "FastAPI",
+   "url": "https://ngh-sample-api.liara.run",
+   "hourly": 1041.66,
+   "monthly": 749995,
+   "label": "launch_project"
+  },
+  "rollback": "حذف برنامه با کارت «حذف» (نام را تایپ کنید)؛ سورس در آرشیو نگهبان می‌ماند.",
+  "status": "unverified",
+  "created_at": 1792737276.6303701,
+  "expires_at": 1792738476.6303706,
+  "origin": "wizard",
+  "incident_id": null,
+  "result": {
+   "app": "ngh-sample-api",
+   "created_app": true,
+   "release_id": "6adb0000b3b5ca83e1070119",
+   "release_state": "READY",
+   "failReason": null,
+   "url": "https://ngh-sample-api.liara.run",
+   "env_names": [],
+   "template": {
+    "id": "ngh-sample-api-tpl",
+    "name": "ngh-sample-api (Dockerfile)"
+   },
+   "next_steps": [
+    "آدرس رایگان https://ngh-sample-api.liara.run فعال است",
+    "برای دامنه‌ی اختصاصی: صفحه‌ی «دامنه» یا در گفتگو بگویید «دامنه‌ی example.ir را به ngh-sample-api وصل کن» — رکوردهای DNS و مراحل ایرنیک نمایش داده می‌شود",
+    "خودران و بودجه‌ی این برنامه را در «خودران و بودجه» تنظیم کنید"
+   ]
+  },
+  "verification": {
+   "passed": false,
+   "checks": [
+    {
+     "name": "سلامت HTTP",
+     "ok": false,
+     "detail": "HTTP 0 در 18ms"
+    },
+    {
+     "name": "زمان پاسخ",
+     "ok": false,
+     "detail": "18ms (حد مجاز 2500ms)"
+    },
+    {
+     "name": "خطای جدید در لاگ",
+     "ok": true,
+     "detail": "0 پاسخ 5xx، 0 traceback از زمان اقدام"
+    }
+   ],
+   "attempts": 8,
+   "ts": 1792737466.1880894
+  },
+  "decided_by": "owner",
+  "decided_at": 1792737279.0179727,
+  "auto": 0,
+  "decision": "rules"
+ }
+]

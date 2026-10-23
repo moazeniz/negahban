@@ -1,0 +1,3092 @@
+{
+ "incidents": [
+  {
+   "id": "inc_f1e2622e7762",
+   "app": "demo-shop",
+   "kind": "build_failed",
+   "severity": "medium",
+   "title": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+   "status": "resolved",
+   "opened_at": 1792696287.9823182,
+   "updated_at": 1792696347.2427406,
+   "resolved_at": 1792696347.2427406,
+   "diagnosis": {
+    "app": "demo-shop",
+    "ts": 1792696321.5160136,
+    "healthy": false,
+    "hypotheses": [
+     {
+      "id": "missing_env",
+      "title": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+      "confidence": 0.9,
+      "evidence": [
+       "خطای برنامه: متغیر «PAYMENT_GATEWAY_KEY» پیدا نشد (×7)",
+       "متغیرهای فعلی: APP_VERSION, CHAOS_TOKEN",
+       "برنامه مدام ری‌استارت می‌شود (crash loop)"
+      ],
+      "fixes": [
+       {
+        "tool": "set_env",
+        "args": {
+         "app": "demo-shop",
+         "key": "PAYMENT_GATEWAY_KEY",
+         "restore": false
+        },
+        "label": "بازگرداندن متغیر PAYMENT_GATEWAY_KEY"
+       }
+      ],
+      "kind": "config"
+     },
+     {
+      "id": "build_failed",
+      "title": "بیلد نسخه‌ی جدید شکست خورد",
+      "confidence": 0.7,
+      "evidence": [
+       "ریلیز v17 در وضعیت UNHEALTHY",
+       "failReason: APP_CRASHED",
+       "نسخه‌ی قبلی هنوز در حال سرویس‌دهی است (کاربران آسیبی ندیده‌اند)"
+      ],
+      "fixes": [
+       {
+        "tool": "propose_code_fix",
+        "args": {
+         "app": "demo-shop"
+        },
+        "label": "اصلاح خودکار کد/وابستگی و استقرار مجدد"
+       }
+      ],
+      "kind": "build"
+     }
+    ],
+    "summary": null,
+    "next_steps": [],
+    "evidence": {
+     "status": {
+      "status": "ACTIVE",
+      "scale": 1,
+      "planID": "small-g2",
+      "bundlePlanID": "standard",
+      "zeroDowntime": true,
+      "hourlyPrice": 659.72,
+      "bundleHourlyPrice": 659.72,
+      "isDeployed": true
+     },
+     "probe": {
+      "url": "https://demo-shop.liara.run/",
+      "status": 502,
+      "latency_ms": 87,
+      "ok": false,
+      "body_snippet": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <meta charset=\"utf-8\">\n    <title>Liara | Application Error</title>\n    <style media=\"screen\">\n      html,body,iframe {\n        margin: 0;\n        padding: 0;\n      }\n      html,body {\n      ",
+      "error": null
+     },
+     "env_keys": [
+      "APP_VERSION",
+      "CHAOS_TOKEN"
+     ],
+     "env_removed_since_last_seen": [],
+     "releases": [
+      {
+       "_id": "6ada5f9638253e6cdf32415e",
+       "tag": "v17",
+       "type": "ENV_UPDATE",
+       "state": "UNHEALTHY",
+       "message": "Negahban fix f067a7a",
+       "createdAt": "2026-10-22T19:10:14.665Z",
+       "finishedAt": null,
+       "failReason": "APP_CRASHED"
+      },
+      {
+       "_id": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "Negahban fix f067a7a",
+       "createdAt": "2026-10-22T19:05:48.896Z",
+       "finishedAt": "2026-10-22T19:05:59.345Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada5ddd0e01dbee0e9e884b",
+       "tag": "v15",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "refactor: simplify discount (by developer)",
+       "createdAt": "2026-10-22T19:02:53.967Z",
+       "finishedAt": "2026-10-22T19:03:08.577Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada5da5b8e65d29b9725c49",
+       "tag": "v14",
+       "type": "ROLLBACK",
+       "state": "READY",
+       "message": "redeploy current workspace source (requested by ow",
+       "createdAt": "2026-10-22T19:01:57.774Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada5d3738253e6cdf31ec69",
+       "tag": "v13",
+       "type": "ENV_UPDATE",
+       "state": "READY",
+       "message": "redeploy current workspace source (requested by ow",
+       "createdAt": "2026-10-22T19:00:07.938Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada5be1b8e65d29b97238e0",
+       "tag": "v12",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "redeploy current workspace source (requested by ow",
+       "createdAt": "2026-10-22T18:54:25.302Z",
+       "finishedAt": "2026-10-22T18:54:46.612Z",
+       "failReason": null
+      }
+     ],
+     "build": {
+      "error_lines": [],
+      "missing_package": null,
+      "tail": [],
+      "failReason": "APP_CRASHED"
+     },
+     "events": [
+      {
+       "time": 1792696264,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696268,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696269,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696274,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696277,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696280,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696283,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696288,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696292,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696296,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696303,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696308,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      }
+     ],
+     "cpu": {
+      "n": 56,
+      "last": 0.011723559743406324,
+      "mean": 0.014737958422403398,
+      "peak": 0.036262395716466,
+      "min": 0.001979918994871795,
+      "slope_per_min": -3.446848240731171e-05,
+      "monotonic_rise": 0.6,
+      "limit": 0.5,
+      "util_last": 0.023,
+      "util_peak": 0.073,
+      "sustained_high": false,
+      "sustained_low": true
+     },
+     "mem": {
+      "n": 61,
+      "last": 0.05917994181315104,
+      "mean": 0.0993712378329918,
+      "peak": 0.17989730834960938,
+      "min": 0.03571319580078125,
+      "slope_per_min": 0.0006911319629784176,
+      "monotonic_rise": 0.73,
+      "limit": 0.5,
+      "util_last": 0.118,
+      "util_peak": 0.36,
+      "sustained_high": false,
+      "sustained_low": false,
+      "minutes_to_limit": 637.8
+     },
+     "cpu_series": [
+      [
+       1792694510,
+       0.008216541144571484
+      ],
+      [
+       1792694570,
+       0.014363267719622144
+      ],
+      [
+       1792694600,
+       0.01681277241868891
+      ],
+      [
+       1792694630,
+       0.016100248609777122
+      ],
+      [
+       1792694660,
+       0.01828181287906924
+      ],
+      [
+       1792694690,
+       0.015130774806205376
+      ],
+      [
+       1792694720,
+       0.015359405852673466
+      ],
+      [
+       1792694750,
+       0.015211434964010982
+      ],
+      [
+       1792694780,
+       0.01586842079840029
+      ],
+      [
+       1792694810,
+       0.01663817592962505
+      ],
+      [
+       1792694840,
+       0.015940728788322103
+      ],
+      [
+       1792694870,
+       0.00918873620369723
+      ],
+      [
+       1792694930,
+       0.019064220885989948
+      ],
+      [
+       1792694960,
+       0.036262395716466
+      ],
+      [
+       1792694990,
+       0.016213238358657036
+      ],
+      [
+       1792695020,
+       0.015592358976906664
+      ],
+      [
+       1792695050,
+       0.0163181377303032
+      ],
+      [
+       1792695080,
+       0.016367233208681418
+      ],
+      [
+       1792695110,
+       0.01684076729165817
+      ],
+      [
+       1792695140,
+       0.017813376246262294
+      ],
+      [
+       1792695170,
+       0.018187228567984083
+      ],
+      [
+       1792695200,
+       0.01880373552312819
+      ],
+      [
+       1792695260,
+       0.007906435883216855
+      ],
+      [
+       1792695290,
+       0.007734861152548161
+      ],
+      [
+       1792695320,
+       0.007410052786759045
+      ],
+      [
+       1792695350,
+       0.008892607917249844
+      ],
+      [
+       1792695380,
+       0.007782422849196709
+      ],
+      [
+       1792695410,
+       0.007481327890462424
+      ],
+      [
+       1792695440,
+       0.008013055141592625
+      ],
+      [
+       1792695470,
+       0.008377538386921962
+      ],
+      [
+       1792695500,
+       0.008582926633092004
+      ],
+      [
+       1792695530,
+       0.008747389345128576
+      ],
+      [
+       1792695560,
+       0.00908892850555446
+      ],
+      [
+       1792695620,
+       0.01461968486151928
+      ],
+      [
+       1792695650,
+       0.01814606921467975
+      ],
+      [
+       1792695680,
+       0.0166556636313727
+      ],
+      [
+       1792695710,
+       0.014982916019691681
+      ],
+      [
+       1792695740,
+       0.015049406328700547
+      ],
+      [
+       1792695770,
+       0.019893984147846818
+      ],
+      [
+       1792695800,
+       0.01766315678823697
+      ],
+      [
+       1792695830,
+       0.03220150495300458
+      ],
+      [
+       1792695860,
+       0.013666912391129656
+      ],
+      [
+       1792695890,
+       0.014322754434595531
+      ],
+      [
+       1792695920,
+       0.015418406949953771
+      ],
+      [
+       1792695950,
+       0.015654069670548422
+      ],
+      [
+       1792695980,
+       0.016311256186953817
+      ],
+      [
+       1792696010,
+       0.014356630971074643
+      ],
+      [
+       1792696040,
+       0.015248577423292664
+      ],
+      [
+       1792696070,
+       0.015245268014298576
+      ],
+      [
+       1792696100,
+       0.014986801637674707
+      ],
+      [
+       1792696130,
+       0.01470785927689958
+      ],
+      [
+       1792696160,
+       0.016118104451037868
+      ],
+      [
+       1792696190,
+       0.016313405959436714
+      ],
+      [
+       1792696220,
+       0.01672911390435526
+      ],
+      [
+       1792696250,
+       0.016461646330991914
+      ],
+      [
+       1792696280,
+       0.001979918994871795
+      ]
+     ],
+     "mem_series": [
+      [
+       1792694540,
+       0.044
+      ],
+      [
+       1792694570,
+       0.069
+      ],
+      [
+       1792694600,
+       0.069
+      ],
+      [
+       1792694630,
+       0.073
+      ],
+      [
+       1792694660,
+       0.1
+      ],
+      [
+       1792694690,
+       0.1
+      ],
+      [
+       1792694720,
+       0.1
+      ],
+      [
+       1792694750,
+       0.1
+      ],
+      [
+       1792694780,
+       0.1
+      ],
+      [
+       1792694810,
+       0.063
+      ],
+      [
+       1792694840,
+       0.063
+      ],
+      [
+       1792694870,
+       0.095
+      ],
+      [
+       1792694900,
+       0.099
+      ],
+      [
+       1792694930,
+       0.126
+      ],
+      [
+       1792694960,
+       0.128
+      ],
+      [
+       1792694990,
+       0.128
+      ],
+      [
+       1792695020,
+       0.128
+      ],
+      [
+       1792695050,
+       0.128
+      ],
+      [
+       1792695080,
+       0.128
+      ],
+      [
+       1792695110,
+       0.128
+      ],
+      [
+       1792695140,
+       0.097
+      ],
+      [
+       1792695170,
+       0.097
+      ],
+      [
+       1792695200,
+       0.065
+      ],
+      [
+       1792695230,
+       0.069
+      ],
+      [
+       1792695260,
+       0.068
+      ],
+      [
+       1792695290,
+       0.068
+      ],
+      [
+       1792695320,
+       0.072
+      ],
+      [
+       1792695350,
+       0.106
+      ],
+      [
+       1792695380,
+       0.106
+      ],
+      [
+       1792695410,
+       0.106
+      ],
+      [
+       1792695440,
+       0.106
+      ],
+      [
+       1792695470,
+       0.106
+      ],
+      [
+       1792695500,
+       0.106
+      ],
+      [
+       1792695530,
+       0.073
+      ],
+      [
+       1792695560,
+       0.073
+      ],
+      [
+       1792695590,
+       0.08
+      ],
+      [
+       1792695620,
+       0.107
+      ],
+      [
+       1792695650,
+       0.106
+      ],
+      [
+       1792695680,
+       0.107
+      ],
+      [
+       1792695710,
+       0.107
+      ],
+      [
+       1792695740,
+       0.11
+      ],
+      [
+       1792695770,
+       0.145
+      ],
+      [
+       1792695800,
+       0.145
+      ],
+      [
+       1792695830,
+       0.18
+      ],
+      [
+       1792695860,
+       0.18
+      ],
+      [
+       1792695890,
+       0.144
+      ],
+      [
+       1792695920,
+       0.144
+      ],
+      [
+       1792695950,
+       0.112
+      ],
+      [
+       1792695980,
+       0.116
+      ],
+      [
+       1792696010,
+       0.144
+      ],
+      [
+       1792696040,
+       0.144
+      ],
+      [
+       1792696070,
+       0.107
+      ],
+      [
+       1792696100,
+       0.107
+      ],
+      [
+       1792696130,
+       0.069
+      ],
+      [
+       1792696160,
+       0.069
+      ],
+      [
+       1792696190,
+       0.069
+      ],
+      [
+       1792696220,
+       0.069
+      ],
+      [
+       1792696250,
+       0.069
+      ],
+      [
+       1792696280,
+       0.073
+      ],
+      [
+       1792696310,
+       0.036
+      ]
+     ],
+     "log_tail": [
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/main.py\", line 412, in main",
+      "22:41:35 std     run(",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/main.py\", line 579, in run",
+      "22:41:35 std     server.run()",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 65, in run",
+      "22:41:35 std     return asyncio.run(self.serve(sockets=sockets))",
+      "22:41:35 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/asyncio/runners.py\", line 195, in run",
+      "22:41:35 std     return runner.run(main)",
+      "22:41:35 std            ^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/asyncio/runners.py\", line 118, in run",
+      "22:41:35 std     return self._loop.run_until_complete(task)",
+      "22:41:35 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/asyncio/base_events.py\", line 691, in run_until_complete",
+      "22:41:35 std     return future.result()",
+      "22:41:35 std            ^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 69, in serve",
+      "22:41:35 std     await self._serve(sockets)",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 76, in _serve",
+      "22:41:35 std     config.load()",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/config.py\", line 434, in load",
+      "22:41:35 std     self.loaded_app = import_from_string(self.app)",
+      "22:41:35 std                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/importer.py\", line 19, in import_from_string",
+      "22:41:35 std     module = importlib.import_module(module_str)",
+      "22:41:35 std              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/importlib/__init__.py\", line 90, in import_module",
+      "22:41:35 std     return _bootstrap._gcd_import(name[level:], package, level)",
+      "22:41:35 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import",
+      "22:41:35 std   File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load",
+      "22:41:35 std   File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked",
+      "22:41:35 std   File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked",
+      "22:41:35 std   File \"<frozen importlib._bootstrap_external>\", line 999, in exec_module",
+      "22:41:35 std   File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed",
+      "22:41:35 std   File \"/app/main.py\", line 11, in <module>",
+      "22:41:35 std     PAYMENT_GATEWAY_KEY = os.environ[\"PAYMENT_GATEWAY_KEY\"]  # required: the shop cannot take payments without it",
+      "22:41:35 std                           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"<frozen os>\", line 714, in __getitem__",
+      "22:41:35 std KeyError: 'PAYMENT_GATEWAY_KEY'"
+     ],
+     "recent_ops": [
+      {
+       "ts": 1792696310.3339887,
+       "action": "propose",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696299.535382,
+       "action": "propose",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696288.0691564,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696287.8422477,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696287.5553548,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696226.3976958,
+       "action": "memory_add",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792696214.2495224,
+       "action": "scenario:missing_env",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792696047.2793732,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696006.1900303,
+       "action": "memory_add",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792696005.9425979,
+       "action": "verify",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792695995.168758,
+       "action": "apply_code_fix",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695969.559547,
+       "action": "diag.log_insights",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695966.9909146,
+       "action": "diag.log_insights",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695966.3401937,
+       "action": "diag.log_insights",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695954.898586,
+       "action": "diag.container_exec",
+       "actor": "owner"
+      }
+     ],
+     "logs": {
+      "lines": 406,
+      "requests": 10,
+      "status_counts": {
+       "200": 10
+      },
+      "error_rate": 0.0,
+      "errors_5xx": 0,
+      "paths_5xx": {},
+      "slow": [],
+      "oom": [],
+      "missing_env": {
+       "PAYMENT_GATEWAY_KEY": 7
+      },
+      "conn_errors": [],
+      "startups": 0,
+      "shutdowns": 2,
+      "restart_loop": false,
+      "first_ts": 1792696005.4553478,
+      "last_ts": 1792696295.5558338,
+      "previous_release_tracebacks": 2,
+      "tracebacks": [
+       {
+        "signature": "KeyError@/app/main.py:11",
+        "exc": "KeyError",
+        "msg": "'PAYMENT_GATEWAY_KEY'",
+        "count": 7,
+        "top_frame": {
+         "file": "/app/main.py",
+         "line": 11,
+         "func": "<module>"
+        },
+        "sample": "           ^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 69, in serve\n    await self._serve(sockets)\n  File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 76, in _serve\n    config.load()\n  File \"/usr/local/lib/python3.12/site-packages/uvicorn/config.py\", line 434, in load\n    self.loaded_app = import_from_string(self.app)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/uvicorn/importer.py\", line 19, in import_from_string\n    module = importlib.import_module(module_str)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/importlib/__init__.py\", line 90, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked\n  File \"<frozen importlib._bootstrap_external>\", line 999, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"/app/main.py\", line 11, in <module>\n    PAYMENT_GATEWAY_KEY = os.environ[\"PAYMENT_GATEWAY_KEY\"]  # required: the shop cannot take payments without it\n                          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 714, in __getitem__\nKeyError: 'PAYMENT_GATEWAY_KEY'",
+        "frames": [
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 1387,
+          "func": "_gcd_import"
+         },
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 1360,
+          "func": "_find_and_load"
+         },
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 1331,
+          "func": "_find_and_load_unlocked"
+         },
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 935,
+          "func": "_load_unlocked"
+         },
+         {
+          "file": "<frozen importlib._bootstrap_external>",
+          "line": 999,
+          "func": "exec_module"
+         },
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 488,
+          "func": "_call_with_frames_removed"
+         },
+         {
+          "file": "/app/main.py",
+          "line": 11,
+          "func": "<module>"
+         },
+         {
+          "file": "<frozen os>",
+          "line": 714,
+          "func": "__getitem__"
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "llm_used": false
+   },
+   "fingerprint": "build_failed",
+   "timeline": [
+    {
+     "ts": 1792696287.9823182,
+     "text": "رخداد شناسایی شد: استقرار نسخه‌ی جدید شکست خورد"
+    },
+    {
+     "ts": 1792696321.5217242,
+     "text": "تشخیص: متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید (اطمینان 90٪)"
+    },
+    {
+     "ts": 1792696321.882575,
+     "text": "کارت تأیید ساخته شد: تنظیم متغیر PAYMENT_GATEWAY_KEY در demo-shop"
+    },
+    {
+     "ts": 1792696335.2979746,
+     "text": "اقدام اجرا شد: تنظیم متغیر PAYMENT_GATEWAY_KEY در demo-shop — در حال راستی‌آزمایی"
+    },
+    {
+     "ts": 1792696347.242739,
+     "text": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 403ms)، زمان پاسخ ✓ (403ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)، کانتینر جدید بالا آمد ✓ (0 ثانیه پس از اقدام)، متغیر محیطی ✓ (PAYMENT_GATEWAY_KEY)"
+    }
+   ]
+  },
+  {
+   "id": "inc_1d02e196e0cf",
+   "app": "demo-shop",
+   "kind": "crash",
+   "severity": "high",
+   "title": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+   "status": "resolved",
+   "opened_at": 1792696287.7716088,
+   "updated_at": 1792696526.6731684,
+   "resolved_at": 1792696526.6731684,
+   "diagnosis": {
+    "app": "demo-shop",
+    "ts": 1792696309.9620638,
+    "healthy": false,
+    "hypotheses": [
+     {
+      "id": "missing_env",
+      "title": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+      "confidence": 0.9,
+      "evidence": [
+       "خطای برنامه: متغیر «PAYMENT_GATEWAY_KEY» پیدا نشد (×7)",
+       "متغیرهای فعلی: APP_VERSION, CHAOS_TOKEN",
+       "برنامه مدام ری‌استارت می‌شود (crash loop)"
+      ],
+      "fixes": [
+       {
+        "tool": "set_env",
+        "args": {
+         "app": "demo-shop",
+         "key": "PAYMENT_GATEWAY_KEY",
+         "restore": false
+        },
+        "label": "بازگرداندن متغیر PAYMENT_GATEWAY_KEY"
+       }
+      ],
+      "kind": "config"
+     },
+     {
+      "id": "build_failed",
+      "title": "بیلد نسخه‌ی جدید شکست خورد",
+      "confidence": 0.7,
+      "evidence": [
+       "ریلیز v17 در وضعیت UNHEALTHY",
+       "failReason: APP_CRASHED",
+       "نسخه‌ی قبلی هنوز در حال سرویس‌دهی است (کاربران آسیبی ندیده‌اند)"
+      ],
+      "fixes": [
+       {
+        "tool": "propose_code_fix",
+        "args": {
+         "app": "demo-shop"
+        },
+        "label": "اصلاح خودکار کد/وابستگی و استقرار مجدد"
+       }
+      ],
+      "kind": "build"
+     }
+    ],
+    "summary": null,
+    "next_steps": [],
+    "evidence": {
+     "status": {
+      "status": "ACTIVE",
+      "scale": 1,
+      "planID": "small-g2",
+      "bundlePlanID": "standard",
+      "zeroDowntime": true,
+      "hourlyPrice": 659.72,
+      "bundleHourlyPrice": 659.72,
+      "isDeployed": true
+     },
+     "probe": {
+      "url": "https://demo-shop.liara.run/",
+      "status": 502,
+      "latency_ms": 131,
+      "ok": false,
+      "body_snippet": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <meta charset=\"utf-8\">\n    <title>Liara | Application Error</title>\n    <style media=\"screen\">\n      html,body,iframe {\n        margin: 0;\n        padding: 0;\n      }\n      html,body {\n      ",
+      "error": null
+     },
+     "env_keys": [
+      "APP_VERSION",
+      "CHAOS_TOKEN"
+     ],
+     "env_removed_since_last_seen": [],
+     "releases": [
+      {
+       "_id": "6ada5f9638253e6cdf32415e",
+       "tag": "v17",
+       "type": "ENV_UPDATE",
+       "state": "UNHEALTHY",
+       "message": "Negahban fix f067a7a",
+       "createdAt": "2026-10-22T19:10:14.665Z",
+       "finishedAt": null,
+       "failReason": "APP_CRASHED"
+      },
+      {
+       "_id": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "Negahban fix f067a7a",
+       "createdAt": "2026-10-22T19:05:48.896Z",
+       "finishedAt": "2026-10-22T19:05:59.345Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada5ddd0e01dbee0e9e884b",
+       "tag": "v15",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "refactor: simplify discount (by developer)",
+       "createdAt": "2026-10-22T19:02:53.967Z",
+       "finishedAt": "2026-10-22T19:03:08.577Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada5da5b8e65d29b9725c49",
+       "tag": "v14",
+       "type": "ROLLBACK",
+       "state": "READY",
+       "message": "redeploy current workspace source (requested by ow",
+       "createdAt": "2026-10-22T19:01:57.774Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada5d3738253e6cdf31ec69",
+       "tag": "v13",
+       "type": "ENV_UPDATE",
+       "state": "READY",
+       "message": "redeploy current workspace source (requested by ow",
+       "createdAt": "2026-10-22T19:00:07.938Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada5be1b8e65d29b97238e0",
+       "tag": "v12",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "redeploy current workspace source (requested by ow",
+       "createdAt": "2026-10-22T18:54:25.302Z",
+       "finishedAt": "2026-10-22T18:54:46.612Z",
+       "failReason": null
+      }
+     ],
+     "build": {
+      "error_lines": [],
+      "missing_package": null,
+      "tail": [],
+      "failReason": "APP_CRASHED"
+     },
+     "events": [
+      {
+       "time": 1792696258,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696262,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696264,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696268,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696269,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696274,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696277,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696280,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696283,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696288,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696292,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696296,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      }
+     ],
+     "cpu": {
+      "n": 58,
+      "last": 0.011976773327354027,
+      "mean": 0.015077966920544458,
+      "peak": 0.030437192737972435,
+      "min": 0.0019902639789393614,
+      "slope_per_min": -7.049590640624425e-05,
+      "monotonic_rise": 0.58,
+      "limit": 0.5,
+      "util_last": 0.024,
+      "util_peak": 0.061,
+      "sustained_high": false,
+      "sustained_low": true
+     },
+     "mem": {
+      "n": 61,
+      "last": 0.059232076009114586,
+      "mean": 0.09868277878057762,
+      "peak": 0.17989730834960938,
+      "min": 0.03571319580078125,
+      "slope_per_min": 0.0007444780128838082,
+      "monotonic_rise": 0.63,
+      "limit": 0.5,
+      "util_last": 0.118,
+      "util_peak": 0.36,
+      "sustained_high": false,
+      "sustained_low": false,
+      "minutes_to_limit": 592.0
+     },
+     "cpu_series": [
+      [
+       1792694499,
+       0.008059417890889025
+      ],
+      [
+       1792694559,
+       0.017797218447430662
+      ],
+      [
+       1792694589,
+       0.020104311905597094
+      ],
+      [
+       1792694619,
+       0.016281683579061595
+      ],
+      [
+       1792694649,
+       0.030437192737972435
+      ],
+      [
+       1792694679,
+       0.015100615639826702
+      ],
+      [
+       1792694709,
+       0.015006958666666665
+      ],
+      [
+       1792694739,
+       0.01585410116818143
+      ],
+      [
+       1792694769,
+       0.016197719582720635
+      ],
+      [
+       1792694799,
+       0.015743173433190708
+      ],
+      [
+       1792694829,
+       0.016084084330875624
+      ],
+      [
+       1792694889,
+       0.007194768154862399
+      ],
+      [
+       1792694919,
+       0.020179786666666668
+      ],
+      [
+       1792694949,
+       0.01767248553069468
+      ],
+      [
+       1792694979,
+       0.017306739830077442
+      ],
+      [
+       1792695009,
+       0.016750279369342036
+      ],
+      [
+       1792695039,
+       0.016200219986390912
+      ],
+      [
+       1792695069,
+       0.016884749047072142
+      ],
+      [
+       1792695099,
+       0.016991585129389548
+      ],
+      [
+       1792695129,
+       0.017703155184421636
+      ],
+      [
+       1792695159,
+       0.018203059327304174
+      ],
+      [
+       1792695189,
+       0.018061125646467995
+      ],
+      [
+       1792695219,
+       0.018896925868337466
+      ],
+      [
+       1792695249,
+       0.008883593333333334
+      ],
+      [
+       1792695279,
+       0.007740540741371571
+      ],
+      [
+       1792695309,
+       0.00776940001680314
+      ],
+      [
+       1792695339,
+       0.01825381173076879
+      ],
+      [
+       1792695369,
+       0.007965662222222223
+      ],
+      [
+       1792695399,
+       0.008384348087032202
+      ],
+      [
+       1792695429,
+       0.00794251235589431
+      ],
+      [
+       1792695459,
+       0.008456653824317838
+      ],
+      [
+       1792695489,
+       0.00867987860883858
+      ],
+      [
+       1792695519,
+       0.008559602435897436
+      ],
+      [
+       1792695549,
+       0.008707937496458085
+      ],
+      [
+       1792695579,
+       0.008973942657159657
+      ],
+      [
+       1792695609,
+       0.01758285979750779
+      ],
+      [
+       1792695639,
+       0.029633300032826864
+      ],
+      [
+       1792695669,
+       0.014012989807143455
+      ],
+      [
+       1792695699,
+       0.016180269197804575
+      ],
+      [
+       1792695729,
+       0.015478064511909733
+      ],
+      [
+       1792695759,
+       0.03031307485138071
+      ],
+      [
+       1792695789,
+       0.015107606638344038
+      ],
+      [
+       1792695819,
+       0.016426466948201324
+      ],
+      [
+       1792695849,
+       0.01670755463183447
+      ],
+      [
+       1792695879,
+       0.01435944987633206
+      ],
+      [
+       1792695909,
+       0.01394796954076206
+      ],
+      [
+       1792695939,
+       0.015790406790863583
+      ],
+      [
+       1792695969,
+       0.016437818386115778
+      ],
+      [
+       1792695999,
+       0.016854705915611105
+      ],
+      [
+       1792696029,
+       0.016346999252326508
+      ],
+      [
+       1792696059,
+       0.013521843117713922
+      ],
+      [
+       1792696089,
+       0.015337634288652162
+      ],
+      [
+       1792696119,
+       0.014500057617563544
+      ],
+      [
+       1792696149,
+       0.015200080961974838
+      ],
+      [
+       1792696179,
+       0.01582336861111111
+      ],
+      [
+       1792696209,
+       0.016842474345453783
+      ],
+      [
+       1792696239,
+       0.017097581657668937
+      ],
+      [
+       1792696299,
+       0.0019902639789393614
+      ]
+     ],
+     "mem_series": [
+      [
+       1792694529,
+       0.044
+      ],
+      [
+       1792694559,
+       0.069
+      ],
+      [
+       1792694589,
+       0.069
+      ],
+      [
+       1792694619,
+       0.069
+      ],
+      [
+       1792694649,
+       0.1
+      ],
+      [
+       1792694679,
+       0.1
+      ],
+      [
+       1792694709,
+       0.1
+      ],
+      [
+       1792694739,
+       0.1
+      ],
+      [
+       1792694769,
+       0.1
+      ],
+      [
+       1792694799,
+       0.063
+      ],
+      [
+       1792694829,
+       0.063
+      ],
+      [
+       1792694859,
+       0.068
+      ],
+      [
+       1792694889,
+       0.095
+      ],
+      [
+       1792694919,
+       0.126
+      ],
+      [
+       1792694949,
+       0.099
+      ],
+      [
+       1792694979,
+       0.128
+      ],
+      [
+       1792695009,
+       0.128
+      ],
+      [
+       1792695039,
+       0.128
+      ],
+      [
+       1792695069,
+       0.128
+      ],
+      [
+       1792695099,
+       0.128
+      ],
+      [
+       1792695129,
+       0.128
+      ],
+      [
+       1792695159,
+       0.097
+      ],
+      [
+       1792695189,
+       0.065
+      ],
+      [
+       1792695219,
+       0.069
+      ],
+      [
+       1792695249,
+       0.098
+      ],
+      [
+       1792695279,
+       0.068
+      ],
+      [
+       1792695309,
+       0.068
+      ],
+      [
+       1792695339,
+       0.105
+      ],
+      [
+       1792695369,
+       0.106
+      ],
+      [
+       1792695399,
+       0.106
+      ],
+      [
+       1792695429,
+       0.106
+      ],
+      [
+       1792695459,
+       0.106
+      ],
+      [
+       1792695489,
+       0.106
+      ],
+      [
+       1792695519,
+       0.073
+      ],
+      [
+       1792695549,
+       0.073
+      ],
+      [
+       1792695579,
+       0.073
+      ],
+      [
+       1792695609,
+       0.104
+      ],
+      [
+       1792695639,
+       0.106
+      ],
+      [
+       1792695669,
+       0.107
+      ],
+      [
+       1792695699,
+       0.107
+      ],
+      [
+       1792695729,
+       0.11
+      ],
+      [
+       1792695759,
+       0.145
+      ],
+      [
+       1792695789,
+       0.145
+      ],
+      [
+       1792695819,
+       0.15
+      ],
+      [
+       1792695849,
+       0.18
+      ],
+      [
+       1792695879,
+       0.144
+      ],
+      [
+       1792695909,
+       0.144
+      ],
+      [
+       1792695939,
+       0.112
+      ],
+      [
+       1792695969,
+       0.113
+      ],
+      [
+       1792695999,
+       0.116
+      ],
+      [
+       1792696029,
+       0.144
+      ],
+      [
+       1792696059,
+       0.107
+      ],
+      [
+       1792696089,
+       0.107
+      ],
+      [
+       1792696119,
+       0.107
+      ],
+      [
+       1792696149,
+       0.069
+      ],
+      [
+       1792696179,
+       0.069
+      ],
+      [
+       1792696209,
+       0.069
+      ],
+      [
+       1792696239,
+       0.069
+      ],
+      [
+       1792696269,
+       0.073
+      ],
+      [
+       1792696299,
+       0.036
+      ]
+     ],
+     "log_tail": [
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/main.py\", line 412, in main",
+      "22:41:35 std     run(",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/main.py\", line 579, in run",
+      "22:41:35 std     server.run()",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 65, in run",
+      "22:41:35 std     return asyncio.run(self.serve(sockets=sockets))",
+      "22:41:35 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/asyncio/runners.py\", line 195, in run",
+      "22:41:35 std     return runner.run(main)",
+      "22:41:35 std            ^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/asyncio/runners.py\", line 118, in run",
+      "22:41:35 std     return self._loop.run_until_complete(task)",
+      "22:41:35 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/asyncio/base_events.py\", line 691, in run_until_complete",
+      "22:41:35 std     return future.result()",
+      "22:41:35 std            ^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 69, in serve",
+      "22:41:35 std     await self._serve(sockets)",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 76, in _serve",
+      "22:41:35 std     config.load()",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/config.py\", line 434, in load",
+      "22:41:35 std     self.loaded_app = import_from_string(self.app)",
+      "22:41:35 std                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/importer.py\", line 19, in import_from_string",
+      "22:41:35 std     module = importlib.import_module(module_str)",
+      "22:41:35 std              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"/usr/local/lib/python3.12/importlib/__init__.py\", line 90, in import_module",
+      "22:41:35 std     return _bootstrap._gcd_import(name[level:], package, level)",
+      "22:41:35 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import",
+      "22:41:35 std   File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load",
+      "22:41:35 std   File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked",
+      "22:41:35 std   File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked",
+      "22:41:35 std   File \"<frozen importlib._bootstrap_external>\", line 999, in exec_module",
+      "22:41:35 std   File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed",
+      "22:41:35 std   File \"/app/main.py\", line 11, in <module>",
+      "22:41:35 std     PAYMENT_GATEWAY_KEY = os.environ[\"PAYMENT_GATEWAY_KEY\"]  # required: the shop cannot take payments without it",
+      "22:41:35 std                           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:35 std   File \"<frozen os>\", line 714, in __getitem__",
+      "22:41:35 std KeyError: 'PAYMENT_GATEWAY_KEY'"
+     ],
+     "recent_ops": [
+      {
+       "ts": 1792696299.535382,
+       "action": "propose",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696288.0691564,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696287.8422477,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696287.5553548,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696226.3976958,
+       "action": "memory_add",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792696214.2495224,
+       "action": "scenario:missing_env",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792696047.2793732,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696006.1900303,
+       "action": "memory_add",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792696005.9425979,
+       "action": "verify",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792695995.168758,
+       "action": "apply_code_fix",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695969.559547,
+       "action": "diag.log_insights",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695966.9909146,
+       "action": "diag.log_insights",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695966.3401937,
+       "action": "diag.log_insights",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695954.898586,
+       "action": "diag.container_exec",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695954.796925,
+       "action": "exec",
+       "actor": "owner"
+      }
+     ],
+     "logs": {
+      "lines": 406,
+      "requests": 10,
+      "status_counts": {
+       "200": 10
+      },
+      "error_rate": 0.0,
+      "errors_5xx": 0,
+      "paths_5xx": {},
+      "slow": [],
+      "oom": [],
+      "missing_env": {
+       "PAYMENT_GATEWAY_KEY": 7
+      },
+      "conn_errors": [],
+      "startups": 0,
+      "shutdowns": 2,
+      "restart_loop": false,
+      "first_ts": 1792696005.4553478,
+      "last_ts": 1792696295.5558338,
+      "previous_release_tracebacks": 2,
+      "tracebacks": [
+       {
+        "signature": "KeyError@/app/main.py:11",
+        "exc": "KeyError",
+        "msg": "'PAYMENT_GATEWAY_KEY'",
+        "count": 7,
+        "top_frame": {
+         "file": "/app/main.py",
+         "line": 11,
+         "func": "<module>"
+        },
+        "sample": "           ^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 69, in serve\n    await self._serve(sockets)\n  File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 76, in _serve\n    config.load()\n  File \"/usr/local/lib/python3.12/site-packages/uvicorn/config.py\", line 434, in load\n    self.loaded_app = import_from_string(self.app)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/uvicorn/importer.py\", line 19, in import_from_string\n    module = importlib.import_module(module_str)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/importlib/__init__.py\", line 90, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked\n  File \"<frozen importlib._bootstrap_external>\", line 999, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"/app/main.py\", line 11, in <module>\n    PAYMENT_GATEWAY_KEY = os.environ[\"PAYMENT_GATEWAY_KEY\"]  # required: the shop cannot take payments without it\n                          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 714, in __getitem__\nKeyError: 'PAYMENT_GATEWAY_KEY'",
+        "frames": [
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 1387,
+          "func": "_gcd_import"
+         },
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 1360,
+          "func": "_find_and_load"
+         },
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 1331,
+          "func": "_find_and_load_unlocked"
+         },
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 935,
+          "func": "_load_unlocked"
+         },
+         {
+          "file": "<frozen importlib._bootstrap_external>",
+          "line": 999,
+          "func": "exec_module"
+         },
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 488,
+          "func": "_call_with_frames_removed"
+         },
+         {
+          "file": "/app/main.py",
+          "line": 11,
+          "func": "<module>"
+         },
+         {
+          "file": "<frozen os>",
+          "line": 714,
+          "func": "__getitem__"
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "llm_used": false
+   },
+   "fingerprint": "crash",
+   "timeline": [
+    {
+     "ts": 1792696287.7716088,
+     "text": "رخداد شناسایی شد: کرش و ری‌استارت مکرر کانتینر"
+    },
+    {
+     "ts": 1792696309.9637382,
+     "text": "تشخیص: متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید (اطمینان 90٪)"
+    },
+    {
+     "ts": 1792696310.4081225,
+     "text": "کارت تأیید ساخته شد: تنظیم متغیر PAYMENT_GATEWAY_KEY در demo-shop"
+    },
+    {
+     "ts": 1792696319.815423,
+     "text": "اقدام اجرا شد: تنظیم متغیر PAYMENT_GATEWAY_KEY در demo-shop — در حال راستی‌آزمایی"
+    },
+    {
+     "ts": 1792696439.7765,
+     "text": "⚠️ راستی‌آزمایی ناموفق: سلامت HTTP ✓ (HTTP 200 در 47ms)، زمان پاسخ ✓ (47ms (حد مجاز 2500ms))، خطای جدید در لاگ ✗ (0 پاسخ 5xx، 1 traceback از زمان اقدام)، کانتینر جدید بالا آمد ✓ (0 ثانیه پس از اقدام)، متغیر محیطی ✓ (PAYMENT_GATEWAY_KEY)"
+    },
+    {
+     "ts": 1792696526.673165,
+     "text": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    }
+   ]
+  },
+  {
+   "id": "inc_6408dda40b27",
+   "app": "demo-shop",
+   "kind": "errors",
+   "severity": "high",
+   "title": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+   "status": "resolved",
+   "opened_at": 1792696287.4854834,
+   "updated_at": 1792696526.9047127,
+   "resolved_at": 1792696526.9047127,
+   "diagnosis": {
+    "app": "demo-shop",
+    "ts": 1792696299.108125,
+    "healthy": false,
+    "hypotheses": [
+     {
+      "id": "missing_env",
+      "title": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+      "confidence": 0.9,
+      "evidence": [
+       "خطای برنامه: متغیر «PAYMENT_GATEWAY_KEY» پیدا نشد (×5)",
+       "متغیرهای فعلی: APP_VERSION, CHAOS_TOKEN",
+       "برنامه مدام ری‌استارت می‌شود (crash loop)",
+       "این متغیر در بررسی قبلی وجود داشت و اخیراً حذف شده"
+      ],
+      "fixes": [
+       {
+        "tool": "set_env",
+        "args": {
+         "app": "demo-shop",
+         "key": "PAYMENT_GATEWAY_KEY",
+         "restore": true
+        },
+        "label": "بازگرداندن متغیر PAYMENT_GATEWAY_KEY"
+       }
+      ],
+      "kind": "config"
+     },
+     {
+      "id": "build_failed",
+      "title": "بیلد نسخه‌ی جدید شکست خورد",
+      "confidence": 0.7,
+      "evidence": [
+       "ریلیز v17 در وضعیت UNHEALTHY",
+       "failReason: APP_CRASHED",
+       "نسخه‌ی قبلی هنوز در حال سرویس‌دهی است (کاربران آسیبی ندیده‌اند)"
+      ],
+      "fixes": [
+       {
+        "tool": "propose_code_fix",
+        "args": {
+         "app": "demo-shop"
+        },
+        "label": "اصلاح خودکار کد/وابستگی و استقرار مجدد"
+       }
+      ],
+      "kind": "build"
+     }
+    ],
+    "summary": null,
+    "next_steps": [],
+    "evidence": {
+     "status": {
+      "status": "ACTIVE",
+      "scale": 1,
+      "planID": "small-g2",
+      "bundlePlanID": "standard",
+      "zeroDowntime": true,
+      "hourlyPrice": 659.72,
+      "bundleHourlyPrice": 659.72,
+      "isDeployed": true
+     },
+     "probe": {
+      "url": "https://demo-shop.liara.run/",
+      "status": 502,
+      "latency_ms": 201,
+      "ok": false,
+      "body_snippet": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <meta charset=\"utf-8\">\n    <title>Liara | Application Error</title>\n    <style media=\"screen\">\n      html,body,iframe {\n        margin: 0;\n        padding: 0;\n      }\n      html,body {\n      ",
+      "error": null
+     },
+     "env_keys": [
+      "APP_VERSION",
+      "CHAOS_TOKEN"
+     ],
+     "env_removed_since_last_seen": [
+      "PAYMENT_GATEWAY_KEY"
+     ],
+     "releases": [
+      {
+       "_id": "6ada5f9638253e6cdf32415e",
+       "tag": "v17",
+       "type": "ENV_UPDATE",
+       "state": "UNHEALTHY",
+       "message": "Negahban fix f067a7a",
+       "createdAt": "2026-10-22T19:10:14.665Z",
+       "finishedAt": null,
+       "failReason": "APP_CRASHED"
+      },
+      {
+       "_id": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "Negahban fix f067a7a",
+       "createdAt": "2026-10-22T19:05:48.896Z",
+       "finishedAt": "2026-10-22T19:05:59.345Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada5ddd0e01dbee0e9e884b",
+       "tag": "v15",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "refactor: simplify discount (by developer)",
+       "createdAt": "2026-10-22T19:02:53.967Z",
+       "finishedAt": "2026-10-22T19:03:08.577Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada5da5b8e65d29b9725c49",
+       "tag": "v14",
+       "type": "ROLLBACK",
+       "state": "READY",
+       "message": "redeploy current workspace source (requested by ow",
+       "createdAt": "2026-10-22T19:01:57.774Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada5d3738253e6cdf31ec69",
+       "tag": "v13",
+       "type": "ENV_UPDATE",
+       "state": "READY",
+       "message": "redeploy current workspace source (requested by ow",
+       "createdAt": "2026-10-22T19:00:07.938Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada5be1b8e65d29b97238e0",
+       "tag": "v12",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "redeploy current workspace source (requested by ow",
+       "createdAt": "2026-10-22T18:54:25.302Z",
+       "finishedAt": "2026-10-22T18:54:46.612Z",
+       "failReason": null
+      }
+     ],
+     "build": {
+      "error_lines": [],
+      "missing_package": null,
+      "tail": [],
+      "failReason": "APP_CRASHED"
+     },
+     "events": [
+      {
+       "time": 1792696251,
+       "action": "create",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696253,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696257,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696258,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696262,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696264,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696268,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696269,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696274,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696277,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696280,
+       "action": "die",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      },
+      {
+       "time": 1792696283,
+       "action": "start",
+       "id": "51d8932ad4a0a1c3f514fe9b5d7f8005ba307afd3198bb44b3fe72e9c93553b5",
+       "release": "6ada5e8cb3b5ca83e1f67b2b",
+       "tag": "v16"
+      }
+     ],
+     "cpu": {
+      "n": 59,
+      "last": 0.012083264874802206,
+      "mean": 0.015646057188438284,
+      "peak": 0.04414615354740589,
+      "min": 0.0026873487384615384,
+      "slope_per_min": -3.681981964042356e-05,
+      "monotonic_rise": 0.59,
+      "limit": 0.5,
+      "util_last": 0.024,
+      "util_peak": 0.088,
+      "sustained_high": false,
+      "sustained_low": true
+     },
+     "mem": {
+      "n": 61,
+      "last": 0.07015482584635417,
+      "mean": 0.10085334152471824,
+      "peak": 0.17989730834960938,
+      "min": 0.037540435791015625,
+      "slope_per_min": 0.001006096043579166,
+      "monotonic_rise": 0.68,
+      "limit": 0.5,
+      "util_last": 0.14,
+      "util_peak": 0.36,
+      "sustained_high": false,
+      "sustained_low": false,
+      "minutes_to_limit": 427.2
+     },
+     "cpu_series": [
+      [
+       1792694488,
+       0.008041030299718588
+      ],
+      [
+       1792694518,
+       0.007814629034484771
+      ],
+      [
+       1792694578,
+       0.01678054948213791
+      ],
+      [
+       1792694608,
+       0.018514847747303675
+      ],
+      [
+       1792694638,
+       0.028832455537229018
+      ],
+      [
+       1792694668,
+       0.01590391
+      ],
+      [
+       1792694698,
+       0.014672893465630402
+      ],
+      [
+       1792694728,
+       0.014491129833643852
+      ],
+      [
+       1792694758,
+       0.01508657770872633
+      ],
+      [
+       1792694788,
+       0.015621160503240656
+      ],
+      [
+       1792694818,
+       0.016307157222222226
+      ],
+      [
+       1792694848,
+       0.01650507594935118
+      ],
+      [
+       1792694878,
+       0.008637481666666665
+      ],
+      [
+       1792694908,
+       0.023317168464243844
+      ],
+      [
+       1792694938,
+       0.01767462666666667
+      ],
+      [
+       1792694968,
+       0.04414615354740589
+      ],
+      [
+       1792694998,
+       0.01845101976251528
+      ],
+      [
+       1792695028,
+       0.01697787880356245
+      ],
+      [
+       1792695058,
+       0.017391618492285637
+      ],
+      [
+       1792695088,
+       0.017220714807236397
+      ],
+      [
+       1792695118,
+       0.017569298717000043
+      ],
+      [
+       1792695148,
+       0.01735383194882598
+      ],
+      [
+       1792695178,
+       0.018032038729012472
+      ],
+      [
+       1792695208,
+       0.018542777647058823
+      ],
+      [
+       1792695238,
+       0.008452100075956762
+      ],
+      [
+       1792695268,
+       0.009331951937101185
+      ],
+      [
+       1792695298,
+       0.00688748317954623
+      ],
+      [
+       1792695328,
+       0.007953592983522965
+      ],
+      [
+       1792695358,
+       0.007556554386356496
+      ],
+      [
+       1792695388,
+       0.00737618707745866
+      ],
+      [
+       1792695418,
+       0.008056007294381363
+      ],
+      [
+       1792695448,
+       0.007858915222127592
+      ],
+      [
+       1792695478,
+       0.008170353391028595
+      ],
+      [
+       1792695508,
+       0.008481535342309752
+      ],
+      [
+       1792695538,
+       0.008721105601080923
+      ],
+      [
+       1792695568,
+       0.008612103823673894
+      ],
+      [
+       1792695628,
+       0.03176672040500502
+      ],
+      [
+       1792695658,
+       0.01544350792525236
+      ],
+      [
+       1792695688,
+       0.014193195172894246
+      ],
+      [
+       1792695718,
+       0.016161481115587628
+      ],
+      [
+       1792695748,
+       0.036515680676054776
+      ],
+      [
+       1792695778,
+       0.01549812822054478
+      ],
+      [
+       1792695808,
+       0.01640742333333333
+      ],
+      [
+       1792695838,
+       0.04038673907794536
+      ],
+      [
+       1792695868,
+       0.01579804390094267
+      ],
+      [
+       1792695898,
+       0.013834934557275275
+      ],
+      [
+       1792695928,
+       0.014508870516241248
+      ],
+      [
+       1792695958,
+       0.015345652592592591
+      ],
+      [
+       1792695988,
+       0.017039701504052488
+      ],
+      [
+       1792696018,
+       0.012956784238589028
+      ],
+      [
+       1792696048,
+       0.014101103842713892
+      ],
+      [
+       1792696078,
+       0.013903539017261001
+      ],
+      [
+       1792696108,
+       0.014362447130486386
+      ],
+      [
+       1792696138,
+       0.015433573321939292
+      ],
+      [
+       1792696168,
+       0.015780515148752505
+      ],
+      [
+       1792696198,
+       0.016085621445275006
+      ],
+      [
+       1792696228,
+       0.016627892888888888
+      ],
+      [
+       1792696258,
+       0.01693455299705619
+      ],
+      [
+       1792696288,
+       0.0026873487384615384
+      ]
+     ],
+     "mem_series": [
+      [
+       1792694518,
+       0.038
+      ],
+      [
+       1792694548,
+       0.044
+      ],
+      [
+       1792694578,
+       0.069
+      ],
+      [
+       1792694608,
+       0.069
+      ],
+      [
+       1792694638,
+       0.1
+      ],
+      [
+       1792694668,
+       0.1
+      ],
+      [
+       1792694698,
+       0.1
+      ],
+      [
+       1792694728,
+       0.1
+      ],
+      [
+       1792694758,
+       0.1
+      ],
+      [
+       1792694788,
+       0.1
+      ],
+      [
+       1792694818,
+       0.063
+      ],
+      [
+       1792694848,
+       0.068
+      ],
+      [
+       1792694878,
+       0.095
+      ],
+      [
+       1792694908,
+       0.126
+      ],
+      [
+       1792694938,
+       0.098
+      ],
+      [
+       1792694968,
+       0.128
+      ],
+      [
+       1792694998,
+       0.128
+      ],
+      [
+       1792695028,
+       0.128
+      ],
+      [
+       1792695058,
+       0.128
+      ],
+      [
+       1792695088,
+       0.128
+      ],
+      [
+       1792695118,
+       0.128
+      ],
+      [
+       1792695148,
+       0.097
+      ],
+      [
+       1792695178,
+       0.097
+      ],
+      [
+       1792695208,
+       0.065
+      ],
+      [
+       1792695238,
+       0.098
+      ],
+      [
+       1792695268,
+       0.068
+      ],
+      [
+       1792695298,
+       0.068
+      ],
+      [
+       1792695328,
+       0.072
+      ],
+      [
+       1792695358,
+       0.106
+      ],
+      [
+       1792695388,
+       0.106
+      ],
+      [
+       1792695418,
+       0.106
+      ],
+      [
+       1792695448,
+       0.106
+      ],
+      [
+       1792695478,
+       0.106
+      ],
+      [
+       1792695508,
+       0.106
+      ],
+      [
+       1792695538,
+       0.073
+      ],
+      [
+       1792695568,
+       0.073
+      ],
+      [
+       1792695598,
+       0.08
+      ],
+      [
+       1792695628,
+       0.14
+      ],
+      [
+       1792695658,
+       0.106
+      ],
+      [
+       1792695688,
+       0.107
+      ],
+      [
+       1792695718,
+       0.107
+      ],
+      [
+       1792695748,
+       0.145
+      ],
+      [
+       1792695778,
+       0.145
+      ],
+      [
+       1792695808,
+       0.145
+      ],
+      [
+       1792695838,
+       0.18
+      ],
+      [
+       1792695868,
+       0.141
+      ],
+      [
+       1792695898,
+       0.144
+      ],
+      [
+       1792695928,
+       0.144
+      ],
+      [
+       1792695958,
+       0.112
+      ],
+      [
+       1792695988,
+       0.116
+      ],
+      [
+       1792696018,
+       0.144
+      ],
+      [
+       1792696048,
+       0.144
+      ],
+      [
+       1792696078,
+       0.107
+      ],
+      [
+       1792696108,
+       0.107
+      ],
+      [
+       1792696138,
+       0.069
+      ],
+      [
+       1792696168,
+       0.069
+      ],
+      [
+       1792696198,
+       0.069
+      ],
+      [
+       1792696228,
+       0.069
+      ],
+      [
+       1792696258,
+       0.069
+      ],
+      [
+       1792696288,
+       0.073
+      ]
+     ],
+     "log_tail": [
+      "22:41:20 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/main.py\", line 412, in main",
+      "22:41:20 std     run(",
+      "22:41:20 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/main.py\", line 579, in run",
+      "22:41:20 std     server.run()",
+      "22:41:20 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 65, in run",
+      "22:41:20 std     return asyncio.run(self.serve(sockets=sockets))",
+      "22:41:20 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:20 std   File \"/usr/local/lib/python3.12/asyncio/runners.py\", line 195, in run",
+      "22:41:20 std     return runner.run(main)",
+      "22:41:20 std            ^^^^^^^^^^^^^^^^",
+      "22:41:20 std   File \"/usr/local/lib/python3.12/asyncio/runners.py\", line 118, in run",
+      "22:41:20 std     return self._loop.run_until_complete(task)",
+      "22:41:20 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:20 std   File \"/usr/local/lib/python3.12/asyncio/base_events.py\", line 691, in run_until_complete",
+      "22:41:20 std     return future.result()",
+      "22:41:20 std            ^^^^^^^^^^^^^^^",
+      "22:41:20 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 69, in serve",
+      "22:41:20 std     await self._serve(sockets)",
+      "22:41:20 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 76, in _serve",
+      "22:41:20 std     config.load()",
+      "22:41:20 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/config.py\", line 434, in load",
+      "22:41:20 std     self.loaded_app = import_from_string(self.app)",
+      "22:41:20 std                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:20 std   File \"/usr/local/lib/python3.12/site-packages/uvicorn/importer.py\", line 19, in import_from_string",
+      "22:41:20 std     module = importlib.import_module(module_str)",
+      "22:41:20 std              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:20 std   File \"/usr/local/lib/python3.12/importlib/__init__.py\", line 90, in import_module",
+      "22:41:20 std     return _bootstrap._gcd_import(name[level:], package, level)",
+      "22:41:20 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:20 std   File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import",
+      "22:41:20 std   File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load",
+      "22:41:20 std   File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked",
+      "22:41:20 std   File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked",
+      "22:41:20 std   File \"<frozen importlib._bootstrap_external>\", line 999, in exec_module",
+      "22:41:20 std   File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed",
+      "22:41:20 std   File \"/app/main.py\", line 11, in <module>",
+      "22:41:20 std     PAYMENT_GATEWAY_KEY = os.environ[\"PAYMENT_GATEWAY_KEY\"]  # required: the shop cannot take payments without it",
+      "22:41:20 std                           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:41:20 std   File \"<frozen os>\", line 714, in __getitem__",
+      "22:41:20 std KeyError: 'PAYMENT_GATEWAY_KEY'"
+     ],
+     "recent_ops": [
+      {
+       "ts": 1792696288.0691564,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696287.8422477,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696287.5553548,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696226.3976958,
+       "action": "memory_add",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792696214.2495224,
+       "action": "scenario:missing_env",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792696047.2793732,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792696006.1900303,
+       "action": "memory_add",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792696005.9425979,
+       "action": "verify",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792695995.168758,
+       "action": "apply_code_fix",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695969.559547,
+       "action": "diag.log_insights",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695966.9909146,
+       "action": "diag.log_insights",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695966.3401937,
+       "action": "diag.log_insights",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695954.898586,
+       "action": "diag.container_exec",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695954.796925,
+       "action": "exec",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695950.4888635,
+       "action": "exec.blocked",
+       "actor": "owner"
+      }
+     ],
+     "logs": {
+      "lines": 294,
+      "requests": 10,
+      "status_counts": {
+       "200": 10
+      },
+      "error_rate": 0.0,
+      "errors_5xx": 0,
+      "paths_5xx": {},
+      "slow": [],
+      "oom": [],
+      "missing_env": {
+       "PAYMENT_GATEWAY_KEY": 5
+      },
+      "conn_errors": [],
+      "startups": 0,
+      "shutdowns": 2,
+      "restart_loop": false,
+      "first_ts": 1792696005.4553478,
+      "last_ts": 1792696280.1612115,
+      "previous_release_tracebacks": 2,
+      "tracebacks": [
+       {
+        "signature": "KeyError@/app/main.py:11",
+        "exc": "KeyError",
+        "msg": "'PAYMENT_GATEWAY_KEY'",
+        "count": 5,
+        "top_frame": {
+         "file": "/app/main.py",
+         "line": 11,
+         "func": "<module>"
+        },
+        "sample": "           ^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 69, in serve\n    await self._serve(sockets)\n  File \"/usr/local/lib/python3.12/site-packages/uvicorn/server.py\", line 76, in _serve\n    config.load()\n  File \"/usr/local/lib/python3.12/site-packages/uvicorn/config.py\", line 434, in load\n    self.loaded_app = import_from_string(self.app)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/uvicorn/importer.py\", line 19, in import_from_string\n    module = importlib.import_module(module_str)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/importlib/__init__.py\", line 90, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked\n  File \"<frozen importlib._bootstrap_external>\", line 999, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"/app/main.py\", line 11, in <module>\n    PAYMENT_GATEWAY_KEY = os.environ[\"PAYMENT_GATEWAY_KEY\"]  # required: the shop cannot take payments without it\n                          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 714, in __getitem__\nKeyError: 'PAYMENT_GATEWAY_KEY'",
+        "frames": [
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 1387,
+          "func": "_gcd_import"
+         },
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 1360,
+          "func": "_find_and_load"
+         },
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 1331,
+          "func": "_find_and_load_unlocked"
+         },
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 935,
+          "func": "_load_unlocked"
+         },
+         {
+          "file": "<frozen importlib._bootstrap_external>",
+          "line": 999,
+          "func": "exec_module"
+         },
+         {
+          "file": "<frozen importlib._bootstrap>",
+          "line": 488,
+          "func": "_call_with_frames_removed"
+         },
+         {
+          "file": "/app/main.py",
+          "line": 11,
+          "func": "<module>"
+         },
+         {
+          "file": "<frozen os>",
+          "line": 714,
+          "func": "__getitem__"
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "llm_used": false
+   },
+   "fingerprint": "errors",
+   "timeline": [
+    {
+     "ts": 1792696287.4854834,
+     "text": "رخداد شناسایی شد: خطای سرور (5xx) در پاسخ‌ها"
+    },
+    {
+     "ts": 1792696299.11025,
+     "text": "تشخیص: متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید (اطمینان 90٪)"
+    },
+    {
+     "ts": 1792696299.6094625,
+     "text": "کارت تأیید ساخته شد: تنظیم متغیر PAYMENT_GATEWAY_KEY در demo-shop"
+    },
+    {
+     "ts": 1792696526.904711,
+     "text": "سه بررسی پیاپی سالم بود؛ رخداد به‌طور خودکار بسته شد."
+    }
+   ]
+  }
+ ],
+ "proposals": [
+  {
+   "id": "prp_aaab18350301",
+   "app": "demo-shop",
+   "tool": "set_env",
+   "args": {
+    "app": "demo-shop",
+    "key": "PAYMENT_GATEWAY_KEY",
+    "restore": false
+   },
+   "title": "تنظیم متغیر PAYMENT_GATEWAY_KEY در demo-shop",
+   "why": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+   "impact": {
+    "downtime": "ری‌استارت بدون قطعی",
+    "cost": "بدون تغییر هزینه",
+    "risk": "متوسط",
+    "value": "مقدار قبلی (پنهان) بازیابی می‌شود",
+    "label": "تنظیم متغیر محیطی",
+    "before": {
+     "cpu_util": 0.005,
+     "mem_util": 0.146,
+     "latency_ms": 82,
+     "plan": "small-g2"
+    },
+    "hypothesis": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+    "confidence": 0.9
+   },
+   "rollback": "لیارا برای تغییر متغیرها یک ریلیز ENV_UPDATE می‌سازد که با «بازگشت به نسخه‌ی قبلی» برگشت‌پذیر است.",
+   "status": "unverified",
+   "created_at": 1792696310.135897,
+   "expires_at": 1792697510.1358974,
+   "origin": "orchestrator",
+   "incident_id": "inc_1d02e196e0cf",
+   "result": {
+    "app": "demo-shop",
+    "key": "PAYMENT_GATEWAY_KEY",
+    "set": true
+   },
+   "verification": {
+    "passed": false,
+    "checks": [
+     {
+      "name": "سلامت HTTP",
+      "ok": true,
+      "detail": "HTTP 200 در 47ms"
+     },
+     {
+      "name": "زمان پاسخ",
+      "ok": true,
+      "detail": "47ms (حد مجاز 2500ms)"
+     },
+     {
+      "name": "خطای جدید در لاگ",
+      "ok": false,
+      "detail": "0 پاسخ 5xx، 1 traceback از زمان اقدام"
+     },
+     {
+      "name": "کانتینر جدید بالا آمد",
+      "ok": true,
+      "detail": "0 ثانیه پس از اقدام"
+     },
+     {
+      "name": "متغیر محیطی",
+      "ok": true,
+      "detail": "PAYMENT_GATEWAY_KEY"
+     }
+    ],
+    "attempts": 8,
+    "ts": 1792696439.569501
+   },
+   "decided_by": "owner",
+   "decided_at": 1792696316.9174876,
+   "auto": 0
+  },
+  {
+   "id": "prp_111c3a528c5d",
+   "app": "demo-shop",
+   "tool": "set_env",
+   "args": {
+    "app": "demo-shop",
+    "key": "PAYMENT_GATEWAY_KEY",
+    "restore": true
+   },
+   "title": "تنظیم متغیر PAYMENT_GATEWAY_KEY در demo-shop",
+   "why": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+   "impact": {
+    "downtime": "ری‌استارت بدون قطعی",
+    "cost": "بدون تغییر هزینه",
+    "risk": "متوسط",
+    "value": "مقدار قبلی (پنهان) بازیابی می‌شود",
+    "label": "تنظیم متغیر محیطی",
+    "before": {
+     "cpu_util": 0.005,
+     "mem_util": 0.146,
+     "latency_ms": 82,
+     "plan": "small-g2"
+    },
+    "hypothesis": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+    "confidence": 0.9
+   },
+   "rollback": "لیارا برای تغییر متغیرها یک ریلیز ENV_UPDATE می‌سازد که با «بازگشت به نسخه‌ی قبلی» برگشت‌پذیر است.",
+   "status": "stale",
+   "created_at": 1792696299.3505416,
+   "expires_at": 1792697499.350542,
+   "origin": "orchestrator",
+   "incident_id": "inc_6408dda40b27",
+   "result": {
+    "error": "وضعیت برنامه از زمان پیشنهاد تغییر کرده است"
+   },
+   "verification": null,
+   "decided_by": "owner",
+   "decided_at": 1792696317.6328268,
+   "auto": 0
+  },
+  {
+   "id": "prp_c0845a568827",
+   "app": "demo-shop",
+   "tool": "set_env",
+   "args": {
+    "app": "demo-shop",
+    "key": "PAYMENT_GATEWAY_KEY",
+    "restore": false
+   },
+   "title": "تنظیم متغیر PAYMENT_GATEWAY_KEY در demo-shop",
+   "why": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+   "impact": {
+    "downtime": "ری‌استارت بدون قطعی",
+    "cost": "بدون تغییر هزینه",
+    "risk": "متوسط",
+    "value": "مقدار قبلی (پنهان) بازیابی می‌شود",
+    "label": "تنظیم متغیر محیطی",
+    "before": {
+     "cpu_util": 0.005,
+     "mem_util": 0.146,
+     "latency_ms": 82,
+     "plan": "small-g2"
+    },
+    "hypothesis": "متغیر محیطی «PAYMENT_GATEWAY_KEY» تنظیم نشده و برنامه بالا نمی‌آید",
+    "confidence": 0.9
+   },
+   "rollback": "لیارا برای تغییر متغیرها یک ریلیز ENV_UPDATE می‌سازد که با «بازگشت به نسخه‌ی قبلی» برگشت‌پذیر است.",
+   "status": "done",
+   "created_at": 1792696321.6659102,
+   "expires_at": 1792697521.6659107,
+   "origin": "orchestrator",
+   "incident_id": "inc_f1e2622e7762",
+   "result": {
+    "app": "demo-shop",
+    "key": "PAYMENT_GATEWAY_KEY",
+    "set": true
+   },
+   "verification": {
+    "passed": true,
+    "checks": [
+     {
+      "name": "سلامت HTTP",
+      "ok": true,
+      "detail": "HTTP 200 در 403ms"
+     },
+     {
+      "name": "زمان پاسخ",
+      "ok": true,
+      "detail": "403ms (حد مجاز 2500ms)"
+     },
+     {
+      "name": "خطای جدید در لاگ",
+      "ok": true,
+      "detail": "0 پاسخ 5xx، 0 traceback از زمان اقدام"
+     },
+     {
+      "name": "کانتینر جدید بالا آمد",
+      "ok": true,
+      "detail": "0 ثانیه پس از اقدام"
+     },
+     {
+      "name": "متغیر محیطی",
+      "ok": true,
+      "detail": "PAYMENT_GATEWAY_KEY"
+     }
+    ],
+    "attempts": 1,
+    "ts": 1792696347.092826
+   },
+   "decided_by": "owner",
+   "decided_at": 1792696334.3979259,
+   "auto": 0
+  }
+ ]
+}

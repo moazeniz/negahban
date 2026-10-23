@@ -1,0 +1,17 @@
+{
+  "app": "meow-lb",
+  "platform": "docker",
+  "port": 8080,
+  "healthCheck": {
+    "command": [
+      "CMD",
+      "python",
+      "-c",
+      "import urllib.request as u; u.urlopen('http://127.0.0.1:8080/lb/healthz', timeout=5)"
+    ],
+    "interval": 30,
+    "timeout": 10,
+    "retries": 3,
+    "startPeriod": 15
+  }
+}

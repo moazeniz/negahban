@@ -1,0 +1,1718 @@
+{
+ "notifications": [
+  {
+   "id": "ntf_48a4bf5cc0a3",
+   "ts": 1792739339.7454996,
+   "rule_id": "r-deadletter",
+   "app": "demo-shop",
+   "severity": "warning",
+   "title": "کار مرده در صف (dead-letter) — demo-shop",
+   "body": "الگوی «event=job.dead_letter» 1 بار دیده شد: {\"event\": \"job.dead_letter\", \"level\": \"error\", \"msg\": \"acceptance: simulated dead job\", \"queue\": \"main\"} (مقدار: 1)",
+   "status": "open",
+   "level": 0,
+   "last_sent": 1792739339.745501,
+   "dedup": "r-deadletter:demo-shop",
+   "link": null,
+   "data": "{\"source\": \"push\", \"action\": \"notify\"}"
+  },
+  {
+   "id": "ntf_ad3527a9bcaa",
+   "ts": 1792739415.7769885,
+   "rule_id": "r-traceback",
+   "app": "demo-shop",
+   "severity": "warning",
+   "title": "Traceback در لاگ — demo-shop",
+   "body": "الگوی «re:Traceback \\(most recent call last\\)» 1 بار دیده شد: Traceback (most recent call last): (مقدار: 1)",
+   "status": "open",
+   "level": 0,
+   "last_sent": 1792739415.7769907,
+   "dedup": "r-traceback:demo-shop",
+   "link": null,
+   "data": "{\"source\": \"logs\", \"action\": \"notify\"}"
+  },
+  {
+   "id": "ntf_e850eda2b24d",
+   "ts": 1792739415.2464397,
+   "rule_id": "r-5xx",
+   "app": "bazargard-ai",
+   "severity": "critical",
+   "title": "نرخ خطای سرور بالا — bazargard-ai",
+   "body": "نرخ خطای 5xx (٪) > 5.0 (مقدار: 100.0)",
+   "status": "open",
+   "level": 0,
+   "last_sent": 1792739415.2464473,
+   "dedup": "r-5xx:bazargard-ai",
+   "link": "#incidents/inc_fa2144422c3f",
+   "data": "{\"source\": \"orchestrator\", \"action\": \"wake\"}"
+  }
+ ],
+ "browser_notifications": [
+  "نگهبان: کار مرده در صف (dead-letter) — demo-shop | الگوی «event=job.dead_letter» 1 بار دیده شد: {\"event\": \"job.dead_letter\", \"level\": \"error\", \"msg\": \"acceptance: simulated dead job\", \"queue\": \"main\"} (مقدار: 1)",
+  "نگهبان: نرخ خطای سرور بالا — bazargard-ai | نرخ خطای 5xx (٪) > 5.0 (مقدار: 100.0)",
+  "نگهبان: Traceback در لاگ — demo-shop | الگوی «re:Traceback \\(most recent call last\\)» 1 بار دیده شد: Traceback (most recent call last): (مقدار: 1)",
+  "نگهبان: نرخ خطای سرور بالا — demo-shop | نرخ خطای 5xx (٪) > 5.0 (مقدار: 100.0)",
+  "نگهبان: سایت در دسترس نیست — demo-shop | قطعی (تعداد بررسی ناموفق) > 1.0 (مقدار: 2)"
+ ],
+ "incidents": [
+  {
+   "id": "inc_11e93f469ca1",
+   "app": "demo-shop",
+   "kind": "errors",
+   "severity": "high",
+   "title": "خطای کد (ZeroDivisionError) در pricing.py:7",
+   "status": "open",
+   "opened_at": 1792739415.9273179,
+   "updated_at": 1792739424.7324905,
+   "resolved_at": null,
+   "diagnosis": {
+    "app": "demo-shop",
+    "ts": 1792739424.5631135,
+    "healthy": false,
+    "hypotheses": [
+     {
+      "id": "code_exception",
+      "title": "خطای کد (ZeroDivisionError) در pricing.py:7",
+      "confidence": 0.93,
+      "evidence": [
+       "ZeroDivisionError: division by zero",
+       "محل خطا: /app/shop/pricing.py:7 در تابع discount_percent",
+       "تکرار: 1 بار",
+       "خطاها پس از استقرار نسخه‌ی v22 (refactor: simplify discount (by developer)) شروع شده‌اند",
+       "این مشکل قبلاً 1 بار روی همین برنامه دیده شده؛ آخرین بار: demo-shop: «خطای کد (ZeroDivisionError) در pricing.py:7» — علت: خطای کد (ZeroDivisionError) در pricing.py:7 — رفع: اعمال اصلاح کد روی demo-shop و استقرار (با تأ"
+      ],
+      "fixes": [
+       {
+        "tool": "propose_code_fix",
+        "args": {
+         "app": "demo-shop"
+        },
+        "label": "اصلاح خودکار کد + تست + استقرار"
+       },
+       {
+        "tool": "rollback_release",
+        "args": {
+         "app": "demo-shop"
+        },
+        "label": "بازگشت به نسخه‌ی قبلی (سریع)"
+       }
+      ],
+      "kind": "code",
+      "seen_before": 1,
+      "explanation": "خطای ZeroDivisionError دقیقاً در خط محاسبه درصد تخفیف رخ داده و پس از استقرار v22 با همان تغییر کد همزمان شده است، پس بسیار محتمل است."
+     }
+    ],
+    "summary": "سایت شما الان در دسترس است (صفحه اصلی با کد ۲۰۰ جواب می‌دهد)، اما در یک بار بارگذاری صفحه اصلی خطای تقسیم بر صفر در محاسبه درصد تخفیف (فایل pricing.py خط ۷) رخ داده است. این خطا بعد از نسخه v22 با تغییر «ساده‌سازی تخفیف» دیده شده و احتمالاً وقتی قیمت اصلی یک محصول صفر باشد رخ می‌دهد؛ اگر این خطا تکرار شود، بعضی بازدیدکنندگان ممکن است صفحه خطا ببینند. پیشنهاد می‌کنم کد محاسبه تخفیف را اصلاح کنید تا قیمت صفر را بررسی کند و قبل از انتشار نسخه بعدی، صفحه اصلی را تست کنید.",
+    "next_steps": [
+     "قیمت اصلی محصولات را در پنل بررسی کنید و محصولی که قیمت اصلی آن صفر یا خالی است را پیدا و اصلاح کنید.",
+     "از توسعه‌دهنده بخواهید در تابع discount_percent در فایل pricing.py پیش از تقسیم، بررسی کند که قیمت اصلی صفر نباشد.",
+     "پس از اعمال اصلاح، نسخه جدید را منتشر کنید و صفحه اصلی و صفحات محصولات را چند بار باز کنید تا از نبودن خطا مطمئن شوید.",
+     "این مشکل قبلاً هم رخ داده است؛ بهتر است یک تست خودکار برای حالت قیمت صفر به پروژه اضافه شود تا در نسخه‌های بعدی تکرار نشود.",
+     "لاگ‌های برنامه را چند ساعت آینده زیر نظر بگیرید تا مطمئن شوید خطای دیگری رخ نمی‌دهد."
+    ],
+    "evidence": {
+     "status": {
+      "status": "ACTIVE",
+      "scale": 1,
+      "planID": "medium-g2",
+      "bundlePlanID": "standard",
+      "zeroDowntime": true,
+      "hourlyPrice": 1145.83,
+      "bundleHourlyPrice": 1145.83,
+      "isDeployed": true
+     },
+     "probe": {
+      "url": "https://demo-shop.liara.run/",
+      "status": 200,
+      "latency_ms": 202,
+      "ok": true,
+      "body_snippet": "<!doctype html><html lang=\"fa\" dir=\"rtl\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>فروشگاه نمونه</title><style>body{font-family:Tahoma,sans-serif;background:#f6f7fb;margin:0;color:#1d2433}header{background:#0f766e;color:#fff;padding:18px 2",
+      "error": null
+     },
+     "env_keys": [
+      "APP_VERSION",
+      "CHAOS_TOKEN",
+      "PAYMENT_GATEWAY_KEY"
+     ],
+     "env_removed_since_last_seen": [],
+     "releases": [
+      {
+       "_id": "6adb080c2c3f63ca360160c3",
+       "tag": "v22",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "refactor: simplify discount (by developer)",
+       "createdAt": "2026-10-23T07:09:00.766Z",
+       "finishedAt": "2026-10-23T07:09:28.402Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada6c9938253e6cdf33cf1b",
+       "tag": "v21",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "Negahban fix 96b1e84",
+       "createdAt": "2026-10-22T20:05:45.969Z",
+       "finishedAt": "2026-10-22T20:05:57.208Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada6c072c3f63ca36f3ae40",
+       "tag": "v20",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "refactor: simplify discount (by developer)",
+       "createdAt": "2026-10-22T20:03:19.516Z",
+       "finishedAt": "2026-10-22T20:03:29.423Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada600f38253e6cdf324d83",
+       "tag": "v19",
+       "type": "ENV_UPDATE",
+       "state": "READY",
+       "message": "Negahban fix f067a7a",
+       "createdAt": "2026-10-22T19:12:15.073Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada5fffb3b5ca83e1f6bab8",
+       "tag": "v18",
+       "type": "ENV_UPDATE",
+       "state": "READY",
+       "message": "Negahban fix f067a7a",
+       "createdAt": "2026-10-22T19:11:59.598Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada5f9638253e6cdf32415e",
+       "tag": "v17",
+       "type": "ENV_UPDATE",
+       "state": "UNHEALTHY",
+       "message": "Negahban fix f067a7a",
+       "createdAt": "2026-10-22T19:10:14.665Z",
+       "finishedAt": null,
+       "failReason": "APP_CRASHED"
+      }
+     ],
+     "build": null,
+     "events": [
+      {
+       "time": 1792738363,
+       "action": "kill",
+       "id": "5973bb1bf6df1306ff757122dcfd4ac7f772eee50b51215f4a701c882099ed00",
+       "release": "6ada6c9938253e6cdf33cf1b",
+       "tag": "v21"
+      },
+      {
+       "time": 1792738368,
+       "action": "die",
+       "id": "5973bb1bf6df1306ff757122dcfd4ac7f772eee50b51215f4a701c882099ed00",
+       "release": "6ada6c9938253e6cdf33cf1b",
+       "tag": "v21"
+      },
+      {
+       "time": 1792738368,
+       "action": "stop",
+       "id": "5973bb1bf6df1306ff757122dcfd4ac7f772eee50b51215f4a701c882099ed00",
+       "release": "6ada6c9938253e6cdf33cf1b",
+       "tag": "v21"
+      },
+      {
+       "time": 1792738369,
+       "action": "create",
+       "id": "9bc0ffff6d8fb629027474c070532445af9e0402060c808fb3c07dbb9125accc",
+       "release": "6ada6c9938253e6cdf33cf1b",
+       "tag": "v21"
+      },
+      {
+       "time": 1792738371,
+       "action": "start",
+       "id": "9bc0ffff6d8fb629027474c070532445af9e0402060c808fb3c07dbb9125accc",
+       "release": "6ada6c9938253e6cdf33cf1b",
+       "tag": "v21"
+      },
+      {
+       "time": 1792739396,
+       "action": "create",
+       "id": "5f990da70fb10700606d6ad0f29595d2d133fb98550eb25709632264964dfe53",
+       "release": "6adb080c2c3f63ca360160c3",
+       "tag": "v22"
+      },
+      {
+       "time": 1792739397,
+       "action": "start",
+       "id": "5f990da70fb10700606d6ad0f29595d2d133fb98550eb25709632264964dfe53",
+       "release": "6adb080c2c3f63ca360160c3",
+       "tag": "v22"
+      },
+      {
+       "time": 1792739413,
+       "action": "update",
+       "id": "5f990da70fb10700606d6ad0f29595d2d133fb98550eb25709632264964dfe53",
+       "release": "6adb080c2c3f63ca360160c3",
+       "tag": "v22"
+      },
+      {
+       "time": 1792739413,
+       "action": "rename",
+       "id": "5f990da70fb10700606d6ad0f29595d2d133fb98550eb25709632264964dfe53",
+       "release": "6adb080c2c3f63ca360160c3",
+       "tag": "v22"
+      }
+     ],
+     "cpu": {
+      "n": 60,
+      "last": 0.04909709808635464,
+      "mean": 0.2466874414462267,
+      "peak": 0.9752278305685296,
+      "min": 0.00658982521935037,
+      "slope_per_min": -0.0008172827015184714,
+      "monotonic_rise": 0.49,
+      "limit": 1,
+      "util_last": 0.049,
+      "util_peak": 0.975,
+      "sustained_high": false,
+      "sustained_low": true
+     },
+     "mem": {
+      "n": 61,
+      "last": 0.03829828898111979,
+      "mean": 0.054773924780673666,
+      "peak": 0.1252899169921875,
+      "min": 0.0367889404296875,
+      "slope_per_min": -0.0003132913429102905,
+      "monotonic_rise": 0.37,
+      "limit": 1,
+      "util_last": 0.038,
+      "util_peak": 0.125,
+      "sustained_high": false,
+      "sustained_low": true
+     },
+     "cpu_series": [
+      [
+       1792737616,
+       0.04339425033300644
+      ],
+      [
+       1792737646,
+       0.056737495749897136
+      ],
+      [
+       1792737676,
+       0.06128109963297563
+      ],
+      [
+       1792737706,
+       0.07036512479247566
+      ],
+      [
+       1792737736,
+       0.07028566971389354
+      ],
+      [
+       1792737766,
+       0.07109904180297054
+      ],
+      [
+       1792737796,
+       0.07014464845340741
+      ],
+      [
+       1792737826,
+       0.059057979655885294
+      ],
+      [
+       1792737856,
+       0.04756958144911001
+      ],
+      [
+       1792737886,
+       0.039062834660650705
+      ],
+      [
+       1792737916,
+       0.029057449989321592
+      ],
+      [
+       1792737946,
+       0.016773816323775226
+      ],
+      [
+       1792737976,
+       0.007698000905301363
+      ],
+      [
+       1792738006,
+       0.00658982521935037
+      ],
+      [
+       1792738036,
+       0.006607066248659346
+      ],
+      [
+       1792738066,
+       0.006626573940087687
+      ],
+      [
+       1792738096,
+       0.12653519393855134
+      ],
+      [
+       1792738126,
+       0.2251225881083293
+      ],
+      [
+       1792738156,
+       0.3054926966858064
+      ],
+      [
+       1792738186,
+       0.43829064177493743
+      ],
+      [
+       1792738216,
+       0.5167222679076943
+      ],
+      [
+       1792738246,
+       0.6446798044420817
+      ],
+      [
+       1792738276,
+       0.7457830725992989
+      ],
+      [
+       1792738306,
+       0.8543839638143363
+      ],
+      [
+       1792738336,
+       0.9752278305685296
+      ],
+      [
+       1792738366,
+       0.9418087780262829
+      ],
+      [
+       1792738426,
+       0.1440561210154272
+      ],
+      [
+       1792738456,
+       0.2213557571792155
+      ],
+      [
+       1792738486,
+       0.30005091060793526
+      ],
+      [
+       1792738516,
+       0.38087250628298336
+      ],
+      [
+       1792738546,
+       0.46250901829624913
+      ],
+      [
+       1792738576,
+       0.5423305780114387
+      ],
+      [
+       1792738606,
+       0.6233056280727034
+      ],
+      [
+       1792738636,
+       0.702659393443113
+      ],
+      [
+       1792738666,
+       0.7684614078484504
+      ],
+      [
+       1792738696,
+       0.6981773924605981
+      ],
+      [
+       1792738726,
+       0.6254898842418329
+      ],
+      [
+       1792738756,
+       0.5556899321220069
+      ],
+      [
+       1792738786,
+       0.481576433974842
+      ],
+      [
+       1792738816,
+       0.3782118329533112
+      ],
+      [
+       1792738846,
+       0.2818682400940758
+      ],
+      [
+       1792738876,
+       0.22816941800866153
+      ],
+      [
+       1792738906,
+       0.12460480576381468
+      ],
+      [
+       1792738936,
+       0.045842333973948296
+      ],
+      [
+       1792738966,
+       0.032908240667832926
+      ],
+      [
+       1792738996,
+       0.038469308659699906
+      ],
+      [
+       1792739026,
+       0.04395768952064472
+      ],
+      [
+       1792739056,
+       0.04771639422258806
+      ],
+      [
+       1792739086,
+       0.05293989044781859
+      ],
+      [
+       1792739116,
+       0.05511311432659306
+      ],
+      [
+       1792739146,
+       0.05473982591820177
+      ],
+      [
+       1792739176,
+       0.05458157758136429
+      ],
+      [
+       1792739206,
+       0.05455832161653275
+      ],
+      [
+       1792739236,
+       0.05447515371397242
+      ],
+      [
+       1792739266,
+       0.05449386839855948
+      ],
+      [
+       1792739296,
+       0.05420007139552754
+      ],
+      [
+       1792739326,
+       0.05417284495797884
+      ],
+      [
+       1792739356,
+       0.05224948517479421
+      ],
+      [
+       1792739386,
+       0.04917277615777226
+      ],
+      [
+       1792739416,
+       0.04586903292649744
+      ]
+     ],
+     "mem_series": [
+      [
+       1792737646,
+       0.039
+      ],
+      [
+       1792737676,
+       0.039
+      ],
+      [
+       1792737706,
+       0.039
+      ],
+      [
+       1792737736,
+       0.039
+      ],
+      [
+       1792737766,
+       0.039
+      ],
+      [
+       1792737796,
+       0.039
+      ],
+      [
+       1792737826,
+       0.039
+      ],
+      [
+       1792737856,
+       0.039
+      ],
+      [
+       1792737886,
+       0.039
+      ],
+      [
+       1792737916,
+       0.039
+      ],
+      [
+       1792737946,
+       0.039
+      ],
+      [
+       1792737976,
+       0.039
+      ],
+      [
+       1792738006,
+       0.039
+      ],
+      [
+       1792738036,
+       0.039
+      ],
+      [
+       1792738066,
+       0.039
+      ],
+      [
+       1792738096,
+       0.06
+      ],
+      [
+       1792738126,
+       0.067
+      ],
+      [
+       1792738156,
+       0.065
+      ],
+      [
+       1792738186,
+       0.065
+      ],
+      [
+       1792738216,
+       0.06
+      ],
+      [
+       1792738246,
+       0.063
+      ],
+      [
+       1792738276,
+       0.064
+      ],
+      [
+       1792738306,
+       0.065
+      ],
+      [
+       1792738336,
+       0.064
+      ],
+      [
+       1792738366,
+       0.062
+      ],
+      [
+       1792738396,
+       0.118
+      ],
+      [
+       1792738426,
+       0.114
+      ],
+      [
+       1792738456,
+       0.121
+      ],
+      [
+       1792738486,
+       0.119
+      ],
+      [
+       1792738516,
+       0.123
+      ],
+      [
+       1792738546,
+       0.125
+      ],
+      [
+       1792738576,
+       0.125
+      ],
+      [
+       1792738606,
+       0.119
+      ],
+      [
+       1792738636,
+       0.122
+      ],
+      [
+       1792738666,
+       0.057
+      ],
+      [
+       1792738696,
+       0.039
+      ],
+      [
+       1792738726,
+       0.039
+      ],
+      [
+       1792738756,
+       0.039
+      ],
+      [
+       1792738786,
+       0.039
+      ],
+      [
+       1792738816,
+       0.039
+      ],
+      [
+       1792738846,
+       0.037
+      ],
+      [
+       1792738876,
+       0.037
+      ],
+      [
+       1792738906,
+       0.037
+      ],
+      [
+       1792738936,
+       0.037
+      ],
+      [
+       1792738966,
+       0.037
+      ],
+      [
+       1792738996,
+       0.037
+      ],
+      [
+       1792739026,
+       0.037
+      ],
+      [
+       1792739056,
+       0.037
+      ],
+      [
+       1792739086,
+       0.037
+      ],
+      [
+       1792739116,
+       0.037
+      ],
+      [
+       1792739146,
+       0.037
+      ],
+      [
+       1792739176,
+       0.037
+      ],
+      [
+       1792739206,
+       0.037
+      ],
+      [
+       1792739236,
+       0.037
+      ],
+      [
+       1792739266,
+       0.037
+      ],
+      [
+       1792739296,
+       0.037
+      ],
+      [
+       1792739326,
+       0.037
+      ],
+      [
+       1792739356,
+       0.037
+      ],
+      [
+       1792739386,
+       0.037
+      ],
+      [
+       1792739416,
+       0.041
+      ]
+     ],
+     "log_tail": [
+      "10:40:13 std     await wrap_app_handling_exceptions(app, request)(scope, receive, send)",
+      "10:40:13 std   File \"/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py\", line 53, in wrapped_app",
+      "10:40:13 std     raise exc",
+      "10:40:13 std   File \"/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py\", line 42, in wrapped_app",
+      "10:40:13 std     await app(scope, receive, sender)",
+      "10:40:13 std   File \"/usr/local/lib/python3.12/site-packages/starlette/routing.py\", line 73, in app",
+      "10:40:13 std     response = await f(request)",
+      "10:40:13 std                ^^^^^^^^^^^^^^^^",
+      "10:40:13 std   File \"/usr/local/lib/python3.12/site-packages/fastapi/routing.py\", line 301, in app",
+      "10:40:13 std     raw_response = await run_endpoint_function(",
+      "10:40:13 std                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "10:40:13 std   File \"/usr/local/lib/python3.12/site-packages/fastapi/routing.py\", line 214, in run_endpoint_function",
+      "10:40:13 std     return await run_in_threadpool(dependant.call, **values)",
+      "10:40:13 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "10:40:13 std   File \"/usr/local/lib/python3.12/site-packages/starlette/concurrency.py\", line 39, in run_in_threadpool",
+      "10:40:13 std     return await anyio.to_thread.run_sync(func, *args)",
+      "10:40:13 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "10:40:13 std   File \"/usr/local/lib/python3.12/site-packages/anyio/to_thread.py\", line 65, in run_sync",
+      "10:40:13 std     return await get_async_backend().run_sync_in_worker_thread(",
+      "10:40:13 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "10:40:13 std   File \"/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py\", line 2706, in run_sync_in_worker_thread",
+      "10:40:13 std     return await future",
+      "10:40:13 std            ^^^^^^^^^^^^",
+      "10:40:13 std   File \"/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py\", line 1100, in run",
+      "10:40:13 std     result = context.run(func, *args)",
+      "10:40:13 std              ^^^^^^^^^^^^^^^^^^^^^^^^",
+      "10:40:13 std   File \"/app/main.py\", line 66, in home",
+      "10:40:13 std     for p in map(product_view, PRODUCTS):",
+      "10:40:13 std              ^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "10:40:13 std   File \"/app/main.py\", line 30, in product_view",
+      "10:40:13 std     return {**p, \"discount\": discount_percent(p), \"price_fa\": fmt_price(p[\"price\"])}",
+      "10:40:13 std                              ^^^^^^^^^^^^^^^^^^^",
+      "10:40:13 std   File \"/app/shop/pricing.py\", line 7, in discount_percent",
+      "10:40:13 std     return round(100 * (old - p[\"price\"]) / old)",
+      "10:40:13 std                  ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~",
+      "10:40:13 std ZeroDivisionError: division by zero",
+      "10:40:13 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+      "10:40:13 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK",
+      "10:40:14 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+      "10:40:14 std INFO:     <ops-host>:0 - \"GET / HTTP/1.1\" 200 OK"
+     ],
+     "recent_ops": [
+      {
+       "ts": 1792739416.0248055,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792739415.8426416,
+       "action": "alert_fired",
+       "actor": "alerts"
+      },
+      {
+       "ts": 1792739340.0929952,
+       "action": "scenario:bad_release",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792739339.8969362,
+       "action": "ingest_event",
+       "actor": "ingest:demo-shop"
+      },
+      {
+       "ts": 1792739339.8093941,
+       "action": "alert_fired",
+       "actor": "alerts"
+      },
+      {
+       "ts": 1792739337.4724934,
+       "action": "ingest_token_rotate",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792738388.387352,
+       "action": "verify",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792738358.0095823,
+       "action": "resize_app",
+       "actor": "autopilot"
+      },
+      {
+       "ts": 1792738357.3357008,
+       "action": "approve",
+       "actor": "autopilot"
+      },
+      {
+       "ts": 1792738356.6949806,
+       "action": "propose",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792738353.649842,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792738057.5966625,
+       "action": "scenario:traffic_spike",
+       "actor": "owner"
+      }
+     ],
+     "logs": {
+      "lines": 98,
+      "requests": 0,
+      "status_counts": {},
+      "error_rate": 0,
+      "errors_5xx": 0,
+      "paths_5xx": {},
+      "slow": [],
+      "oom": [],
+      "missing_env": {},
+      "conn_errors": [],
+      "startups": 0,
+      "shutdowns": 0,
+      "restart_loop": false,
+      "first_ts": 1792739413.6578732,
+      "last_ts": 1792739413.6607616,
+      "previous_release_tracebacks": 0,
+      "tracebacks": [
+       {
+        "signature": "ZeroDivisionError@/app/shop/pricing.py:7",
+        "exc": "ZeroDivisionError",
+        "msg": "division by zero",
+        "count": 1,
+        "top_frame": {
+         "file": "/app/shop/pricing.py",
+         "line": 7,
+         "func": "discount_percent"
+        },
+        "sample": "  File \"/usr/local/lib/python3.12/site-packages/fastapi/routing.py\", line 214, in run_endpoint_function\n    return await run_in_threadpool(dependant.call, **values)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/starlette/concurrency.py\", line 39, in run_in_threadpool\n    return await anyio.to_thread.run_sync(func, *args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/anyio/to_thread.py\", line 65, in run_sync\n    return await get_async_backend().run_sync_in_worker_thread(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py\", line 2706, in run_sync_in_worker_thread\n    return await future\n           ^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py\", line 1100, in run\n    result = context.run(func, *args)\n             ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/app/main.py\", line 66, in home\n    for p in map(product_view, PRODUCTS):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/app/main.py\", line 30, in product_view\n    return {**p, \"discount\": discount_percent(p), \"price_fa\": fmt_price(p[\"price\"])}\n                             ^^^^^^^^^^^^^^^^^^^\n  File \"/app/shop/pricing.py\", line 7, in discount_percent\n    return round(100 * (old - p[\"price\"]) / old)\n                 ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~\nZeroDivisionError: division by zero",
+        "frames": [
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/fastapi/routing.py",
+          "line": 214,
+          "func": "run_endpoint_function"
+         },
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/starlette/concurrency.py",
+          "line": 39,
+          "func": "run_in_threadpool"
+         },
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/anyio/to_thread.py",
+          "line": 65,
+          "func": "run_sync"
+         },
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py",
+          "line": 2706,
+          "func": "run_sync_in_worker_thread"
+         },
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py",
+          "line": 1100,
+          "func": "run"
+         },
+         {
+          "file": "/app/main.py",
+          "line": 66,
+          "func": "home"
+         },
+         {
+          "file": "/app/main.py",
+          "line": 30,
+          "func": "product_view"
+         },
+         {
+          "file": "/app/shop/pricing.py",
+          "line": 7,
+          "func": "discount_percent"
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "llm_used": true
+   },
+   "fingerprint": "errors",
+   "timeline": [
+    {
+     "ts": 1792739415.9273179,
+     "text": "رخداد شناسایی شد: خطای سرور (5xx) در پاسخ‌ها"
+    },
+    {
+     "ts": 1792739424.5662696,
+     "text": "تشخیص: خطای کد (ZeroDivisionError) در pricing.py:7 (اطمینان 93٪)"
+    },
+    {
+     "ts": 1792739424.7324882,
+     "text": "خودترمیمی: در حال آماده‌سازی وصله و اجرای تست‌ها…"
+    }
+   ]
+  },
+  {
+   "id": "inc_fa2144422c3f",
+   "app": "bazargard-ai",
+   "kind": "alert",
+   "severity": "high",
+   "title": "برنامه پاسخ نمی‌دهد (HTTP 502 )",
+   "status": "open",
+   "opened_at": 1792739415.038718,
+   "updated_at": 1792739426.713946,
+   "resolved_at": null,
+   "diagnosis": {
+    "app": "bazargard-ai",
+    "ts": 1792739425.822118,
+    "healthy": false,
+    "hypotheses": [
+     {
+      "id": "unreachable",
+      "title": "برنامه پاسخ نمی‌دهد (HTTP 502 )",
+      "confidence": 0.6,
+      "evidence": [
+       "probe: 502 در 274ms"
+      ],
+      "fixes": [
+       {
+        "tool": "restart_app",
+        "args": {
+         "app": "bazargard-ai"
+        },
+        "label": "ری‌استارت"
+       }
+      ],
+      "kind": "down"
+     }
+    ],
+    "summary": null,
+    "next_steps": [],
+    "evidence": {
+     "status": {
+      "status": "ACTIVE",
+      "scale": 1,
+      "planID": "standard-base-g2",
+      "bundlePlanID": "basic",
+      "zeroDowntime": false,
+      "hourlyPrice": 2048.61,
+      "bundleHourlyPrice": 1145.83,
+      "isDeployed": true
+     },
+     "probe": {
+      "url": "https://bazargard-ai.liara.run/api/ready",
+      "status": 502,
+      "latency_ms": 274,
+      "ok": false,
+      "body_snippet": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <meta charset=\"utf-8\">\n    <title>Liara | Application Error</title>\n    <style media=\"screen\">\n      html,body,iframe {\n        margin: 0;\n        padding: 0;\n      }\n      html,body {\n      ",
+      "error": null
+     },
+     "env_keys": [
+      "ADMIN_TOKEN",
+      "ANTHROPIC_LIGHT_MODEL",
+      "ANTHROPIC_MODEL",
+      "APP_ENV",
+      "BOXAPI_BASE_URL",
+      "BOXAPI_KEYS",
+      "CATALOG_SHA256",
+      "CATALOG_TOKEN",
+      "CATALOG_URL",
+      "DATA_DIR",
+      "FORWARDED_ALLOW_IPS",
+      "LLM_MODEL",
+      "LLM_PROVIDER",
+      "LOG_LEVEL",
+      "PORT",
+      "PUBLIC_BASE_URL",
+      "RELAY_TOKEN",
+      "RELAY_URL"
+     ],
+     "env_removed_since_last_seen": [],
+     "releases": [
+      {
+       "_id": "6adb084638253e6cdf427098",
+       "tag": "v9",
+       "type": "DEPLOY",
+       "state": "BUILDING",
+       "message": "deploy",
+       "createdAt": "2026-10-23T07:09:58.635Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada63f9b3b5ca83e1f779f0",
+       "tag": "v8",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "deploy",
+       "createdAt": "2026-10-22T19:28:57.804Z",
+       "finishedAt": "2026-10-22T19:29:21.075Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada5f2d2c3f63ca36f26d0e",
+       "tag": "v7",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "deploy",
+       "createdAt": "2026-10-22T19:08:29.933Z",
+       "finishedAt": "2026-10-22T19:09:08.962Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada5d1a0e01dbee0e9e71c1",
+       "tag": "v6",
+       "type": "DEPLOY",
+       "state": "TIMEDOUT",
+       "message": "deploy",
+       "createdAt": "2026-10-22T18:59:38.384Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada410338253e6cdf2eaec3",
+       "tag": "v5",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "deploy",
+       "createdAt": "2026-10-22T16:59:47.066Z",
+       "finishedAt": "2026-10-22T17:00:36.129Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada38a8b8e65d29b96eb9fc",
+       "tag": "v4",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "deploy",
+       "createdAt": "2026-10-22T16:24:08.213Z",
+       "finishedAt": "2026-10-22T16:24:36.716Z",
+       "failReason": null
+      }
+     ],
+     "build": null,
+     "events": [],
+     "cpu": {
+      "n": 61,
+      "last": 0.022672952598385726,
+      "mean": 0.02315418936666145,
+      "peak": 0.025559331036314373,
+      "min": 0.019691349166667083,
+      "slope_per_min": -1.7560152870099345e-05,
+      "monotonic_rise": 0.55,
+      "limit": 1,
+      "util_last": 0.023,
+      "util_peak": 0.026,
+      "sustained_high": false,
+      "sustained_low": true
+     },
+     "mem": {
+      "n": 61,
+      "last": 0.2533073425292969,
+      "mean": 0.25531437357918163,
+      "peak": 0.2577857971191406,
+      "min": 0.2533073425292969,
+      "slope_per_min": -0.000178667025109689,
+      "monotonic_rise": 0.02,
+      "limit": 2,
+      "util_last": 0.127,
+      "util_peak": 0.129,
+      "sustained_high": false,
+      "sustained_low": true
+     },
+     "cpu_series": [
+      [
+       1792737645,
+       0.021686385683838915
+      ],
+      [
+       1792737675,
+       0.02292414505151812
+      ],
+      [
+       1792737705,
+       0.02355525723005368
+      ],
+      [
+       1792737735,
+       0.025559331036314373
+      ],
+      [
+       1792737765,
+       0.024848371232243125
+      ],
+      [
+       1792737795,
+       0.02356400806570049
+      ],
+      [
+       1792737825,
+       0.023921857836040714
+      ],
+      [
+       1792737855,
+       0.024383203329465645
+      ],
+      [
+       1792737885,
+       0.023611742239645822
+      ],
+      [
+       1792737915,
+       0.02345893214285744
+      ],
+      [
+       1792737945,
+       0.02356905437612568
+      ],
+      [
+       1792737975,
+       0.024922174674619293
+      ],
+      [
+       1792738005,
+       0.023268106579131115
+      ],
+      [
+       1792738035,
+       0.02275261232654404
+      ],
+      [
+       1792738065,
+       0.02312386433991327
+      ],
+      [
+       1792738095,
+       0.023593864315697394
+      ],
+      [
+       1792738125,
+       0.023390445217242074
+      ],
+      [
+       1792738155,
+       0.02271600138360418
+      ],
+      [
+       1792738185,
+       0.022899295509090766
+      ],
+      [
+       1792738215,
+       0.022496826786373582
+      ],
+      [
+       1792738245,
+       0.023076194501681687
+      ],
+      [
+       1792738275,
+       0.022608007992781304
+      ],
+      [
+       1792738305,
+       0.02261084393502622
+      ],
+      [
+       1792738335,
+       0.023445124558128864
+      ],
+      [
+       1792738365,
+       0.02135509924137166
+      ],
+      [
+       1792738395,
+       0.023756751130362252
+      ],
+      [
+       1792738425,
+       0.02299147686552812
+      ],
+      [
+       1792738455,
+       0.021301278762406665
+      ],
+      [
+       1792738485,
+       0.02315363388686217
+      ],
+      [
+       1792738515,
+       0.02319038762415387
+      ],
+      [
+       1792738545,
+       0.022238474791447357
+      ],
+      [
+       1792738575,
+       0.024965115915168572
+      ],
+      [
+       1792738605,
+       0.02275804058461313
+      ],
+      [
+       1792738635,
+       0.02444384395598981
+      ],
+      [
+       1792738665,
+       0.022343822307713413
+      ],
+      [
+       1792738695,
+       0.022388825688392233
+      ],
+      [
+       1792738725,
+       0.023199256502911055
+      ],
+      [
+       1792738755,
+       0.02330045550164218
+      ],
+      [
+       1792738785,
+       0.024440611613855127
+      ],
+      [
+       1792738815,
+       0.022471174085637147
+      ],
+      [
+       1792738845,
+       0.0237950472249105
+      ],
+      [
+       1792738875,
+       0.022522603076442292
+      ],
+      [
+       1792738905,
+       0.022557931695910343
+      ],
+      [
+       1792738935,
+       0.02331169680322511
+      ],
+      [
+       1792738965,
+       0.023239746444729228
+      ],
+      [
+       1792738995,
+       0.022186407740416494
+      ],
+      [
+       1792739025,
+       0.023491206016653384
+      ],
+      [
+       1792739055,
+       0.024602782943676956
+      ],
+      [
+       1792739085,
+       0.024394523265494527
+      ],
+      [
+       1792739115,
+       0.024265479363250606
+      ],
+      [
+       1792739145,
+       0.019691349166667083
+      ],
+      [
+       1792739175,
+       0.02300883267071391
+      ],
+      [
+       1792739205,
+       0.02363885191490791
+      ],
+      [
+       1792739235,
+       0.022928466960082845
+      ],
+      [
+       1792739265,
+       0.023189668468344433
+      ],
+      [
+       1792739295,
+       0.022849219546152284
+      ],
+      [
+       1792739325,
+       0.022870721034300615
+      ],
+      [
+       1792739355,
+       0.02275214411774364
+      ],
+      [
+       1792739385,
+       0.022869168699172
+      ],
+      [
+       1792739415,
+       0.022397544978241535
+      ]
+     ],
+     "mem_series": [
+      [
+       1792737645,
+       0.258
+      ],
+      [
+       1792737675,
+       0.258
+      ],
+      [
+       1792737705,
+       0.258
+      ],
+      [
+       1792737735,
+       0.258
+      ],
+      [
+       1792737765,
+       0.258
+      ],
+      [
+       1792737795,
+       0.257
+      ],
+      [
+       1792737825,
+       0.257
+      ],
+      [
+       1792737855,
+       0.257
+      ],
+      [
+       1792737885,
+       0.257
+      ],
+      [
+       1792737915,
+       0.257
+      ],
+      [
+       1792737945,
+       0.257
+      ],
+      [
+       1792737975,
+       0.257
+      ],
+      [
+       1792738005,
+       0.257
+      ],
+      [
+       1792738035,
+       0.257
+      ],
+      [
+       1792738065,
+       0.257
+      ],
+      [
+       1792738095,
+       0.257
+      ],
+      [
+       1792738125,
+       0.257
+      ],
+      [
+       1792738155,
+       0.257
+      ],
+      [
+       1792738185,
+       0.257
+      ],
+      [
+       1792738215,
+       0.257
+      ],
+      [
+       1792738245,
+       0.257
+      ],
+      [
+       1792738275,
+       0.257
+      ],
+      [
+       1792738305,
+       0.257
+      ],
+      [
+       1792738335,
+       0.257
+      ],
+      [
+       1792738365,
+       0.256
+      ],
+      [
+       1792738395,
+       0.255
+      ],
+      [
+       1792738425,
+       0.255
+      ],
+      [
+       1792738455,
+       0.255
+      ],
+      [
+       1792738485,
+       0.254
+      ],
+      [
+       1792738515,
+       0.254
+      ],
+      [
+       1792738545,
+       0.254
+      ],
+      [
+       1792738575,
+       0.254
+      ],
+      [
+       1792738605,
+       0.254
+      ],
+      [
+       1792738635,
+       0.254
+      ],
+      [
+       1792738665,
+       0.254
+      ],
+      [
+       1792738695,
+       0.254
+      ],
+      [
+       1792738725,
+       0.254
+      ],
+      [
+       1792738755,
+       0.254
+      ],
+      [
+       1792738785,
+       0.254
+      ],
+      [
+       1792738815,
+       0.254
+      ],
+      [
+       1792738845,
+       0.254
+      ],
+      [
+       1792738875,
+       0.254
+      ],
+      [
+       1792738905,
+       0.254
+      ],
+      [
+       1792738935,
+       0.254
+      ],
+      [
+       1792738965,
+       0.254
+      ],
+      [
+       1792738995,
+       0.254
+      ],
+      [
+       1792739025,
+       0.254
+      ],
+      [
+       1792739055,
+       0.254
+      ],
+      [
+       1792739085,
+       0.254
+      ],
+      [
+       1792739115,
+       0.254
+      ],
+      [
+       1792739145,
+       0.254
+      ],
+      [
+       1792739175,
+       0.254
+      ],
+      [
+       1792739205,
+       0.254
+      ],
+      [
+       1792739235,
+       0.254
+      ],
+      [
+       1792739265,
+       0.254
+      ],
+      [
+       1792739295,
+       0.254
+      ],
+      [
+       1792739325,
+       0.253
+      ],
+      [
+       1792739355,
+       0.253
+      ],
+      [
+       1792739385,
+       0.253
+      ],
+      [
+       1792739415,
+       0.253
+      ]
+     ],
+     "log_tail": [
+      "10:31:58 std {\"ts\": \"2026-10-23T07:01:58.895Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "10:31:58 std {\"ts\": \"2026-10-23T07:01:58.896Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "10:32:16 std {\"ts\": \"2026-10-23T07:02:16.092Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"841d026f6df5f1db370891314fe2f575\", \"trace_id\": \"2a1338e2ec62c2aef476bdc1870e6ab7\", \"span_id\": \"c6af1aee4009330d\", \"session\": null, \"msg\": \"GET /api",
+      "10:32:31 std {\"ts\": \"2026-10-23T07:02:31.048Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"3d3db3f723df3b04f43e575bb51a2e88\", \"trace_id\": \"67f32824487b0962fd498ae7488b548e\", \"span_id\": \"ffcf8783b30f235f\", \"session\": null, \"msg\": \"GET /api",
+      "10:32:46 std {\"ts\": \"2026-10-23T07:02:46.723Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"770de0f8ddacf3644083ecc9421970d3\", \"trace_id\": \"a816b91edfe8a1f69f9e462447b4373e\", \"span_id\": \"eab1f9370df3edf7\", \"session\": null, \"msg\": \"GET /api",
+      "10:32:58 std {\"ts\": \"2026-10-23T07:02:58.986Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "10:32:58 std {\"ts\": \"2026-10-23T07:02:58.986Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "10:33:17 std {\"ts\": \"2026-10-23T07:03:17.534Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"bed534d1bba9d1c4389cc719735b58c1\", \"trace_id\": \"72b6aeb52abf82fde0f06705fa7609b4\", \"span_id\": \"a5cb93f73d9f9edb\", \"session\": null, \"msg\": \"GET /api",
+      "10:33:31 std {\"ts\": \"2026-10-23T07:03:31.082Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"1fdb90464db413abcc541412b5af60f6\", \"trace_id\": \"193a40493ac9ce20ffe0d741a78725de\", \"span_id\": \"4e6a68300f63189e\", \"session\": null, \"msg\": \"GET /api",
+      "10:33:48 std {\"ts\": \"2026-10-23T07:03:48.422Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"689e837505e93f9a1ccd6454004c3650\", \"trace_id\": \"8ab111a956b1690bbbb0ae13e3447304\", \"span_id\": \"332bb188b9339c27\", \"session\": null, \"msg\": \"GET /api",
+      "10:33:59 std {\"ts\": \"2026-10-23T07:03:59.097Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "10:33:59 std {\"ts\": \"2026-10-23T07:03:59.098Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "10:34:20 std {\"ts\": \"2026-10-23T07:04:20.075Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"c840b5cdbdf5e5915c72974d223a1264\", \"trace_id\": \"c5b3d63d8e26c945745dfaa78d260ca3\", \"span_id\": \"1f9b59a5cf3ac0dc\", \"session\": null, \"msg\": \"GET /api",
+      "10:34:50 std {\"ts\": \"2026-10-23T07:04:50.843Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"aa301e58972d50c78a8a821c5a93ccad\", \"trace_id\": \"c8f63bf2022ce69c4c61798cff004348\", \"span_id\": \"00ce69fd81529d88\", \"session\": null, \"msg\": \"GET /api",
+      "10:34:59 std {\"ts\": \"2026-10-23T07:04:59.196Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "10:34:59 std {\"ts\": \"2026-10-23T07:04:59.196Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "10:35:21 std {\"ts\": \"2026-10-23T07:05:21.705Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"8cba15921b8a23adb088a30976969433\", \"trace_id\": \"14779f92429b85ef3de1dddd6cd00855\", \"span_id\": \"88f190d7b3f16102\", \"session\": null, \"msg\": \"GET /api",
+      "10:35:52 std {\"ts\": \"2026-10-23T07:05:52.414Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"e4b005a8dc20be4f88e616917e8a527b\", \"trace_id\": \"e0924649aa6a3f6907286a29138f2c7a\", \"span_id\": \"57f67c1ca75616ac\", \"session\": null, \"msg\": \"GET /api",
+      "10:35:59 std {\"ts\": \"2026-10-23T07:05:59.284Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "10:35:59 std {\"ts\": \"2026-10-23T07:05:59.284Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "10:36:24 std {\"ts\": \"2026-10-23T07:06:24.009Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"c167271c3b162f800b54e4bb8b83032a\", \"trace_id\": \"05d0e016dc1a89dc896f6bd1954c1f41\", \"span_id\": \"b86f6248be69fe39\", \"session\": null, \"msg\": \"GET /api",
+      "10:36:54 std {\"ts\": \"2026-10-23T07:06:54.763Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"31a08f6ade4edcc7fef1ddb6738f1d5c\", \"trace_id\": \"526b3e5bb2c4dfbdd0d02b2ac1c51b8b\", \"span_id\": \"881fdd4e6e757400\", \"session\": null, \"msg\": \"GET /api",
+      "10:36:59 std {\"ts\": \"2026-10-23T07:06:59.379Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "10:36:59 std {\"ts\": \"2026-10-23T07:06:59.380Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "10:37:25 std {\"ts\": \"2026-10-23T07:07:25.443Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"5afc803eace37dbc0157c55b358f6690\", \"trace_id\": \"5f8b333a8711896205574a23aea1a7db\", \"span_id\": \"96b4cd29db7ebdcb\", \"session\": null, \"msg\": \"GET /api",
+      "10:37:56 std {\"ts\": \"2026-10-23T07:07:56.099Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"166c7ef3c00ae76a903fccacd4229c66\", \"trace_id\": \"9d6ef616edddf38928d837006e2fe11c\", \"span_id\": \"4eb0f64dc0c314ef\", \"session\": null, \"msg\": \"GET /api",
+      "10:37:59 std {\"ts\": \"2026-10-23T07:07:59.469Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "10:37:59 std {\"ts\": \"2026-10-23T07:07:59.469Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "10:38:14 std {\"ts\": \"2026-10-23T07:08:14.312Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"4f2913cd99ebf9bb443f32e98cc2070a\", \"trace_id\": \"5fc918985a38d17dbe8f9ec4cceb0b68\", \"span_id\": \"f9595c1429c89c6b\", \"session\": null, \"msg\": \"GET /api",
+      "10:38:27 std {\"ts\": \"2026-10-23T07:08:27.731Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"2b85f9b432ced47a48c086e5e8550bac\", \"trace_id\": \"4a0dda07d96dca6242dc2a5d1f47c607\", \"span_id\": \"5958796cc62113f2\", \"session\": null, \"msg\": \"GET /api",
+      "10:38:58 std {\"ts\": \"2026-10-23T07:08:58.692Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"eeb9d100a333fe607021753232536584\", \"trace_id\": \"ad4a7330d4d3c2606bab7fe004d3ce84\", \"span_id\": \"1c03e505d22dfebf\", \"session\": null, \"msg\": \"GET /api",
+      "10:38:59 std {\"ts\": \"2026-10-23T07:08:59.562Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "10:38:59 std {\"ts\": \"2026-10-23T07:08:59.562Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "10:39:14 std {\"ts\": \"2026-10-23T07:09:14.339Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"ef37a9e7bd1132ea6bd3960241d40500\", \"trace_id\": \"1e65a789a6f65c01e7da62eb20cdc8cb\", \"span_id\": \"dca75b11d4edbfb4\", \"session\": null, \"msg\": \"GET /api",
+      "10:39:29 std {\"ts\": \"2026-10-23T07:09:29.360Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"3f5d39fa958f001a27e0128bf98071da\", \"trace_id\": \"0ab8c7368d3e61a2bce9d5de4333a8a8\", \"span_id\": \"ba24a0a844a1b9c1\", \"session\": null, \"msg\": \"GET /api",
+      "10:39:59 std {\"ts\": \"2026-10-23T07:09:59.657Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "10:39:59 std {\"ts\": \"2026-10-23T07:09:59.657Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "10:39:59 std {\"ts\": \"2026-10-23T07:09:59.989Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"http.request\", \"request_id\": \"48b83f8d83781746af7888a60d6c5dac\", \"trace_id\": \"fa0818f2121d1ce929bc4f02888014f9\", \"span_id\": \"36e8b4a5bf71f1b7\", \"session\": null, \"msg\": \"GET /api",
+      "10:40:11 std {\"ts\": \"2026-10-23T07:10:11.657Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"queue.shutdown\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue stopped\", \"value\": 0}",
+      "10:40:11 std {\"ts\": \"2026-10-23T07:10:11.657Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.2.0\", \"event\": \"app.stop\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"stopped\", \"value\": 0}"
+     ],
+     "recent_ops": [
+      {
+       "ts": 1792739415.321912,
+       "action": "alert_fired",
+       "actor": "alerts"
+      }
+     ],
+     "logs": {
+      "lines": 97,
+      "requests": 0,
+      "status_counts": {},
+      "error_rate": 0,
+      "errors_5xx": 0,
+      "paths_5xx": {},
+      "slow": [],
+      "oom": [],
+      "missing_env": {},
+      "conn_errors": [],
+      "startups": 0,
+      "shutdowns": 0,
+      "restart_loop": false,
+      "first_ts": 1792738224.3797286,
+      "last_ts": 1792739411.668867,
+      "previous_release_tracebacks": 0,
+      "tracebacks": []
+     }
+    },
+    "llm_used": false
+   },
+   "fingerprint": "alert:r-5xx",
+   "timeline": [
+    {
+     "ts": 1792739415.038718,
+     "text": "رخداد شناسایی شد: نرخ خطای سرور بالا — bazargard-ai"
+    },
+    {
+     "ts": 1792739415.1114411,
+     "text": "قانون هشدار «نرخ خطای سرور بالا» فعال شد؛ نگهبان برای تشخیص بیدار شد (orchestrator)."
+    },
+    {
+     "ts": 1792739425.8258405,
+     "text": "تشخیص: برنامه پاسخ نمی‌دهد (HTTP 502 ) (اطمینان 60٪)"
+    },
+    {
+     "ts": 1792739426.7139444,
+     "text": "کارت تأیید ساخته شد: ری‌استارت bazargard-ai"
+    }
+   ]
+  }
+ ]
+}

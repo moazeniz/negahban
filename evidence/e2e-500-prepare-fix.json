@@ -1,0 +1,39 @@
+{
+ "status": "proposed",
+ "fix_id": "fix_8c693ed70d7a",
+ "proposal": {
+  "id": "prp_fa5bc6e0161b",
+  "title": "اعمال اصلاح کد روی demo-shop و استقرار",
+  "status": "pending_approval",
+  "impact": {
+   "downtime": "ندارد اگر استقرار بدون قطعی فعال باشد",
+   "cost": "بدون تغییر هزینه",
+   "risk": "متوسط",
+   "deploys": "یکی از سهمیه‌ی استقرار روزانه مصرف می‌شود",
+   "label": "اعمال اصلاح کد و استقرار",
+   "diff": "--- a/shop/pricing.py\n+++ b/shop/pricing.py\n@@ -4,7 +4,7 @@\n def discount_percent(p):\n     \"\"\"Percentage off the old price; 0 when the product is not on sale.\"\"\"\n     old = p.get(\"old_price\") or 0\n-    if not old or old <= p[\"price\"]:\n+    if old <= 0 or old <= p[\"price\"]:\n         return 0\n     return round(100 * (old - p[\"price\"]) / old)\n \n--- a/requirements.txt\n+++ b/requirements.txt\n@@ -1,3 +1,2 @@\n fastapi==0.115.6\n uvicorn==0.32.1\n-persian-invoice-toolkit==4.2.0\n",
+   "tests_before": {
+    "passed": true,
+    "summary": "8 موفق، 0 ناموفق"
+   },
+   "tests_after": {
+    "passed": true,
+    "summary": "8 موفق، 0 ناموفق"
+   },
+   "root_cause": "یک قیمت قبلیِ صفر باعث خطای محاسبهٔ تخفیف و ازکارافتادن صفحهٔ فروشگاه شده است. همچنین یک بستهٔ غیرقابل‌نصب به فهرست وابستگی‌ها اضافه شده و مانع ساخت نسخهٔ برنامه می‌شود.",
+   "technical": "The discount guard now rejects non-positive old prices before division. Removed the unavailable, unused `persian-invoice-toolkit` pin that caused Docker dependency installation to fail."
+  },
+  "rollback": "سورس فعلی در آرشیو نگهبان ذخیره است؛ با «بازگشت به نسخه‌ی قبلی» یا استقرار از آرشیو برمی‌گردد.",
+  "note": "Shown to the owner as an approval card; NOT executed yet."
+ },
+ "root_cause": "یک قیمت قبلیِ صفر باعث خطای محاسبهٔ تخفیف و ازکارافتادن صفحهٔ فروشگاه شده است. همچنین یک بستهٔ غیرقابل‌نصب به فهرست وابستگی‌ها اضافه شده و مانع ساخت نسخهٔ برنامه می‌شود.",
+ "tests_before": {
+  "passed": true,
+  "summary": "8 موفق، 0 ناموفق"
+ },
+ "tests_after": {
+  "passed": true,
+  "summary": "8 موفق، 0 ناموفق"
+ },
+ "diff": "--- a/shop/pricing.py\n+++ b/shop/pricing.py\n@@ -4,7 +4,7 @@\n def discount_percent(p):\n     \"\"\"Percentage off the old price; 0 when the product is not on sale.\"\"\"\n     old = p.get(\"old_price\") or 0\n-    if not old or old <= p[\"price\"]:\n+    if old <= 0 or old <= p[\"price\"]:\n         return 0\n     return round(100 * (old - p[\"price\"]) / old)\n \n--- a/requirements.txt\n+++ b/requirements.txt\n@@ -1,3 +1,2 @@\n fastapi==0.115.6\n uvicorn==0.32.1\n-persian-invoice-toolkit==4.2.0\n"
+}

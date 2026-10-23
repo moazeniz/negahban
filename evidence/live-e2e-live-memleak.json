@@ -1,0 +1,1772 @@
+{
+ "incidents": [
+  {
+   "id": "inc_b93a7e532d42",
+   "app": "demo-shop",
+   "kind": "memory",
+   "severity": "high",
+   "title": "مصرف حافظه رو به افزایش است (احتمال نشت حافظه)",
+   "status": "resolved",
+   "opened_at": 1792690473.0686321,
+   "updated_at": 1792690722.2809536,
+   "resolved_at": 1792690722.2809536,
+   "diagnosis": {
+    "app": "demo-shop",
+    "ts": 1792690482.568363,
+    "healthy": false,
+    "hypotheses": [
+     {
+      "id": "mem_leak",
+      "title": "مصرف حافظه رو به افزایش است (احتمال نشت حافظه)",
+      "confidence": 0.75,
+      "evidence": [
+       "حافظه 80٪ سقف پلن",
+       "شیب رشد 63 MB/min",
+       "حدود 1.6 دقیقه تا پر شدن حافظه"
+      ],
+      "fixes": [
+       {
+        "tool": "restart_app",
+        "args": {
+         "app": "demo-shop"
+        },
+        "label": "ری‌استارت پیش از OOM"
+       },
+       {
+        "tool": "resize_app",
+        "args": {
+         "app": "demo-shop",
+         "plan": "medium-g2"
+        },
+        "label": "ارتقا به medium-g2"
+       }
+      ],
+      "kind": "memory"
+     }
+    ],
+    "summary": null,
+    "next_steps": [],
+    "evidence": {
+     "status": {
+      "status": "ACTIVE",
+      "scale": 1,
+      "planID": "small-g2",
+      "bundlePlanID": "standard",
+      "zeroDowntime": true,
+      "hourlyPrice": 659.72,
+      "bundleHourlyPrice": 659.72,
+      "isDeployed": true
+     },
+     "probe": {
+      "url": "https://demo-shop.liara.run/",
+      "status": 200,
+      "latency_ms": 49,
+      "ok": true,
+      "body_snippet": "<!doctype html><html lang=\"fa\" dir=\"rtl\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>فروشگاه نمونه</title><style>body{font-family:Tahoma,sans-serif;background:#f6f7fb;margin:0;color:#1d2433}header{background:#0f766e;color:#fff;padding:18px 2",
+      "error": null
+     },
+     "env_keys": [
+      "APP_VERSION",
+      "CHAOS_TOKEN",
+      "PAYMENT_GATEWAY_KEY"
+     ],
+     "env_removed_since_last_seen": [],
+     "releases": [
+      {
+       "_id": "6ada3aea2c3f63ca36eea207",
+       "tag": "v9",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "Negahban fix 54b3bde",
+       "createdAt": "2026-10-22T16:33:46.289Z",
+       "finishedAt": "2026-10-22T16:34:04.822Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada39fcb8e65d29b96efcd6",
+       "tag": "v8",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "refactor: simplify discount (by developer)",
+       "createdAt": "2026-10-22T16:29:48.765Z",
+       "finishedAt": "2026-10-22T16:30:48.512Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada36d90e01dbee0e991576",
+       "tag": "v7",
+       "type": "ENV_UPDATE",
+       "state": "READY",
+       "message": "Negahban fix 46d482e",
+       "createdAt": "2026-10-22T16:16:25.652Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada367d38253e6cdf2cdd17",
+       "tag": "v6",
+       "type": "ENV_UPDATE",
+       "state": "UNHEALTHY",
+       "message": "Negahban fix 46d482e",
+       "createdAt": "2026-10-22T16:14:53.133Z",
+       "finishedAt": null,
+       "failReason": "APP_CRASHED"
+      },
+      {
+       "_id": "6ada2e6c2c3f63ca36ec8d4b",
+       "tag": "v5",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "Negahban fix 46d482e",
+       "createdAt": "2026-10-22T15:40:28.906Z",
+       "finishedAt": "2026-10-22T15:41:35.781Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada2db0b8e65d29b96d34e0",
+       "tag": "v4",
+       "type": "DEPLOY",
+       "state": "FAILED",
+       "message": "feat: invoices (by developer)",
+       "createdAt": "2026-10-22T15:37:20.648Z",
+       "finishedAt": null,
+       "failReason": null
+      }
+     ],
+     "build": null,
+     "events": [],
+     "cpu": {
+      "n": 61,
+      "last": 0.01271671241676183,
+      "mean": 0.01439590444186853,
+      "peak": 0.027814194580199268,
+      "min": 0.0053742540617714545,
+      "slope_per_min": -0.00019224468155097736,
+      "monotonic_rise": 0.6,
+      "limit": 0.5,
+      "util_last": 0.025,
+      "util_peak": 0.056,
+      "sustained_high": false,
+      "sustained_low": true
+     },
+     "mem": {
+      "n": 61,
+      "last": 0.40034230550130206,
+      "mean": 0.0947003599073066,
+      "peak": 0.42607879638671875,
+      "min": 0.00179290771484375,
+      "slope_per_min": 0.006680027938027788,
+      "monotonic_rise": 0.65,
+      "limit": 0.5,
+      "util_last": 0.801,
+      "util_peak": 0.852,
+      "sustained_high": false,
+      "sustained_low": false,
+      "minutes_to_limit": 14.9
+     },
+     "cpu_series": [
+      [
+       1792688703,
+       0.012570854438743926
+      ],
+      [
+       1792688733,
+       0.011878029432158729
+      ],
+      [
+       1792688763,
+       0.01774312237565145
+      ],
+      [
+       1792688793,
+       0.015535360611095624
+      ],
+      [
+       1792688823,
+       0.014603578685319541
+      ],
+      [
+       1792688853,
+       0.015103884099170817
+      ],
+      [
+       1792688883,
+       0.015258083466725575
+      ],
+      [
+       1792688913,
+       0.015397652959910883
+      ],
+      [
+       1792688943,
+       0.015971100897500895
+      ],
+      [
+       1792688973,
+       0.0160104872603196
+      ],
+      [
+       1792689003,
+       0.016785293811920732
+      ],
+      [
+       1792689033,
+       0.0064350716866443435
+      ],
+      [
+       1792689063,
+       0.006489877371995121
+      ],
+      [
+       1792689093,
+       0.007242145145723379
+      ],
+      [
+       1792689123,
+       0.007255123308579223
+      ],
+      [
+       1792689153,
+       0.007565312885538176
+      ],
+      [
+       1792689183,
+       0.007917845725947734
+      ],
+      [
+       1792689213,
+       0.007387649999999999
+      ],
+      [
+       1792689243,
+       0.012042724994697128
+      ],
+      [
+       1792689273,
+       0.014782986192964835
+      ],
+      [
+       1792689303,
+       0.027814194580199268
+      ],
+      [
+       1792689333,
+       0.026344300025183984
+      ],
+      [
+       1792689363,
+       0.025815003790616905
+      ],
+      [
+       1792689393,
+       0.024880753173322195
+      ],
+      [
+       1792689423,
+       0.025595401619949363
+      ],
+      [
+       1792689453,
+       0.02520505978851665
+      ],
+      [
+       1792689483,
+       0.024171815134503793
+      ],
+      [
+       1792689513,
+       0.023225850016444033
+      ],
+      [
+       1792689543,
+       0.020200412221593154
+      ],
+      [
+       1792689573,
+       0.005540036345844691
+      ],
+      [
+       1792689603,
+       0.02143168395627103
+      ],
+      [
+       1792689633,
+       0.02363572082520636
+      ],
+      [
+       1792689663,
+       0.024737386969997128
+      ],
+      [
+       1792689693,
+       0.024387388266793094
+      ],
+      [
+       1792689723,
+       0.023632703762358993
+      ],
+      [
+       1792689753,
+       0.023818396889902692
+      ],
+      [
+       1792689783,
+       0.025064871100375
+      ],
+      [
+       1792689813,
+       0.024817919343657766
+      ],
+      [
+       1792689843,
+       0.024314145184358316
+      ],
+      [
+       1792689873,
+       0.02511781190128964
+      ],
+      [
+       1792689903,
+       0.006875960197635644
+      ],
+      [
+       1792689933,
+       0.00544660853320761
+      ],
+      [
+       1792689963,
+       0.005572715582013637
+      ],
+      [
+       1792689993,
+       0.005596062078468343
+      ],
+      [
+       1792690023,
+       0.005576629425043058
+      ],
+      [
+       1792690053,
+       0.005532855019158159
+      ],
+      [
+       1792690083,
+       0.005515318221318836
+      ],
+      [
+       1792690113,
+       0.0055466459752766244
+      ],
+      [
+       1792690143,
+       0.0053742540617714545
+      ],
+      [
+       1792690173,
+       0.006380447172591202
+      ],
+      [
+       1792690203,
+       0.006647041735934898
+      ],
+      [
+       1792690233,
+       0.007234319148716993
+      ],
+      [
+       1792690263,
+       0.007539935510305884
+      ],
+      [
+       1792690293,
+       0.007955637668315276
+      ],
+      [
+       1792690323,
+       0.008520228034205124
+      ],
+      [
+       1792690353,
+       0.00910775109901538
+      ],
+      [
+       1792690383,
+       0.009396058096882081
+      ],
+      [
+       1792690413,
+       0.009685116726591381
+      ],
+      [
+       1792690443,
+       0.008982080523694105
+      ],
+      [
+       1792690473,
+       0.01948294
+      ]
+     ],
+     "mem_series": [
+      [
+       1792688703,
+       0.042
+      ],
+      [
+       1792688733,
+       0.047
+      ],
+      [
+       1792688763,
+       0.075
+      ],
+      [
+       1792688793,
+       0.075
+      ],
+      [
+       1792688823,
+       0.075
+      ],
+      [
+       1792688853,
+       0.075
+      ],
+      [
+       1792688883,
+       0.075
+      ],
+      [
+       1792688913,
+       0.075
+      ],
+      [
+       1792688943,
+       0.075
+      ],
+      [
+       1792688973,
+       0.075
+      ],
+      [
+       1792689003,
+       0.075
+      ],
+      [
+       1792689033,
+       0.033
+      ],
+      [
+       1792689063,
+       0.033
+      ],
+      [
+       1792689093,
+       0.033
+      ],
+      [
+       1792689123,
+       0.033
+      ],
+      [
+       1792689153,
+       0.033
+      ],
+      [
+       1792689183,
+       0.033
+      ],
+      [
+       1792689213,
+       0.051
+      ],
+      [
+       1792689243,
+       0.315
+      ],
+      [
+       1792689273,
+       0.002
+      ],
+      [
+       1792689303,
+       0.039
+      ],
+      [
+       1792689333,
+       0.04
+      ],
+      [
+       1792689363,
+       0.04
+      ],
+      [
+       1792689393,
+       0.04
+      ],
+      [
+       1792689423,
+       0.04
+      ],
+      [
+       1792689453,
+       0.04
+      ],
+      [
+       1792689483,
+       0.04
+      ],
+      [
+       1792689513,
+       0.04
+      ],
+      [
+       1792689543,
+       0.04
+      ],
+      [
+       1792689573,
+       0.04
+      ],
+      [
+       1792689603,
+       0.041
+      ],
+      [
+       1792689633,
+       0.041
+      ],
+      [
+       1792689663,
+       0.041
+      ],
+      [
+       1792689693,
+       0.041
+      ],
+      [
+       1792689723,
+       0.041
+      ],
+      [
+       1792689753,
+       0.041
+      ],
+      [
+       1792689783,
+       0.041
+      ],
+      [
+       1792689813,
+       0.041
+      ],
+      [
+       1792689843,
+       0.041
+      ],
+      [
+       1792689873,
+       0.041
+      ],
+      [
+       1792689903,
+       0.041
+      ],
+      [
+       1792689933,
+       0.041
+      ],
+      [
+       1792689963,
+       0.041
+      ],
+      [
+       1792689993,
+       0.041
+      ],
+      [
+       1792690023,
+       0.041
+      ],
+      [
+       1792690053,
+       0.041
+      ],
+      [
+       1792690083,
+       0.041
+      ],
+      [
+       1792690113,
+       0.042
+      ],
+      [
+       1792690143,
+       0.06
+      ],
+      [
+       1792690173,
+       0.153
+      ],
+      [
+       1792690203,
+       0.171
+      ],
+      [
+       1792690233,
+       0.212
+      ],
+      [
+       1792690263,
+       0.23
+      ],
+      [
+       1792690293,
+       0.259
+      ],
+      [
+       1792690323,
+       0.289
+      ],
+      [
+       1792690353,
+       0.33
+      ],
+      [
+       1792690383,
+       0.359
+      ],
+      [
+       1792690413,
+       0.377
+      ],
+      [
+       1792690443,
+       0.398
+      ],
+      [
+       1792690473,
+       0.426
+      ]
+     ],
+     "log_tail": [
+      "21:02:16 std cache: session cache grew to 276 MB",
+      "21:02:16 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=280 HTTP/1.1\" 200 OK",
+      "21:02:17 std cache: session cache grew to 282 MB",
+      "21:02:26 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=290 HTTP/1.1\" 200 OK",
+      "21:02:26 std cache: session cache grew to 288 MB",
+      "21:02:27 std cache: session cache grew to 294 MB",
+      "21:02:32 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+      "21:02:36 std cache: session cache grew to 300 MB",
+      "21:02:36 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=300 HTTP/1.1\" 200 OK",
+      "21:02:46 std cache: session cache grew to 306 MBINFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=310 HTTP/1.1\" 200 OK",
+      "21:02:46 std ",
+      "21:02:47 std cache: session cache grew to 312 MB",
+      "21:02:56 std cache: session cache grew to 318 MBINFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=320 HTTP/1.1\" 200 OK",
+      "21:02:56 std ",
+      "21:02:57 std cache: session cache grew to 324 MB",
+      "21:03:07 std cache: session cache grew to 330 MB",
+      "21:03:07 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=330 HTTP/1.1\" 200 OK",
+      "21:03:17 std cache: session cache grew to 336 MBINFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=340 HTTP/1.1\" 200 OK",
+      "21:03:17 std ",
+      "21:03:18 std cache: session cache grew to 342 MB",
+      "21:03:27 std cache: session cache grew to 348 MB",
+      "21:03:27 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=350 HTTP/1.1\" 200 OK",
+      "21:03:28 std cache: session cache grew to 354 MB",
+      "21:03:32 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+      "21:03:33 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+      "21:03:37 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=360 HTTP/1.1\" 200 OK",
+      "21:03:37 std cache: session cache grew to 360 MB",
+      "21:03:47 std cache: session cache grew to 366 MB",
+      "21:03:47 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=370 HTTP/1.1\" 200 OK",
+      "21:03:48 std cache: session cache grew to 372 MB",
+      "21:03:54 std INFO:     Shutting down",
+      "21:03:54 std INFO:     Waiting for application shutdown.",
+      "21:03:54 std INFO:     Application shutdown complete.",
+      "21:03:54 std INFO:     Finished server process [1]",
+      "21:04:00 std INFO:     Started server process [1]",
+      "21:04:00 std INFO:     Waiting for application startup.",
+      "21:04:00 std INFO:     Application startup complete.",
+      "21:04:00 std INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)",
+      "21:04:13 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+      "21:04:32 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK"
+     ],
+     "recent_ops": [
+      {
+       "ts": 1792690473.1356585,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792690453.4372723,
+       "action": "verify",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792690423.9223762,
+       "action": "restart_app",
+       "actor": "autopilot"
+      },
+      {
+       "ts": 1792690423.47967,
+       "action": "approve",
+       "actor": "autopilot"
+      },
+      {
+       "ts": 1792690423.0018253,
+       "action": "propose",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792690413.236043,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792690125.2515001,
+       "action": "scenario:memory_leak",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792689310.7648,
+       "action": "propose",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792689300.54806,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792689181.0999079,
+       "action": "scenario:memory_leak",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792688974.3335743,
+       "action": "diag.domains_health",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792688960.1754804,
+       "action": "diag.container_diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792688958.7461648,
+       "action": "diag.container_diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792688957.3111777,
+       "action": "diag.container_diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792688742.039939,
+       "action": "verify",
+       "actor": "negahban"
+      }
+     ],
+     "logs": {
+      "lines": 116,
+      "requests": 55,
+      "status_counts": {
+       "200": 55
+      },
+      "error_rate": 0.0,
+      "errors_5xx": 0,
+      "paths_5xx": {},
+      "slow": [],
+      "oom": [],
+      "missing_env": {},
+      "conn_errors": [],
+      "startups": 1,
+      "shutdowns": 2,
+      "restart_loop": false,
+      "first_ts": 1792689299.2293315,
+      "last_ts": 1792690472.3833344,
+      "previous_release_tracebacks": 0,
+      "tracebacks": []
+     }
+    },
+    "llm_used": false
+   },
+   "fingerprint": "memory",
+   "timeline": [
+    {
+     "ts": 1792690473.0686321,
+     "text": "رخداد شناسایی شد: حافظه نزدیک سقف پلن / OOM"
+    },
+    {
+     "ts": 1792690482.570829,
+     "text": "تشخیص: مصرف حافظه رو به افزایش است (احتمال نشت حافظه) (اطمینان 75٪)"
+    },
+    {
+     "ts": 1792690483.0034869,
+     "text": "کارت تأیید ساخته شد: ری‌استارت demo-shop"
+    },
+    {
+     "ts": 1792690667.7847009,
+     "text": "اقدام اجرا شد: ری‌استارت demo-shop — در حال راستی‌آزمایی"
+    },
+    {
+     "ts": 1792690722.2809513,
+     "text": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 38ms)، زمان پاسخ ✓ (38ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)، کانتینر جدید بالا آمد ✓ (6 ثانیه پس از اقدام)، مصرف حافظه ✓ (13٪ سقف پلن)"
+    }
+   ]
+  },
+  {
+   "id": "inc_78a4a14f664e",
+   "app": "demo-shop",
+   "kind": "memory",
+   "severity": "high",
+   "title": "مصرف حافظه رو به افزایش است (احتمال نشت حافظه)",
+   "status": "resolved",
+   "opened_at": 1792690413.1651797,
+   "updated_at": 1792690453.500748,
+   "resolved_at": 1792690453.500748,
+   "diagnosis": {
+    "app": "demo-shop",
+    "ts": 1792690422.4975252,
+    "healthy": false,
+    "hypotheses": [
+     {
+      "id": "mem_leak",
+      "title": "مصرف حافظه رو به افزایش است (احتمال نشت حافظه)",
+      "confidence": 0.75,
+      "evidence": [
+       "حافظه 70٪ سقف پلن",
+       "شیب رشد 66 MB/min",
+       "حدود 2.3 دقیقه تا پر شدن حافظه"
+      ],
+      "fixes": [
+       {
+        "tool": "restart_app",
+        "args": {
+         "app": "demo-shop"
+        },
+        "label": "ری‌استارت پیش از OOM"
+       },
+       {
+        "tool": "resize_app",
+        "args": {
+         "app": "demo-shop",
+         "plan": "medium-g2"
+        },
+        "label": "ارتقا به medium-g2"
+       }
+      ],
+      "kind": "memory"
+     }
+    ],
+    "summary": null,
+    "next_steps": [],
+    "evidence": {
+     "status": {
+      "status": "ACTIVE",
+      "scale": 1,
+      "planID": "small-g2",
+      "bundlePlanID": "standard",
+      "zeroDowntime": true,
+      "hourlyPrice": 659.72,
+      "bundleHourlyPrice": 659.72,
+      "isDeployed": true
+     },
+     "probe": {
+      "url": "https://demo-shop.liara.run/",
+      "status": 200,
+      "latency_ms": 47,
+      "ok": true,
+      "body_snippet": "<!doctype html><html lang=\"fa\" dir=\"rtl\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>فروشگاه نمونه</title><style>body{font-family:Tahoma,sans-serif;background:#f6f7fb;margin:0;color:#1d2433}header{background:#0f766e;color:#fff;padding:18px 2",
+      "error": null
+     },
+     "env_keys": [
+      "APP_VERSION",
+      "CHAOS_TOKEN",
+      "PAYMENT_GATEWAY_KEY"
+     ],
+     "env_removed_since_last_seen": [],
+     "releases": [
+      {
+       "_id": "6ada3aea2c3f63ca36eea207",
+       "tag": "v9",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "Negahban fix 54b3bde",
+       "createdAt": "2026-10-22T16:33:46.289Z",
+       "finishedAt": "2026-10-22T16:34:04.822Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada39fcb8e65d29b96efcd6",
+       "tag": "v8",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "refactor: simplify discount (by developer)",
+       "createdAt": "2026-10-22T16:29:48.765Z",
+       "finishedAt": "2026-10-22T16:30:48.512Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada36d90e01dbee0e991576",
+       "tag": "v7",
+       "type": "ENV_UPDATE",
+       "state": "READY",
+       "message": "Negahban fix 46d482e",
+       "createdAt": "2026-10-22T16:16:25.652Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada367d38253e6cdf2cdd17",
+       "tag": "v6",
+       "type": "ENV_UPDATE",
+       "state": "UNHEALTHY",
+       "message": "Negahban fix 46d482e",
+       "createdAt": "2026-10-22T16:14:53.133Z",
+       "finishedAt": null,
+       "failReason": "APP_CRASHED"
+      },
+      {
+       "_id": "6ada2e6c2c3f63ca36ec8d4b",
+       "tag": "v5",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "Negahban fix 46d482e",
+       "createdAt": "2026-10-22T15:40:28.906Z",
+       "finishedAt": "2026-10-22T15:41:35.781Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada2db0b8e65d29b96d34e0",
+       "tag": "v4",
+       "type": "DEPLOY",
+       "state": "FAILED",
+       "message": "feat: invoices (by developer)",
+       "createdAt": "2026-10-22T15:37:20.648Z",
+       "finishedAt": null,
+       "failReason": null
+      }
+     ],
+     "build": null,
+     "events": [],
+     "cpu": {
+      "n": 61,
+      "last": 0.00929087264419012,
+      "mean": 0.014326937155709256,
+      "peak": 0.027814194580199268,
+      "min": 0.0053742540617714545,
+      "slope_per_min": -0.00017955377037818756,
+      "monotonic_rise": 0.6,
+      "limit": 0.5,
+      "util_last": 0.019,
+      "util_peak": 0.056,
+      "sustained_high": false,
+      "sustained_low": true
+     },
+     "mem": {
+      "n": 61,
+      "last": 0.35140101114908856,
+      "mean": 0.08238045113985656,
+      "peak": 0.3651084899902344,
+      "min": 0.00179290771484375,
+      "slope_per_min": 0.004854086679733978,
+      "monotonic_rise": 0.62,
+      "limit": 0.5,
+      "util_last": 0.703,
+      "util_peak": 0.73,
+      "sustained_high": false,
+      "sustained_low": false,
+      "minutes_to_limit": 30.6
+     },
+     "cpu_series": [
+      [
+       1792688643,
+       0.0123097608997422
+      ],
+      [
+       1792688673,
+       0.012454525896842903
+      ],
+      [
+       1792688703,
+       0.012570854438743926
+      ],
+      [
+       1792688733,
+       0.011878029432158729
+      ],
+      [
+       1792688763,
+       0.01774312237565145
+      ],
+      [
+       1792688793,
+       0.015535360611095624
+      ],
+      [
+       1792688823,
+       0.014603578685319541
+      ],
+      [
+       1792688853,
+       0.015103884099170817
+      ],
+      [
+       1792688883,
+       0.015258083466725575
+      ],
+      [
+       1792688913,
+       0.015397652959910883
+      ],
+      [
+       1792688943,
+       0.015971100897500895
+      ],
+      [
+       1792688973,
+       0.0160104872603196
+      ],
+      [
+       1792689003,
+       0.016785293811920732
+      ],
+      [
+       1792689033,
+       0.0064350716866443435
+      ],
+      [
+       1792689063,
+       0.006489877371995121
+      ],
+      [
+       1792689093,
+       0.007242145145723379
+      ],
+      [
+       1792689123,
+       0.007255123308579223
+      ],
+      [
+       1792689153,
+       0.007565312885538176
+      ],
+      [
+       1792689183,
+       0.007917845725947734
+      ],
+      [
+       1792689213,
+       0.007387649999999999
+      ],
+      [
+       1792689243,
+       0.012042724994697128
+      ],
+      [
+       1792689273,
+       0.014782986192964835
+      ],
+      [
+       1792689303,
+       0.027814194580199268
+      ],
+      [
+       1792689333,
+       0.026344300025183984
+      ],
+      [
+       1792689363,
+       0.025815003790616905
+      ],
+      [
+       1792689393,
+       0.024880753173322195
+      ],
+      [
+       1792689423,
+       0.025595401619949363
+      ],
+      [
+       1792689453,
+       0.02520505978851665
+      ],
+      [
+       1792689483,
+       0.024171815134503793
+      ],
+      [
+       1792689513,
+       0.023225850016444033
+      ],
+      [
+       1792689543,
+       0.020200412221593154
+      ],
+      [
+       1792689573,
+       0.005540036345844691
+      ],
+      [
+       1792689603,
+       0.02143168395627103
+      ],
+      [
+       1792689633,
+       0.02363572082520636
+      ],
+      [
+       1792689663,
+       0.024737386969997128
+      ],
+      [
+       1792689693,
+       0.024387388266793094
+      ],
+      [
+       1792689723,
+       0.023632703762358993
+      ],
+      [
+       1792689753,
+       0.023818396889902692
+      ],
+      [
+       1792689783,
+       0.025064871100375
+      ],
+      [
+       1792689813,
+       0.024817919343657766
+      ],
+      [
+       1792689843,
+       0.024314145184358316
+      ],
+      [
+       1792689873,
+       0.02511781190128964
+      ],
+      [
+       1792689903,
+       0.006875960197635644
+      ],
+      [
+       1792689933,
+       0.00544660853320761
+      ],
+      [
+       1792689963,
+       0.005572715582013637
+      ],
+      [
+       1792689993,
+       0.005596062078468343
+      ],
+      [
+       1792690023,
+       0.005576629425043058
+      ],
+      [
+       1792690053,
+       0.005532855019158159
+      ],
+      [
+       1792690083,
+       0.005515318221318836
+      ],
+      [
+       1792690113,
+       0.0055466459752766244
+      ],
+      [
+       1792690143,
+       0.0053742540617714545
+      ],
+      [
+       1792690173,
+       0.006380447172591202
+      ],
+      [
+       1792690203,
+       0.006647041735934898
+      ],
+      [
+       1792690233,
+       0.007234319148716993
+      ],
+      [
+       1792690263,
+       0.007539935510305884
+      ],
+      [
+       1792690293,
+       0.007955637668315276
+      ],
+      [
+       1792690323,
+       0.008520228034205124
+      ],
+      [
+       1792690353,
+       0.00910775109901538
+      ],
+      [
+       1792690383,
+       0.009396058096882081
+      ],
+      [
+       1792690413,
+       0.009368808736672897
+      ]
+     ],
+     "mem_series": [
+      [
+       1792688643,
+       0.042
+      ],
+      [
+       1792688673,
+       0.042
+      ],
+      [
+       1792688703,
+       0.042
+      ],
+      [
+       1792688733,
+       0.047
+      ],
+      [
+       1792688763,
+       0.075
+      ],
+      [
+       1792688793,
+       0.075
+      ],
+      [
+       1792688823,
+       0.075
+      ],
+      [
+       1792688853,
+       0.075
+      ],
+      [
+       1792688883,
+       0.075
+      ],
+      [
+       1792688913,
+       0.075
+      ],
+      [
+       1792688943,
+       0.075
+      ],
+      [
+       1792688973,
+       0.075
+      ],
+      [
+       1792689003,
+       0.075
+      ],
+      [
+       1792689033,
+       0.033
+      ],
+      [
+       1792689063,
+       0.033
+      ],
+      [
+       1792689093,
+       0.033
+      ],
+      [
+       1792689123,
+       0.033
+      ],
+      [
+       1792689153,
+       0.033
+      ],
+      [
+       1792689183,
+       0.033
+      ],
+      [
+       1792689213,
+       0.051
+      ],
+      [
+       1792689243,
+       0.315
+      ],
+      [
+       1792689273,
+       0.002
+      ],
+      [
+       1792689303,
+       0.039
+      ],
+      [
+       1792689333,
+       0.04
+      ],
+      [
+       1792689363,
+       0.04
+      ],
+      [
+       1792689393,
+       0.04
+      ],
+      [
+       1792689423,
+       0.04
+      ],
+      [
+       1792689453,
+       0.04
+      ],
+      [
+       1792689483,
+       0.04
+      ],
+      [
+       1792689513,
+       0.04
+      ],
+      [
+       1792689543,
+       0.04
+      ],
+      [
+       1792689573,
+       0.04
+      ],
+      [
+       1792689603,
+       0.041
+      ],
+      [
+       1792689633,
+       0.041
+      ],
+      [
+       1792689663,
+       0.041
+      ],
+      [
+       1792689693,
+       0.041
+      ],
+      [
+       1792689723,
+       0.041
+      ],
+      [
+       1792689753,
+       0.041
+      ],
+      [
+       1792689783,
+       0.041
+      ],
+      [
+       1792689813,
+       0.041
+      ],
+      [
+       1792689843,
+       0.041
+      ],
+      [
+       1792689873,
+       0.041
+      ],
+      [
+       1792689903,
+       0.041
+      ],
+      [
+       1792689933,
+       0.041
+      ],
+      [
+       1792689963,
+       0.041
+      ],
+      [
+       1792689993,
+       0.041
+      ],
+      [
+       1792690023,
+       0.041
+      ],
+      [
+       1792690053,
+       0.041
+      ],
+      [
+       1792690083,
+       0.041
+      ],
+      [
+       1792690113,
+       0.042
+      ],
+      [
+       1792690143,
+       0.06
+      ],
+      [
+       1792690173,
+       0.153
+      ],
+      [
+       1792690203,
+       0.171
+      ],
+      [
+       1792690233,
+       0.212
+      ],
+      [
+       1792690263,
+       0.23
+      ],
+      [
+       1792690293,
+       0.259
+      ],
+      [
+       1792690323,
+       0.289
+      ],
+      [
+       1792690353,
+       0.33
+      ],
+      [
+       1792690383,
+       0.359
+      ],
+      [
+       1792690413,
+       0.365
+      ]
+     ],
+     "log_tail": [
+      "21:01:16 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=220 HTTP/1.1\" 200 OK",
+      "21:01:17 std cache: session cache grew to 222 MB",
+      "21:01:26 std cache: session cache grew to 228 MBINFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=230 HTTP/1.1\" 200 OK",
+      "21:01:26 std ",
+      "21:01:27 std cache: session cache grew to 234 MB",
+      "21:01:32 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+      "21:01:36 std cache: session cache grew to 240 MB",
+      "21:01:36 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=240 HTTP/1.1\" 200 OK",
+      "21:01:46 std cache: session cache grew to 246 MB",
+      "21:01:46 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=250 HTTP/1.1\" 200 OK",
+      "21:01:47 std cache: session cache grew to 252 MB",
+      "21:01:56 std cache: session cache grew to 258 MBINFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=260 HTTP/1.1\" 200 OK",
+      "21:01:56 std ",
+      "21:01:57 std cache: session cache grew to 264 MB",
+      "21:02:06 std cache: session cache grew to 270 MB",
+      "21:02:06 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=270 HTTP/1.1\" 200 OK",
+      "21:02:16 std cache: session cache grew to 276 MB",
+      "21:02:16 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=280 HTTP/1.1\" 200 OK",
+      "21:02:17 std cache: session cache grew to 282 MB",
+      "21:02:26 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=290 HTTP/1.1\" 200 OK",
+      "21:02:26 std cache: session cache grew to 288 MB",
+      "21:02:27 std cache: session cache grew to 294 MB",
+      "21:02:32 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK",
+      "21:02:36 std cache: session cache grew to 300 MB",
+      "21:02:36 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=300 HTTP/1.1\" 200 OK",
+      "21:02:46 std cache: session cache grew to 306 MBINFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=310 HTTP/1.1\" 200 OK",
+      "21:02:46 std ",
+      "21:02:47 std cache: session cache grew to 312 MB",
+      "21:02:56 std cache: session cache grew to 318 MBINFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=320 HTTP/1.1\" 200 OK",
+      "21:02:56 std ",
+      "21:02:57 std cache: session cache grew to 324 MB",
+      "21:03:07 std cache: session cache grew to 330 MB",
+      "21:03:07 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=330 HTTP/1.1\" 200 OK",
+      "21:03:17 std cache: session cache grew to 336 MBINFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=340 HTTP/1.1\" 200 OK",
+      "21:03:17 std ",
+      "21:03:18 std cache: session cache grew to 342 MB",
+      "21:03:27 std cache: session cache grew to 348 MB",
+      "21:03:27 std INFO:     172.18.0.1:0 - \"POST /__chaos/leak?target_mb=350 HTTP/1.1\" 200 OK",
+      "21:03:28 std cache: session cache grew to 354 MB",
+      "21:03:32 std INFO:     172.18.0.1:0 - \"GET / HTTP/1.1\" 200 OK"
+     ],
+     "recent_ops": [
+      {
+       "ts": 1792690413.236043,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792690125.2515001,
+       "action": "scenario:memory_leak",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792689310.7648,
+       "action": "propose",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792689300.54806,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792689181.0999079,
+       "action": "scenario:memory_leak",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792688974.3335743,
+       "action": "diag.domains_health",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792688960.1754804,
+       "action": "diag.container_diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792688958.7461648,
+       "action": "diag.container_diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792688957.3111777,
+       "action": "diag.container_diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792688742.039939,
+       "action": "verify",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792688718.7165546,
+       "action": "resize_app",
+       "actor": "autopilot"
+      },
+      {
+       "ts": 1792688718.4529138,
+       "action": "approve",
+       "actor": "autopilot"
+      },
+      {
+       "ts": 1792688718.1196294,
+       "action": "autoscale_down",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792688717.9554698,
+       "action": "propose",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792686916.990909,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      }
+     ],
+     "logs": {
+      "lines": 141,
+      "requests": 45,
+      "status_counts": {
+       "200": 45
+      },
+      "error_rate": 0.0,
+      "errors_5xx": 0,
+      "paths_5xx": {},
+      "slow": [],
+      "oom": [],
+      "missing_env": {},
+      "conn_errors": [],
+      "startups": 0,
+      "shutdowns": 0,
+      "restart_loop": false,
+      "first_ts": 1792689213.5723143,
+      "last_ts": 1792690412.1232402,
+      "previous_release_tracebacks": 0,
+      "tracebacks": []
+     }
+    },
+    "llm_used": false
+   },
+   "fingerprint": "memory",
+   "timeline": [
+    {
+     "ts": 1792690413.1651797,
+     "text": "رخداد شناسایی شد: حافظه نزدیک سقف پلن / OOM"
+    },
+    {
+     "ts": 1792690422.5020072,
+     "text": "تشخیص: مصرف حافظه رو به افزایش است (احتمال نشت حافظه) (اطمینان 75٪)"
+    },
+    {
+     "ts": 1792690423.1464536,
+     "text": "خودران: ری‌استارت demo-shop بدون پرسش اجرا شد (خودران: ری‌استارت در کرش/نشت حافظه مجاز است)"
+    },
+    {
+     "ts": 1792690424.0570955,
+     "text": "اقدام اجرا شد: ری‌استارت demo-shop — در حال راستی‌آزمایی"
+    },
+    {
+     "ts": 1792690453.5007467,
+     "text": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 81ms)، زمان پاسخ ✓ (81ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)، کانتینر جدید بالا آمد ✓ (11 ثانیه پس از اقدام)، مصرف حافظه ✓ (80٪ سقف پلن)"
+    }
+   ]
+  }
+ ],
+ "proposals": [
+  {
+   "id": "prp_a3ad5dd3cdbd",
+   "app": "demo-shop",
+   "tool": "restart_app",
+   "args": {
+    "app": "demo-shop"
+   },
+   "title": "ری‌استارت demo-shop",
+   "why": "مصرف حافظه رو به افزایش است (احتمال نشت حافظه) — خودران: ری‌استارت در کرش/نشت حافظه مجاز است",
+   "impact": {
+    "downtime": "حدود ۱۰ تا ۳۰ ثانیه",
+    "cost": "بدون تغییر هزینه",
+    "risk": "کم",
+    "label": "ری‌استارت برنامه",
+    "before": {
+     "cpu_util": 0.019,
+     "mem_util": 0.73,
+     "latency_ms": 84,
+     "plan": "small-g2"
+    },
+    "hypothesis": "مصرف حافظه رو به افزایش است (احتمال نشت حافظه)",
+    "confidence": 0.75
+   },
+   "rollback": "نیازی نیست؛ ری‌استارت وضعیت دائمی را تغییر نمی‌دهد.",
+   "status": "done",
+   "created_at": 1792690422.7298026,
+   "expires_at": 1792691622.7298036,
+   "origin": "autopilot",
+   "incident_id": "inc_78a4a14f664e",
+   "result": {
+    "restarted": "demo-shop"
+   },
+   "verification": {
+    "passed": true,
+    "checks": [
+     {
+      "name": "سلامت HTTP",
+      "ok": true,
+      "detail": "HTTP 200 در 81ms"
+     },
+     {
+      "name": "زمان پاسخ",
+      "ok": true,
+      "detail": "81ms (حد مجاز 2500ms)"
+     },
+     {
+      "name": "خطای جدید در لاگ",
+      "ok": true,
+      "detail": "0 پاسخ 5xx، 0 traceback از زمان اقدام"
+     },
+     {
+      "name": "کانتینر جدید بالا آمد",
+      "ok": true,
+      "detail": "11 ثانیه پس از اقدام"
+     },
+     {
+      "name": "مصرف حافظه",
+      "ok": true,
+      "detail": "80٪ سقف پلن"
+     }
+    ],
+    "attempts": 1,
+    "ts": 1792690453.3691294
+   },
+   "decided_by": "autopilot",
+   "decided_at": 1792690423.406269,
+   "auto": 1
+  },
+  {
+   "id": "prp_3bebb7224484",
+   "app": "demo-shop",
+   "tool": "restart_app",
+   "args": {
+    "app": "demo-shop"
+   },
+   "title": "ری‌استارت demo-shop",
+   "why": "مصرف حافظه رو به افزایش است (احتمال نشت حافظه)",
+   "impact": {
+    "downtime": "حدود ۱۰ تا ۳۰ ثانیه",
+    "cost": "بدون تغییر هزینه",
+    "risk": "کم",
+    "label": "ری‌استارت برنامه",
+    "before": {
+     "cpu_util": 0.054,
+     "mem_util": 0.852,
+     "latency_ms": 210,
+     "plan": "small-g2"
+    },
+    "hypothesis": "مصرف حافظه رو به افزایش است (احتمال نشت حافظه)",
+    "confidence": 0.75
+   },
+   "rollback": "نیازی نیست؛ ری‌استارت وضعیت دائمی را تغییر نمی‌دهد.",
+   "status": "done",
+   "created_at": 1792690482.75483,
+   "expires_at": 1792691682.7548306,
+   "origin": "orchestrator",
+   "incident_id": "inc_b93a7e532d42",
+   "result": {
+    "restarted": "demo-shop"
+   },
+   "verification": {
+    "passed": true,
+    "checks": [
+     {
+      "name": "سلامت HTTP",
+      "ok": true,
+      "detail": "HTTP 200 در 38ms"
+     },
+     {
+      "name": "زمان پاسخ",
+      "ok": true,
+      "detail": "38ms (حد مجاز 2500ms)"
+     },
+     {
+      "name": "خطای جدید در لاگ",
+      "ok": true,
+      "detail": "0 پاسخ 5xx، 0 traceback از زمان اقدام"
+     },
+     {
+      "name": "کانتینر جدید بالا آمد",
+      "ok": true,
+      "detail": "6 ثانیه پس از اقدام"
+     },
+     {
+      "name": "مصرف حافظه",
+      "ok": true,
+      "detail": "13٪ سقف پلن"
+     }
+    ],
+    "attempts": 3,
+    "ts": 1792690722.1231947
+   },
+   "decided_by": "owner",
+   "decided_at": 1792690667.214726,
+   "auto": 0
+  }
+ ]
+}

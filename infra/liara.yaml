@@ -1,0 +1,182 @@
+# Team-level Liara stack: every app of the MeowMeow team (source of truth).
+# Desired state of Liara resources. Plan: python3 infra/liara_apply.py plan -f infra/liara.yaml
+# Values of env vars never live here - only their names. See docs/DEPLOYMENT.md "Infrastructure as code".
+apiVersion: meowmeow.platform/v1
+kind: LiaraStack
+team:
+  network: meow-net               # private network required by g2 plans
+  exclusive: true                 # undeclared apps on the account are reported (removed only with --allow-delete)
+  budget:
+    minRunwayHours: 72            # plan warns when balance / run-rate drops below 3 days
+apps:
+  - name: bazargard-ai
+    description: Bazargard (Torob challenge) - FastAPI + React shopping assistant
+    url: https://bazargard-ai.liara.run
+    platform: docker
+    port: 8080
+    plan: standard-base-g2          # 2 GB RAM / 1 CPU: the 430 MB SQLite catalogue is memory-mapped
+    bundle: basic
+    zeroDowntime: false             # basic bundle has no zero-downtime (standard+ only)
+    readOnlyRootFilesystem: false
+    running: true
+    build: {location: germany, dockerfile: ./Dockerfile, cache: true}   # npm/pip need unrestricted egress
+    disks:
+      - name: data
+        sizeGB: 3
+        mountTo: /data
+        backup:
+          native: false             # not available on basic
+          offsite: {keep: 7, exclude: [catalog.db]}   # catalogue is reproducible (seed + CATALOG_SHA256)
+    envs:
+      # LLM_PROVIDER=anthropic (default) uses RELAY_URL + RELAY_TOKEN (LLM gate); BoxAPI is the automatic fallback
+      required: [PUBLIC_BASE_URL, DATA_DIR, CATALOG_URL, CATALOG_TOKEN, CATALOG_SHA256, RELAY_URL, RELAY_TOKEN, BOXAPI_BASE_URL, BOXAPI_KEYS]
+      optional: [LLM_PROVIDER, LLM_FALLBACK_PROVIDER, ANTHROPIC_MODEL, ANTHROPIC_LIGHT_MODEL, LLM_MODEL, LLM_LIGHT_MODEL, LLM_FALLBACK_MODELS,
+                 LLM_REASONING_EFFORT, LLM_SEARCH_CONCURRENCY, LLM_TOOL_RESULT_CHARS, LLM_PROMPT_CACHE, SPEC_MODEL, SPEC_MODEL_SEARCH, ADMIN_TOKEN,
+                 LOG_LEVEL, LOG_FORMAT, APP_ENV, OBS_ENV, PORT, FORWARDED_ALLOW_IPS, OSRM_URL, OVERPASS_URL, HTTP_USER_AGENT,
+                 WEB_GATEWAY_URL, WEB_GATEWAY_TOKEN, LIARA_API_TOKEN, LIARA_ALLOW_MUTATIONS, DEV_CONSOLE, DEV_TRACE_HOURS, DEV_PRICES]
+    healthCheck:                    # SECONDS (Liara API validation: interval >= 30, startPeriod <= 3000); gates the cutover
+      # liveness only (/api/health); readiness (/api/ready, catalogue loaded) is gated by the smoke tests
+      command: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8080/api/health', timeout=5)"]
+      interval: 30
+      timeout: 10
+      retries: 3
+      startPeriod: 60            # first boot may verify or seed the 430 MB catalogue
+    smoke:
+      attempts: 6
+      checks:
+        - {path: /api/health, expectStatus: 200, expectJson: {status: ok, catalog_ready: true}}
+        - {path: /api/ready, expectStatus: 200, expectJson: {ready: true}}       # catalogue loaded, provider configured
+        - {path: /, expectStatus: 200, contains: "بازارگرد", maxLatencyMs: 3000}
+    slo: {availability: 99.5, p95LatencyMs: 1500, probePath: /api/health}
+    scaling: {mode: vertical, min: standard-base-g2, max: standard-plus-g2, scaleUpWhen: "memory > 85% or cpu > 80% for 15 min", scaleDownWhen: "memory < 40% and cpu < 20% for 24 h"}
+
+  - name: negahban-sre
+    description: Negahban - AI SRE agent for Liara (watches, diagnoses, remediates)
+    url: https://negahban-sre.liara.run
+    platform: docker
+    port: 8080
+    plan: medium-g2
+    bundle: basic
+    zeroDowntime: false
+    readOnlyRootFilesystem: false
+    running: true
+    build: {location: germany, dockerfile: ./Dockerfile, cache: true}
+    disks:
+      - name: data
+        sizeGB: 2
+        mountTo: /data
+        backup:
+          native: false
+          offsite: {keep: 7, exclude: []}   # WAL files are kept: they may hold committed rows
+    envs:
+      required: [ADMIN_PASSWORD, SESSION_SECRET, LIARA_API_TOKEN, LIARA_TEAM_ID, LIARA_API_BASE, BOXAPI_BASE_URL, BOXAPI_KEYS, DATA_DIR]
+      optional: [OBS_ENV, APP_ENV, LOG_LEVEL, ANTHROPIC_MODEL, DEMO_APP, DEMO_CHAOS_TOKEN, LIARA_NETWORK_ID, LLM_GATE_TOKEN, LLM_GATE_URL, LLM_PROVIDER,
+                 MCP_TOKEN, NEGAHBAN_MODEL, ORCH_INTERVAL, SELF_APP, WATCHDOG_TOKEN, STATUS_INGEST_TOKEN]
+    healthCheck:
+      command: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8080/healthz', timeout=5)"]
+      interval: 30
+      timeout: 10
+      retries: 3
+      startPeriod: 30
+    smoke:
+      checks:
+        - {path: /healthz, expectStatus: 200, expectJson: {ok: true}}
+        - {path: /, expectStatus: 200, contains: "نگهبان", maxLatencyMs: 3000}
+    slo: {availability: 99.5, p95LatencyMs: 1500, probePath: /healthz}
+    scaling: {mode: vertical, min: medium-g2, max: standard-base-g2, scaleUpWhen: "memory > 85% for 15 min"}
+
+  - name: demo-shop
+    description: Demo target that Negahban watches and repairs (chaos endpoints, standard bundle for zero-downtime)
+    url: https://demo-shop.liara.run
+    source: demo-shop               # build context = this sub-directory of the repo
+    platform: docker
+    port: 8080
+    plan: medium-g2
+    bundle: standard
+    zeroDowntime: true
+    readOnlyRootFilesystem: false
+    running: true
+    build: {location: germany, dockerfile: ./Dockerfile, cache: true}
+    disks: []
+    envs:
+      required: [PAYMENT_GATEWAY_KEY]   # the shop crashes at start-up without it (a scenario Negahban demonstrates)
+      optional: [APP_VERSION, CHAOS_TOKEN, OBS_ENV]
+    healthCheck:                    # python:3.12-slim has no curl
+      command: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8080/healthz', timeout=5)"]
+      interval: 30
+      timeout: 10
+      retries: 3
+      startPeriod: 15
+    smoke:
+      checks:
+        - {path: /healthz, expectStatus: 200, expectJson: {ok: true}}
+    slo: {availability: 99.0, p95LatencyMs: 1500, probePath: /healthz}   # chaos target: failures are injected on purpose
+    scaling: {mode: vertical, min: medium-g2, max: medium-g2}
+
+  - name: meowmeow-wallex
+    description: Wallex trading dashboard + engine control (engine off and disarmed by default)
+    url: https://meowmeow-wallex.liara.run
+    platform: docker
+    port: 8080
+    plan: small-g2
+    bundle: basic
+    zeroDowntime: false
+    readOnlyRootFilesystem: false
+    running: true
+    build: {location: germany, dockerfile: ./Dockerfile, cache: true}
+    disks:
+      - name: wallex-data
+        sizeGB: 1
+        mountTo: /data
+        backup:
+          native: false
+          offsite: {keep: 7, exclude: []}
+    envs:
+      required: [WALLEX_ADMIN_PASSWORD, BOXAPI_BASE_URL, BOXAPI_KEYS, LLM_PROVIDER, WALLEX_ENGINE, WALLEX_LIVE_ENABLED]
+      # ANTHROPIC_BASE_URL / ANTHROPIC_AUTH_TOKEN are required while LLM_PROVIDER=anthropic (they hold the LLM gate URL + gate token);
+      # WALLEX_API_KEY / WALLEX_SUBACCOUNT_ID are only needed to arm live trading.
+      optional: [ANTHROPIC_BASE_URL, ANTHROPIC_AUTH_TOKEN, WALLEX_ANTHROPIC_MODEL, WALLEX_BOXAPI_MODEL, OBS_ENV, LOG_LEVEL, APP_ENV, TZ,
+                 LLM_GATE_URL, LLM_GATE_TOKEN, WALLEX_API_KEY, WALLEX_SUBACCOUNT_ID, LLM_FALLBACK, WALLEX_MCP_TOOLS, WALLEX_MCP_URL,
+                 WALLEX_MCP_MAX_CALLS, WALLEX_MAX_EXPOSURE, WALLEX_CHALLENGE_END_UTC, WALLEX_FLATTEN_MINUTES, WALLEX_NO_NEW_ENTRIES_MINUTES,
+                 SNAPSHOT_PUSH_TOKEN, SNAPSHOT_PUSH_MAX_BYTES, WALLEX_LIVE_STRATEGY]
+    healthCheck:
+      command: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8080/healthz', timeout=5)"]
+      interval: 30
+      timeout: 10
+      retries: 3
+      startPeriod: 30
+    smoke:
+      checks:
+        - {path: /healthz, expectStatus: 200, contains: ok}
+        - {path: /, expectStatus: 401}          # dashboard must stay behind auth
+    slo: {availability: 99.5, p95LatencyMs: 1500, probePath: /healthz}
+    scaling: {mode: vertical, min: small-g2, max: medium-g2, scaleUpWhen: "memory > 85% for 15 min (engine armed)"}
+
+  - name: meow-lb
+    description: Load balancer + deterministic replica controller for stateless apps (docs/SCALING.md); deployed by scaler/deploy_meowlb.py
+    url: https://meow-lb.liara.run
+    source: scaler
+    platform: docker
+    port: 8080
+    plan: small-g2
+    bundle: basic
+    zeroDowntime: false
+    readOnlyRootFilesystem: false
+    running: true
+    build: {location: germany, dockerfile: ./Dockerfile, cache: true}
+    disks: []                       # stateless: replicas are adopted from Liara on restart
+    envs:
+      required: [LIARA_API_TOKEN, LIARA_TEAM_ID, SCALER_ADMIN_TOKEN, SCALER_READ_TOKEN, LB_BACKENDS]
+      optional: [LIARA_API_BASE, LB_STRATEGY, LB_STICKY, SCALER_POLICY, SCALER_ENABLED, OBS_ENV]
+    healthCheck:
+      command: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8080/lb/healthz', timeout=5)"]
+      interval: 30
+      timeout: 10
+      retries: 3
+      startPeriod: 15
+    smoke:
+      checks:
+        - {path: /lb/healthz, expectStatus: 200, expectJson: {ok: true}}
+        - {path: /scaler/status, expectStatus: 200}
+    slo: {availability: 99.5, p95LatencyMs: 1500, probePath: /lb/healthz}
+    scaling: {mode: vertical, min: small-g2, max: small-g2}

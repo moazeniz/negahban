@@ -1,0 +1,11 @@
+integrity: ok
+apps 5
+incidents 23
+proposals 49
+audit 406
+memory 11
+templates 0
+jobs 35
+alert_rules n/a no such table: alert_rules
+reports n/a no such table: reports
+staging incidents: 23 proposals: 49 memory: 11

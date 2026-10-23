@@ -1,0 +1,298 @@
+[
+ {
+  "check": "login (desktop)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "page overview (desk)",
+  "ok": true,
+  "detail": "2007 chars, hscroll=False"
+ },
+ {
+  "check": "page chat (desk)",
+  "ok": true,
+  "detail": "479 chars, hscroll=False"
+ },
+ {
+  "check": "page approvals (desk)",
+  "ok": true,
+  "detail": "7920 chars, hscroll=False"
+ },
+ {
+  "check": "page incidents (desk)",
+  "ok": true,
+  "detail": "1793 chars, hscroll=False"
+ },
+ {
+  "check": "page autopilot (desk)",
+  "ok": true,
+  "detail": "4771 chars, hscroll=False"
+ },
+ {
+  "check": "page wizard (desk)",
+  "ok": true,
+  "detail": "262 chars, hscroll=False"
+ },
+ {
+  "check": "page templates (desk)",
+  "ok": true,
+  "detail": "2962 chars, hscroll=False"
+ },
+ {
+  "check": "page terminal (desk)",
+  "ok": true,
+  "detail": "679 chars, hscroll=False"
+ },
+ {
+  "check": "page logs (desk)",
+  "ok": true,
+  "detail": "387 chars, hscroll=False"
+ },
+ {
+  "check": "page domains (desk)",
+  "ok": true,
+  "detail": "805 chars, hscroll=False"
+ },
+ {
+  "check": "page scenarios (desk)",
+  "ok": true,
+  "detail": "984 chars, hscroll=False"
+ },
+ {
+  "check": "page audit (desk)",
+  "ok": true,
+  "detail": "18061 chars, hscroll=False"
+ },
+ {
+  "check": "page limits (desk)",
+  "ok": true,
+  "detail": "1997 chars, hscroll=False"
+ },
+ {
+  "check": "page app:demo-shop (desk)",
+  "ok": true,
+  "detail": "9665 chars, hscroll=False"
+ },
+ {
+  "check": "page app:bazargard-ai (desk)",
+  "ok": true,
+  "detail": "31350 chars, hscroll=False"
+ },
+ {
+  "check": "provider chip shows Anthropic/haiku",
+  "ok": true,
+  "detail": "🛰️ پایشگر: لحظاتی پیش | 🐕 نگهبانِ نگهبان: لحظاتی پیش | 🧠 Anthropic ·\nclaude-haiku-5-5"
+ },
+ {
+  "check": "no JS errors (desk)",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "login (mobile)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "page overview (mob)",
+  "ok": true,
+  "detail": "2007 chars, hscroll=False"
+ },
+ {
+  "check": "page chat (mob)",
+  "ok": true,
+  "detail": "479 chars, hscroll=False"
+ },
+ {
+  "check": "page approvals (mob)",
+  "ok": true,
+  "detail": "7920 chars, hscroll=False"
+ },
+ {
+  "check": "page incidents (mob)",
+  "ok": true,
+  "detail": "1793 chars, hscroll=False"
+ },
+ {
+  "check": "page autopilot (mob)",
+  "ok": true,
+  "detail": "4771 chars, hscroll=False"
+ },
+ {
+  "check": "page wizard (mob)",
+  "ok": true,
+  "detail": "262 chars, hscroll=False"
+ },
+ {
+  "check": "page templates (mob)",
+  "ok": true,
+  "detail": "2962 chars, hscroll=False"
+ },
+ {
+  "check": "page terminal (mob)",
+  "ok": true,
+  "detail": "679 chars, hscroll=False"
+ },
+ {
+  "check": "page logs (mob)",
+  "ok": true,
+  "detail": "387 chars, hscroll=False"
+ },
+ {
+  "check": "page domains (mob)",
+  "ok": true,
+  "detail": "805 chars, hscroll=False"
+ },
+ {
+  "check": "page scenarios (mob)",
+  "ok": true,
+  "detail": "984 chars, hscroll=False"
+ },
+ {
+  "check": "page audit (mob)",
+  "ok": true,
+  "detail": "18224 chars, hscroll=False"
+ },
+ {
+  "check": "page limits (mob)",
+  "ok": true,
+  "detail": "1997 chars, hscroll=False"
+ },
+ {
+  "check": "page app:demo-shop (mob)",
+  "ok": true,
+  "detail": "9664 chars, hscroll=False"
+ },
+ {
+  "check": "page app:bazargard-ai (mob)",
+  "ok": true,
+  "detail": "31348 chars, hscroll=False"
+ },
+ {
+  "check": "no JS errors (mob)",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "chat apps",
+  "ok": true,
+  "detail": "10s att=0 cards=0 :: در حال حاضر ۴ برنامه روی تیم شما فعال است. فهرست و هزینه‌ی ساعتی هر کدام:\n\n| برنامه | وضعیت | پلن سخت‌افزاری | باندل | هزینه‌ی ساعتی (تومان) | هزینه‌ی تقریبی ما",
+  "seconds": 10
+ },
+ {
+  "check": "chat chart",
+  "ok": true,
+  "detail": "9s att=1 cards=0 :: نمودار CPU برنامه‌ی demo-shop برای ۶ ساعت اخیر در چت نمایش داده شد.\n\nخلاصه‌ی آن:\n• میانگین مصرف: حدود ۰٫۰۴ هسته\n• آخرین مقدار: حدود ۰٫۰۰۵ هسته (حدود ۱٪ از سقف پ",
+  "seconds": 9
+ },
+ {
+  "check": "chat diagram",
+  "ok": true,
+  "detail": "7s att=1 cards=0 :: نقشه‌ی ارتباط برنامه‌های تیم در چت نمایش داده شد. این نقشه شامل چهار برنامه‌ی فعال است: meowmeow-wallex، negahban-sre، demo-shop و bazargard-ai، به‌همراه نقش نگ",
+  "seconds": 7
+ },
+ {
+  "check": "chat exec",
+  "ok": true,
+  "detail": "16s att=0 cards=0 :: نتایج بررسی داخل کانتینرها:\n\ndemo-shop\n• حافظه: ۴۵٫۸ مگابایت از سقف ۵۱۲ مگابایت (حدود ۹٪). هیچ OOM و هیچ محدودیت‌ای رخ نداده است.\n• پردازه‌ها: فقط یک پردازه (uv",
+  "seconds": 16
+ },
+ {
+  "check": "chat logs",
+  "ok": true,
+  "detail": "10s att=0 cards=0 :: در ۶۰ دقیقه‌ی اخیر هیچ خطایی در demo-shop ثبت نشده است.\n\n• درخواست‌ها: ۱۰۳ درخواست، همه با وضعیت ۲۰۰ (نرخ خطای ۵xx: صفر).\n• پرترافیک‌ترین مسیرها: GET / (۵۷ بار)",
+  "seconds": 10
+ },
+ {
+  "check": "chat template",
+  "ok": false,
+  "detail": "9s att=0 cards=0 :: استقرار انجام نشد. برنامه‌ی ngh-accept-api در حالت «فقط پایش» (write_lock) است و سیاست مالک اجازه‌ی هیچ تغییری را نمی‌دهد. به همین دلیل کارت تأیید هم ساخته نشد.",
+  "seconds": 9
+ },
+ {
+  "check": "chat restart card",
+  "ok": true,
+  "detail": "10s cards=1"
+ },
+ {
+  "check": "approve → execute → verify (demo-shop restart)",
+  "ok": true,
+  "detail": "ری‌استارت demo-shop | انجام و تأیید شد | گفتگو · لحظاتی پیش | درخواست مالک برای راه‌اندازی مجدد demo-shop | قطعی | حدود ۱۰ تا ۳۰ ثانیه | هزینه | بدون تغییر هزینه | ریسک | کم | برنامه‌ی بازگشت: نیازی نیست؛ ری‌استارت وضعیت دائمی را تغییر نمی‌دهد. | ✅ سلامت HTTP — HTTP 200 در 84ms | ✅ زمان پاسخ — 84ms "
+ },
+ {
+  "check": "terminal: 'cat /proc/loadavg' -> ran",
+  "ok": true,
+  "detail": "{\"verdict\": \"read\", \"label\": \"فقط‌خواندنی؛ بی‌درنگ اجرا می‌شود\", \"result\": {\"app\": \"demo-shop\", \"command\": \"cat /proc/loadavg\", \"risk\": \"read\", \"output\": \"21.25 23.12 22.32 42/12170 12\\n\", \"ms\": 1174,"
+ },
+ {
+  "check": "terminal: 'pip install requests' -> card",
+  "ok": false,
+  "detail": "{\"verdict\": \"sensitive\", \"label\": \"نیاز به تأیید مالک دارد (کارت تأیید ساخته می‌شود)\", \"result\": {\"proposal\": {\"id\": \"prp_229631e4fde9\", \"title\": \"اجرای فرمان در کانتینر demo-shop: pip install request"
+ },
+ {
+  "check": "terminal: 'rm -rf /' -> refused",
+  "ok": true,
+  "detail": "این فرمان ممنوع است (recursive/forced rm) و هرگز اجرا نمی‌شود"
+ },
+ {
+  "check": "terminal UI runs allowlisted command",
+  "ok": true,
+  "detail": ":        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:    13913488 kB\nDirectMap2M:    53194752 kB\n\n— ۱٬۲۹۳ ms\n"
+ },
+ {
+  "check": "log explorer API",
+  "ok": true,
+  "detail": "{\"lines\": 126, \"levels\": {\"info\": 126}, \"kinds\": {\"access\": 110, \"text\": 16}, \"structured_ratio\": 0, \"requests\": 110, \"errors_5xx\": 0, \"error_rate\": 0, \"error_groups\": [], \"error_group_count\": 0, \"err"
+ },
+ {
+  "check": "log explorer UI",
+  "ok": true,
+  "detail": "348 chars"
+ },
+ {
+  "check": "template clone",
+  "ok": true,
+  "detail": "tpl_59429bfdfd16"
+ },
+ {
+  "check": "template edit → new version",
+  "ok": true,
+  "detail": "2"
+ },
+ {
+  "check": "template validation rejects bad port",
+  "ok": true,
+  "detail": "پورت باید بین 1 و 65535 باشد"
+ },
+ {
+  "check": "template restore v1",
+  "ok": true,
+  "detail": "3"
+ },
+ {
+  "check": "template delete needs exact name",
+  "ok": true,
+  "detail": "برای حذف، نام قالب را دقیقاً تایپ کنید / True"
+ },
+ {
+  "check": "builtin template is read-only",
+  "ok": true,
+  "detail": "قالب‌های پیش‌فرض فقط‌خواندنی‌اند؛ ابتدا از آن یک کپی بسازید"
+ },
+ {
+  "check": "external watchdog pinged < 5 min ago",
+  "ok": true,
+  "detail": "{'ts': 1792694178.3885002, 'host': 'ubuntu-8gb-hel1-3', 'note': 'healthz ok, orchestrator lag 44s'}"
+ },
+ {
+  "check": "public /status (no auth)",
+  "ok": true,
+  "detail": "200 rows=5"
+ },
+ {
+  "check": "healthz + orchestrator alive",
+  "ok": true,
+  "detail": "{'ok': True, 'version': '1.6.0', 'uptime_s': 321, 'orchestrator_last_cycle_s': 14}"
+ }
+]

@@ -1,0 +1,72 @@
+[
+ {
+  "check": "servers page (desk)",
+  "ok": true,
+  "detail": "1568 chars hscroll=False"
+ },
+ {
+  "check": "servers page lists ngh-e2e-1919 with deletable-from (desk)",
+  "ok": false,
+  "detail": "۱ سرور جمع هزینه: ۹۶۱ تومان در ساعت سرورها تا وقتی وجود دارند (حتی خاموش) ساعتی هزینه دارند؛ سرورهای بی‌استفاده را حذف کنید (لیارا تا ۲۴ ساعت پس از سا"
+ },
+ {
+  "check": "no rootPassword in page (desk)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "templates page (desk)",
+  "ok": true,
+  "detail": "4245 chars hscroll=False"
+ },
+ {
+  "check": "server templates gallery (desk)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "create-server card with hourly + 24h minimum cost",
+  "ok": true,
+  "detail": "{\"downtime\": \"ندارد (سرور جدید)\", \"cost\": \"+2,326 تومان در ساعت (~1,675,000 تومان در ماه، با IPv4)\", \"plan\": \"standard-base-g2\", \"risk\": \"لیارا تا 24 ساعت پس از ساخت اجازه‌ی حذف نمی‌دهد؛ حداقل هزینه ≈ 55,833 تومان\", \"min_cost_toman\": 55833, \"specs\": "
+ },
+ {
+  "check": "create-server card rejected",
+  "ok": true,
+  "detail": "['prp_6b8ecd0da65d']"
+ },
+ {
+  "check": "no JS errors (desk)",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "servers page (mob)",
+  "ok": true,
+  "detail": "1601 chars hscroll=False"
+ },
+ {
+  "check": "servers page lists ngh-e2e-1919 with deletable-from (mob)",
+  "ok": true,
+  "detail": "۱ سرور جمع هزینه: ۹۶۱ تومان در ساعت سرورها تا وقتی وجود دارند (حتی خاموش) ساعتی هزینه دارند؛ سرورهای بی‌استفاده را حذف کنید (لیارا تا ۲۴ ساعت پس از سا"
+ },
+ {
+  "check": "no rootPassword in page (mob)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "templates page (mob)",
+  "ok": true,
+  "detail": "4245 chars hscroll=False"
+ },
+ {
+  "check": "server templates gallery (mob)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "no JS errors (mob)",
+  "ok": true,
+  "detail": "[]"
+ }
+]

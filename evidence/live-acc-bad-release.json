@@ -1,0 +1,1895 @@
+{
+ "incidents": [
+  {
+   "id": "inc_64d527a668fb",
+   "app": "demo-shop",
+   "kind": "errors",
+   "severity": "high",
+   "title": "خطای کد (ZeroDivisionError) در pricing.py:7",
+   "status": "resolved",
+   "opened_at": 1792695927.5069346,
+   "updated_at": 1792696006.0149584,
+   "resolved_at": 1792696006.0149584,
+   "diagnosis": {
+    "app": "demo-shop",
+    "ts": 1792695935.7938805,
+    "healthy": false,
+    "hypotheses": [
+     {
+      "id": "code_exception",
+      "title": "خطای کد (ZeroDivisionError) در pricing.py:7",
+      "confidence": 0.9,
+      "evidence": [
+       "ZeroDivisionError: division by zero",
+       "محل خطا: /app/shop/pricing.py:7 در تابع discount_percent",
+       "تکرار: 1 بار",
+       "خطاها پس از استقرار نسخه‌ی v15 (refactor: simplify discount (by developer)) شروع شده‌اند"
+      ],
+      "fixes": [
+       {
+        "tool": "propose_code_fix",
+        "args": {
+         "app": "demo-shop"
+        },
+        "label": "اصلاح خودکار کد + تست + استقرار"
+       },
+       {
+        "tool": "rollback_release",
+        "args": {
+         "app": "demo-shop"
+        },
+        "label": "بازگشت به نسخه‌ی قبلی (سریع)"
+       }
+      ],
+      "kind": "code",
+      "explanation": "ردپای خطا دقیقاً به تابع discount_percent در pricing.py خط ۷ اشاره دارد و زمان شروع خطاها با انتشار v15 یکی است، بنابراین این محتمل‌ترین علت است."
+     }
+    ],
+    "summary": "صفحه اصلی فروشگاه شما الان خطای داخلی سرور (500) نشان می‌دهد و بازدیدکنندگان نمی‌توانند محصولات را ببینند. علت، خطای تقسیم بر صفر در فایل pricing.py خط ۷ است که پس از انتشار نسخه‌ی v15 (ساده‌سازی کد تخفیف) ظاهر شده است. پیشنهاد می‌شود فوراً نسخه‌ی قبلی (v14) را بازگردانید یا کد تخفیف را اصلاح کنید.",
+    "next_steps": [
+     "بلافاصله نسخه‌ی پایدار قبلی را بازگردانید و وضعیت برنامه را دوباره بررسی کنید، چون در گزارش، بازگشت به v14 شروع شده ولی راه‌اندازی مجدد آن تأیید نشده است.",
+     "از برنامه‌نویس خود بخواهید در تابع discount_percent قبل از تقسیم، مقدار قیمت قدیمی صفر را بررسی کند و در صورت صفر بودن، تخفیف را صفر در نظر بگیرد.",
+     "پس از اصلاح، صفحه‌ی اصلی سایت را در مرورگر باز کنید و مطمئن شوید که خطای ۵۰۰ دیگر نمایش داده نمی‌شود.",
+     "تغییر متغیرهای محیطی را فعلاً انجام ندهید، چون مشکل از تنظیمات نیست و در کد برنامه است."
+    ],
+    "evidence": {
+     "status": {
+      "status": "ACTIVE",
+      "scale": 1,
+      "planID": "small-g2",
+      "bundlePlanID": "standard",
+      "zeroDowntime": true,
+      "hourlyPrice": 659.72,
+      "bundleHourlyPrice": 659.72,
+      "isDeployed": true
+     },
+     "probe": {
+      "url": "https://demo-shop.liara.run/",
+      "status": 500,
+      "latency_ms": 215,
+      "ok": false,
+      "body_snippet": "Internal Server Error",
+      "error": null
+     },
+     "env_keys": [
+      "APP_VERSION",
+      "CHAOS_TOKEN",
+      "PAYMENT_GATEWAY_KEY"
+     ],
+     "env_removed_since_last_seen": [],
+     "releases": [
+      {
+       "_id": "6ada5ddd0e01dbee0e9e884b",
+       "tag": "v15",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "refactor: simplify discount (by developer)",
+       "createdAt": "2026-10-22T19:02:53.967Z",
+       "finishedAt": "2026-10-22T19:03:08.577Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada5da5b8e65d29b9725c49",
+       "tag": "v14",
+       "type": "ROLLBACK",
+       "state": "READY",
+       "message": "redeploy current workspace source (requested by ow",
+       "createdAt": "2026-10-22T19:01:57.774Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada5d3738253e6cdf31ec69",
+       "tag": "v13",
+       "type": "ENV_UPDATE",
+       "state": "READY",
+       "message": "redeploy current workspace source (requested by ow",
+       "createdAt": "2026-10-22T19:00:07.938Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada5be1b8e65d29b97238e0",
+       "tag": "v12",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "redeploy current workspace source (requested by ow",
+       "createdAt": "2026-10-22T18:54:25.302Z",
+       "finishedAt": "2026-10-22T18:54:46.612Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada5a830e01dbee0e9e2aa5",
+       "tag": "v11",
+       "type": "ENV_UPDATE",
+       "state": "READY",
+       "message": "Negahban fix 54b3bde",
+       "createdAt": "2026-10-22T18:48:35.947Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada594eb8e65d29b9720a79",
+       "tag": "v10",
+       "type": "ENV_UPDATE",
+       "state": "READY",
+       "message": "Negahban fix 54b3bde",
+       "createdAt": "2026-10-22T18:43:26.758Z",
+       "finishedAt": null,
+       "failReason": null
+      }
+     ],
+     "build": null,
+     "events": [
+      {
+       "time": 1792695755,
+       "action": "kill",
+       "id": "b5cbd82b9c9116ee24f38c033b01efce6d2c8ae659f33ba3cb63d9758762eab3",
+       "release": "6ada5d3738253e6cdf31ec69",
+       "tag": "v13"
+      },
+      {
+       "time": 1792695756,
+       "action": "destroy",
+       "id": "9a6f737e8ac5831f14b5ca4f92f2e7dfa321d042aea2975cfd019582c592ceb5",
+       "release": "6ada5be1b8e65d29b97238e0",
+       "tag": "v12"
+      },
+      {
+       "time": 1792695756,
+       "action": "die",
+       "id": "b5cbd82b9c9116ee24f38c033b01efce6d2c8ae659f33ba3cb63d9758762eab3",
+       "release": "6ada5d3738253e6cdf31ec69",
+       "tag": "v13"
+      },
+      {
+       "time": 1792695756,
+       "action": "stop",
+       "id": "b5cbd82b9c9116ee24f38c033b01efce6d2c8ae659f33ba3cb63d9758762eab3",
+       "release": "6ada5d3738253e6cdf31ec69",
+       "tag": "v13"
+      },
+      {
+       "time": 1792695811,
+       "action": "create",
+       "id": "b04599565171aac6fd6f605c05ad1272c253f308d544424ab6ad60787e431370",
+       "release": "6ada5ddd0e01dbee0e9e884b",
+       "tag": "v15"
+      },
+      {
+       "time": 1792695812,
+       "action": "start",
+       "id": "b04599565171aac6fd6f605c05ad1272c253f308d544424ab6ad60787e431370",
+       "release": "6ada5ddd0e01dbee0e9e884b",
+       "tag": "v15"
+      },
+      {
+       "time": 1792695826,
+       "action": "rename",
+       "id": "b04599565171aac6fd6f605c05ad1272c253f308d544424ab6ad60787e431370",
+       "release": "6ada5ddd0e01dbee0e9e884b",
+       "tag": "v15"
+      },
+      {
+       "time": 1792695827,
+       "action": "update",
+       "id": "b04599565171aac6fd6f605c05ad1272c253f308d544424ab6ad60787e431370",
+       "release": "6ada5ddd0e01dbee0e9e884b",
+       "tag": "v15"
+      },
+      {
+       "time": 1792695842,
+       "action": "kill",
+       "id": "696457468acc2c2c09609b0c73a2e2e28d31b7c7ed0ec10c018a59a763dc2038",
+       "release": "6ada5da5b8e65d29b9725c49",
+       "tag": "v14"
+      },
+      {
+       "time": 1792695843,
+       "action": "destroy",
+       "id": "b5cbd82b9c9116ee24f38c033b01efce6d2c8ae659f33ba3cb63d9758762eab3",
+       "release": "6ada5d3738253e6cdf31ec69",
+       "tag": "v13"
+      },
+      {
+       "time": 1792695843,
+       "action": "die",
+       "id": "696457468acc2c2c09609b0c73a2e2e28d31b7c7ed0ec10c018a59a763dc2038",
+       "release": "6ada5da5b8e65d29b9725c49",
+       "tag": "v14"
+      },
+      {
+       "time": 1792695843,
+       "action": "stop",
+       "id": "696457468acc2c2c09609b0c73a2e2e28d31b7c7ed0ec10c018a59a763dc2038",
+       "release": "6ada5da5b8e65d29b9725c49",
+       "tag": "v14"
+      }
+     ],
+     "cpu": {
+      "n": 58,
+      "last": 0.014678433856039346,
+      "mean": 0.015474459755032909,
+      "peak": 0.04316068381853841,
+      "min": 0.005975934451068652,
+      "slope_per_min": 6.49150970444341e-05,
+      "monotonic_rise": 0.56,
+      "limit": 0.5,
+      "util_last": 0.029,
+      "util_peak": 0.086,
+      "sustained_high": false,
+      "sustained_low": true,
+      "minutes_to_limit": 7476.3
+     },
+     "mem": {
+      "n": 61,
+      "last": 0.14303716023763022,
+      "mean": 0.09368540029056736,
+      "peak": 0.17989730834960938,
+      "min": 0.036365509033203125,
+      "slope_per_min": 0.0026082196732414645,
+      "monotonic_rise": 0.68,
+      "limit": 0.5,
+      "util_last": 0.286,
+      "util_peak": 0.36,
+      "sustained_high": false,
+      "sustained_low": false,
+      "minutes_to_limit": 136.9
+     },
+     "cpu_series": [
+      [
+       1792694127,
+       0.007881715974889196
+      ],
+      [
+       1792694187,
+       0.018000549999999997
+      ],
+      [
+       1792694217,
+       0.016174335483145674
+      ],
+      [
+       1792694247,
+       0.016178033330758155
+      ],
+      [
+       1792694277,
+       0.016167789894183986
+      ],
+      [
+       1792694307,
+       0.015850391666417926
+      ],
+      [
+       1792694337,
+       0.01626753771481849
+      ],
+      [
+       1792694367,
+       0.016978445384615386
+      ],
+      [
+       1792694397,
+       0.01649557273241769
+      ],
+      [
+       1792694427,
+       0.017594991181366766
+      ],
+      [
+       1792694457,
+       0.005975934451068652
+      ],
+      [
+       1792694487,
+       0.008041030299718588
+      ],
+      [
+       1792694517,
+       0.007842017504966676
+      ],
+      [
+       1792694577,
+       0.01647838926182344
+      ],
+      [
+       1792694607,
+       0.01830208833122683
+      ],
+      [
+       1792694637,
+       0.015465203169626927
+      ],
+      [
+       1792694667,
+       0.01590391
+      ],
+      [
+       1792694697,
+       0.014497926094847255
+      ],
+      [
+       1792694727,
+       0.01635908987720314
+      ],
+      [
+       1792694757,
+       0.014985564811090483
+      ],
+      [
+       1792694787,
+       0.015535150125063096
+      ],
+      [
+       1792694817,
+       0.016307157222222226
+      ],
+      [
+       1792694847,
+       0.016434532554222545
+      ],
+      [
+       1792694877,
+       0.011800432825838637
+      ],
+      [
+       1792694907,
+       0.022073162993356776
+      ],
+      [
+       1792694937,
+       0.01767462666666667
+      ],
+      [
+       1792694967,
+       0.04316068381853841
+      ],
+      [
+       1792694997,
+       0.018171297087033
+      ],
+      [
+       1792695027,
+       0.01680468882523048
+      ],
+      [
+       1792695057,
+       0.017257433397037832
+      ],
+      [
+       1792695087,
+       0.017114029607417022
+      ],
+      [
+       1792695117,
+       0.01747823228883231
+      ],
+      [
+       1792695147,
+       0.017609276153846155
+      ],
+      [
+       1792695177,
+       0.01796158757822862
+      ],
+      [
+       1792695207,
+       0.018542777647058823
+      ],
+      [
+       1792695237,
+       0.008044646575129029
+      ],
+      [
+       1792695267,
+       0.009153762430365645
+      ],
+      [
+       1792695297,
+       0.006807308921613784
+      ],
+      [
+       1792695327,
+       0.007885650458927477
+      ],
+      [
+       1792695357,
+       0.007398983002661905
+      ],
+      [
+       1792695387,
+       0.007284536076588338
+      ],
+      [
+       1792695417,
+       0.007984172368891495
+      ],
+      [
+       1792695447,
+       0.007804575349201205
+      ],
+      [
+       1792695477,
+       0.008124032916682232
+      ],
+      [
+       1792695507,
+       0.008440761046743668
+      ],
+      [
+       1792695537,
+       0.008684713912503653
+      ],
+      [
+       1792695567,
+       0.008579209384266097
+      ],
+      [
+       1792695627,
+       0.03042683695648566
+      ],
+      [
+       1792695657,
+       0.015109765815744837
+      ],
+      [
+       1792695687,
+       0.014012552079720578
+      ],
+      [
+       1792695717,
+       0.016014160478600634
+      ],
+      [
+       1792695747,
+       0.03538532645028168
+      ],
+      [
+       1792695777,
+       0.015205775898943796
+      ],
+      [
+       1792695807,
+       0.01640742333333333
+      ],
+      [
+       1792695837,
+       0.03936358481232777
+      ],
+      [
+       1792695867,
+       0.015531652462216041
+      ],
+      [
+       1792695897,
+       0.013685333391616282
+      ],
+      [
+       1792695927,
+       0.014818315714285718
+      ]
+     ],
+     "mem_series": [
+      [
+       1792694157,
+       0.045
+      ],
+      [
+       1792694187,
+       0.073
+      ],
+      [
+       1792694217,
+       0.073
+      ],
+      [
+       1792694247,
+       0.073
+      ],
+      [
+       1792694277,
+       0.073
+      ],
+      [
+       1792694307,
+       0.073
+      ],
+      [
+       1792694337,
+       0.073
+      ],
+      [
+       1792694367,
+       0.073
+      ],
+      [
+       1792694397,
+       0.073
+      ],
+      [
+       1792694427,
+       0.036
+      ],
+      [
+       1792694457,
+       0.036
+      ],
+      [
+       1792694487,
+       0.038
+      ],
+      [
+       1792694517,
+       0.038
+      ],
+      [
+       1792694547,
+       0.044
+      ],
+      [
+       1792694577,
+       0.069
+      ],
+      [
+       1792694607,
+       0.069
+      ],
+      [
+       1792694637,
+       0.073
+      ],
+      [
+       1792694667,
+       0.1
+      ],
+      [
+       1792694697,
+       0.1
+      ],
+      [
+       1792694727,
+       0.1
+      ],
+      [
+       1792694757,
+       0.1
+      ],
+      [
+       1792694787,
+       0.1
+      ],
+      [
+       1792694817,
+       0.063
+      ],
+      [
+       1792694847,
+       0.063
+      ],
+      [
+       1792694877,
+       0.095
+      ],
+      [
+       1792694907,
+       0.126
+      ],
+      [
+       1792694937,
+       0.098
+      ],
+      [
+       1792694967,
+       0.128
+      ],
+      [
+       1792694997,
+       0.128
+      ],
+      [
+       1792695027,
+       0.128
+      ],
+      [
+       1792695057,
+       0.128
+      ],
+      [
+       1792695087,
+       0.128
+      ],
+      [
+       1792695117,
+       0.128
+      ],
+      [
+       1792695147,
+       0.097
+      ],
+      [
+       1792695177,
+       0.097
+      ],
+      [
+       1792695207,
+       0.065
+      ],
+      [
+       1792695237,
+       0.098
+      ],
+      [
+       1792695267,
+       0.068
+      ],
+      [
+       1792695297,
+       0.068
+      ],
+      [
+       1792695327,
+       0.072
+      ],
+      [
+       1792695357,
+       0.106
+      ],
+      [
+       1792695387,
+       0.106
+      ],
+      [
+       1792695417,
+       0.106
+      ],
+      [
+       1792695447,
+       0.106
+      ],
+      [
+       1792695477,
+       0.106
+      ],
+      [
+       1792695507,
+       0.106
+      ],
+      [
+       1792695537,
+       0.073
+      ],
+      [
+       1792695567,
+       0.073
+      ],
+      [
+       1792695597,
+       0.08
+      ],
+      [
+       1792695627,
+       0.14
+      ],
+      [
+       1792695657,
+       0.106
+      ],
+      [
+       1792695687,
+       0.107
+      ],
+      [
+       1792695717,
+       0.107
+      ],
+      [
+       1792695747,
+       0.145
+      ],
+      [
+       1792695777,
+       0.145
+      ],
+      [
+       1792695807,
+       0.145
+      ],
+      [
+       1792695837,
+       0.18
+      ],
+      [
+       1792695867,
+       0.141
+      ],
+      [
+       1792695897,
+       0.144
+      ],
+      [
+       1792695927,
+       0.144
+      ]
+     ],
+     "log_tail": [
+      "22:34:25 std   File \"/usr/local/lib/python3.12/site-packages/starlette/routing.py\", line 288, in handle",
+      "22:34:25 std     await self.app(scope, receive, send)",
+      "22:34:25 std   File \"/usr/local/lib/python3.12/site-packages/starlette/routing.py\", line 76, in app",
+      "22:34:25 std     await wrap_app_handling_exceptions(app, request)(scope, receive, send)",
+      "22:34:25 std   File \"/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py\", line 53, in wrapped_app",
+      "22:34:25 std     raise exc",
+      "22:34:25 std   File \"/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py\", line 42, in wrapped_app",
+      "22:34:25 std     await app(scope, receive, sender)",
+      "22:34:25 std   File \"/usr/local/lib/python3.12/site-packages/starlette/routing.py\", line 73, in app",
+      "22:34:25 std     response = await f(request)",
+      "22:34:25 std                ^^^^^^^^^^^^^^^^",
+      "22:34:25 std   File \"/usr/local/lib/python3.12/site-packages/fastapi/routing.py\", line 301, in app",
+      "22:34:25 std     raw_response = await run_endpoint_function(",
+      "22:34:25 std                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:34:25 std   File \"/usr/local/lib/python3.12/site-packages/fastapi/routing.py\", line 214, in run_endpoint_function",
+      "22:34:25 std     return await run_in_threadpool(dependant.call, **values)",
+      "22:34:25 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:34:25 std   File \"/usr/local/lib/python3.12/site-packages/starlette/concurrency.py\", line 39, in run_in_threadpool",
+      "22:34:25 std     return await anyio.to_thread.run_sync(func, *args)",
+      "22:34:25 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:34:25 std   File \"/usr/local/lib/python3.12/site-packages/anyio/to_thread.py\", line 65, in run_sync",
+      "22:34:25 std     return await get_async_backend().run_sync_in_worker_thread(",
+      "22:34:25 std            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:34:25 std   File \"/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py\", line 2706, in run_sync_in_worker_thread",
+      "22:34:25 std     return await future",
+      "22:34:25 std            ^^^^^^^^^^^^",
+      "22:34:25 std   File \"/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py\", line 1100, in run",
+      "22:34:25 std     result = context.run(func, *args)",
+      "22:34:25 std              ^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:34:25 std   File \"/app/main.py\", line 66, in home",
+      "22:34:25 std     for p in map(product_view, PRODUCTS):",
+      "22:34:25 std              ^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+      "22:34:25 std   File \"/app/main.py\", line 30, in product_view",
+      "22:34:25 std     return {**p, \"discount\": discount_percent(p), \"price_fa\": fmt_price(p[\"price\"])}",
+      "22:34:25 std                              ^^^^^^^^^^^^^^^^^^^",
+      "22:34:25 std   File \"/app/shop/pricing.py\", line 7, in discount_percent",
+      "22:34:25 std     return round(100 * (old - p[\"price\"]) / old)",
+      "22:34:25 std                  ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~",
+      "22:34:25 std ZeroDivisionError: division by zero",
+      "22:35:01 std INFO:     <ops-host>:0 - \"GET /healthz HTTP/1.1\" 200 OK"
+     ],
+     "recent_ops": [
+      {
+       "ts": 1792695927.5712478,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792695916.2223756,
+       "action": "diag.log_insights",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695830.3620715,
+       "action": "diag.log_insights",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695773.1935458,
+       "action": "scenario:bad_release",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695754.873545,
+       "action": "verify",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792695743.6488903,
+       "action": "rollback_release",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695717.3154492,
+       "action": "approve",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695712.356978,
+       "action": "propose",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792695700.8842263,
+       "action": "reject",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695695.892429,
+       "action": "propose",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792695629.153924,
+       "action": "propose",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792695618.879467,
+       "action": "verify",
+       "actor": "negahban"
+      },
+      {
+       "ts": 1792695607.992243,
+       "action": "set_env",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695607.4811957,
+       "action": "approve",
+       "actor": "owner"
+      },
+      {
+       "ts": 1792695601.3534868,
+       "action": "propose",
+       "actor": "agent"
+      }
+     ],
+     "logs": {
+      "lines": 101,
+      "requests": 1,
+      "status_counts": {
+       "200": 1
+      },
+      "error_rate": 0.0,
+      "errors_5xx": 0,
+      "paths_5xx": {},
+      "slow": [],
+      "oom": [],
+      "missing_env": {},
+      "conn_errors": [],
+      "startups": 0,
+      "shutdowns": 0,
+      "restart_loop": false,
+      "first_ts": 1792695865.7400315,
+      "last_ts": 1792695901.5352037,
+      "previous_release_tracebacks": 0,
+      "tracebacks": [
+       {
+        "signature": "ZeroDivisionError@/app/shop/pricing.py:7",
+        "exc": "ZeroDivisionError",
+        "msg": "division by zero",
+        "count": 1,
+        "top_frame": {
+         "file": "/app/shop/pricing.py",
+         "line": 7,
+         "func": "discount_percent"
+        },
+        "sample": "  File \"/usr/local/lib/python3.12/site-packages/fastapi/routing.py\", line 214, in run_endpoint_function\n    return await run_in_threadpool(dependant.call, **values)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/starlette/concurrency.py\", line 39, in run_in_threadpool\n    return await anyio.to_thread.run_sync(func, *args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/anyio/to_thread.py\", line 65, in run_sync\n    return await get_async_backend().run_sync_in_worker_thread(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py\", line 2706, in run_sync_in_worker_thread\n    return await future\n           ^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py\", line 1100, in run\n    result = context.run(func, *args)\n             ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/app/main.py\", line 66, in home\n    for p in map(product_view, PRODUCTS):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/app/main.py\", line 30, in product_view\n    return {**p, \"discount\": discount_percent(p), \"price_fa\": fmt_price(p[\"price\"])}\n                             ^^^^^^^^^^^^^^^^^^^\n  File \"/app/shop/pricing.py\", line 7, in discount_percent\n    return round(100 * (old - p[\"price\"]) / old)\n                 ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~\nZeroDivisionError: division by zero",
+        "frames": [
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/fastapi/routing.py",
+          "line": 214,
+          "func": "run_endpoint_function"
+         },
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/starlette/concurrency.py",
+          "line": 39,
+          "func": "run_in_threadpool"
+         },
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/anyio/to_thread.py",
+          "line": 65,
+          "func": "run_sync"
+         },
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py",
+          "line": 2706,
+          "func": "run_sync_in_worker_thread"
+         },
+         {
+          "file": "/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py",
+          "line": 1100,
+          "func": "run"
+         },
+         {
+          "file": "/app/main.py",
+          "line": 66,
+          "func": "home"
+         },
+         {
+          "file": "/app/main.py",
+          "line": 30,
+          "func": "product_view"
+         },
+         {
+          "file": "/app/shop/pricing.py",
+          "line": 7,
+          "func": "discount_percent"
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "llm_used": true
+   },
+   "fingerprint": "errors",
+   "timeline": [
+    {
+     "ts": 1792695927.5069346,
+     "text": "رخداد شناسایی شد: خطای سرور (5xx) در پاسخ‌ها"
+    },
+    {
+     "ts": 1792695935.7956142,
+     "text": "تشخیص: خطای کد (ZeroDivisionError) در pricing.py:7 (اطمینان 90٪)"
+    },
+    {
+     "ts": 1792695935.9586253,
+     "text": "خودترمیمی: در حال آماده‌سازی وصله و اجرای تست‌ها…"
+    },
+    {
+     "ts": 1792695945.1813412,
+     "text": "خودترمیمی: proposed — تغییر آخرین کامیت، بررسی «محصول تخفیف‌دار است یا نه» را از تابع محاسبه تخفیف حذف کرده است. برای محصولی که قیمت قدیمی ندارد، تقسیم بر صفر رخ می‌دهد و صفحه اصلی از کار می‌افتد."
+    },
+    {
+     "ts": 1792695995.3040051,
+     "text": "اقدام اجرا شد: اعمال اصلاح کد روی demo-shop و استقرار — در حال راستی‌آزمایی"
+    },
+    {
+     "ts": 1792696006.014957,
+     "text": "✅ راستی‌آزمایی موفق: سلامت HTTP ✓ (HTTP 200 در 65ms)، زمان پاسخ ✓ (65ms (حد مجاز 2500ms))، خطای جدید در لاگ ✓ (0 پاسخ 5xx، 0 traceback از زمان اقدام)"
+    }
+   ]
+  },
+  {
+   "id": "inc_3d69ae6d3bda",
+   "app": "bazargard-ai",
+   "kind": "build_failed",
+   "severity": "medium",
+   "title": "بیلد نسخه‌ی جدید شکست خورد",
+   "status": "open",
+   "opened_at": 1792695926.6725671,
+   "updated_at": 1792695938.125581,
+   "resolved_at": null,
+   "diagnosis": {
+    "app": "bazargard-ai",
+    "ts": 1792695938.0171356,
+    "healthy": false,
+    "hypotheses": [
+     {
+      "id": "build_failed",
+      "title": "بیلد نسخه‌ی جدید شکست خورد",
+      "confidence": 0.7,
+      "evidence": [
+       "ریلیز v6 در وضعیت TIMEDOUT",
+       "نسخه‌ی قبلی هنوز در حال سرویس‌دهی است (کاربران آسیبی ندیده‌اند)"
+      ],
+      "fixes": [],
+      "kind": "build"
+     }
+    ],
+    "summary": null,
+    "next_steps": [],
+    "evidence": {
+     "status": {
+      "status": "ACTIVE",
+      "scale": 1,
+      "planID": "standard-base-g2",
+      "bundlePlanID": "basic",
+      "zeroDowntime": false,
+      "hourlyPrice": 2048.61,
+      "bundleHourlyPrice": 1145.83,
+      "isDeployed": true
+     },
+     "probe": {
+      "url": "https://bazargard-ai.liara.run/api/ready",
+      "status": 200,
+      "latency_ms": 95,
+      "ok": true,
+      "body_snippet": "{\"ready\":true,\"catalog_ready\":true,\"database_ready\":true,\"persistent_data_dir\":\"/data\",\"disk_free_mb\":2518,\"provider_configured\":true,\"provider\":\"anthropic\",\"provider_status\":\"reachable\",\"model\":\"claude-sonnet-5-5\",\"queue\":{\"depth\":0,\"queued\":0,\"running\":0,\"retrying\":0,\"dead\":0,\"succeeded\":9,\"oldest",
+      "error": null
+     },
+     "env_keys": [
+      "ADMIN_TOKEN",
+      "ANTHROPIC_LIGHT_MODEL",
+      "ANTHROPIC_MODEL",
+      "APP_ENV",
+      "BOXAPI_BASE_URL",
+      "BOXAPI_KEYS",
+      "CATALOG_SHA256",
+      "CATALOG_TOKEN",
+      "CATALOG_URL",
+      "DATA_DIR",
+      "FORWARDED_ALLOW_IPS",
+      "LLM_MODEL",
+      "LLM_PROVIDER",
+      "LOG_LEVEL",
+      "PORT",
+      "PUBLIC_BASE_URL",
+      "RELAY_TOKEN",
+      "RELAY_URL"
+     ],
+     "env_removed_since_last_seen": [],
+     "releases": [
+      {
+       "_id": "6ada5d1a0e01dbee0e9e71c1",
+       "tag": "v6",
+       "type": "DEPLOY",
+       "state": "TIMEDOUT",
+       "message": "deploy",
+       "createdAt": "2026-10-22T18:59:38.384Z",
+       "finishedAt": null,
+       "failReason": null
+      },
+      {
+       "_id": "6ada410338253e6cdf2eaec3",
+       "tag": "v5",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "deploy",
+       "createdAt": "2026-10-22T16:59:47.066Z",
+       "finishedAt": "2026-10-22T17:00:36.129Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada38a8b8e65d29b96eb9fc",
+       "tag": "v4",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "deploy",
+       "createdAt": "2026-10-22T16:24:08.213Z",
+       "finishedAt": "2026-10-22T16:24:36.716Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada2d3bb3b5ca83e1eff80f",
+       "tag": "v3",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "deploy",
+       "createdAt": "2026-10-22T15:35:23.783Z",
+       "finishedAt": "2026-10-22T15:38:55.128Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada1fd72c3f63ca36ead271",
+       "tag": "v2",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "deploy",
+       "createdAt": "2026-10-22T14:38:15.890Z",
+       "finishedAt": "2026-10-22T14:40:00.503Z",
+       "failReason": null
+      },
+      {
+       "_id": "6ada1c070e01dbee0e953fce",
+       "tag": "v1",
+       "type": "DEPLOY",
+       "state": "READY",
+       "message": "deploy",
+       "createdAt": "2026-10-22T14:22:00.023Z",
+       "finishedAt": "2026-10-22T14:24:12.729Z",
+       "failReason": null
+      }
+     ],
+     "build": {
+      "error_lines": [],
+      "missing_package": null,
+      "tail": [
+       "> Fetching the source code: 76%\n",
+       "> Fetching the source code: 100%\n",
+       "\n",
+       "\n",
+       "> Preparing the build environment...\n",
+       "\n",
+       "Step 1/19 : FROM node:22-bookworm-slim AS frontend",
+       "\n",
+       " ---> 58a96d9752cf\n",
+       "Step 2/19 : WORKDIR /build/frontend",
+       "\n",
+       " ---> f7b95045b2c0\n",
+       "Step 3/19 : COPY frontend/package.json frontend/package-lock.json ./",
+       "\n",
+       " ---> 7bc764d2698d\n",
+       "Step 4/19 : RUN npm ci --no-audit --no-fund",
+       "\n",
+       "\nadded 104 packages in 1m\n",
+       "npm notice\nnpm notice New major version of npm available! 10.9.9 -> 12.2.1\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1\nnpm notice To update run: npm install -g npm@12.2.1\nnpm notice\n",
+       " ---> 2478122ffadc\n",
+       "Step 5/19 : COPY frontend/ ./",
+       "\n",
+       " ---> daf3e6b8e615\n",
+       "Step 6/19 : RUN npm run build",
+       "\n"
+      ],
+      "failReason": null
+     },
+     "events": [],
+     "cpu": {
+      "n": 61,
+      "last": 0.026725361864430933,
+      "mean": 0.023528497600456208,
+      "peak": 0.031156222127694613,
+      "min": 0.01094620265396079,
+      "slope_per_min": -5.623011669012079e-05,
+      "monotonic_rise": 0.57,
+      "limit": 1,
+      "util_last": 0.027,
+      "util_peak": 0.031,
+      "sustained_high": false,
+      "sustained_low": true
+     },
+     "mem": {
+      "n": 61,
+      "last": 0.2898368835449219,
+      "mean": 0.7020974706430905,
+      "peak": 0.7585334777832031,
+      "min": 0.05548858642578125,
+      "slope_per_min": -0.0038877421620659956,
+      "monotonic_rise": 0.13,
+      "limit": 2,
+      "util_last": 0.145,
+      "util_peak": 0.379,
+      "sustained_high": false,
+      "sustained_low": false
+     },
+     "cpu_series": [
+      [
+       1792694157,
+       0.023271909774120293
+      ],
+      [
+       1792694187,
+       0.024401669437752384
+      ],
+      [
+       1792694217,
+       0.024639269761775946
+      ],
+      [
+       1792694247,
+       0.02282688553139105
+      ],
+      [
+       1792694277,
+       0.022577794334287152
+      ],
+      [
+       1792694307,
+       0.023316575135713228
+      ],
+      [
+       1792694337,
+       0.023632677802676385
+      ],
+      [
+       1792694367,
+       0.023296915348575226
+      ],
+      [
+       1792694397,
+       0.02242134219297513
+      ],
+      [
+       1792694427,
+       0.022079808492922556
+      ],
+      [
+       1792694457,
+       0.022755724241799846
+      ],
+      [
+       1792694487,
+       0.023465332104283646
+      ],
+      [
+       1792694517,
+       0.0249759151614408
+      ],
+      [
+       1792694547,
+       0.024822377612201046
+      ],
+      [
+       1792694577,
+       0.02533462987017695
+      ],
+      [
+       1792694607,
+       0.02460767052963998
+      ],
+      [
+       1792694637,
+       0.025200361551384012
+      ],
+      [
+       1792694667,
+       0.025367920596621886
+      ],
+      [
+       1792694697,
+       0.024435606494349053
+      ],
+      [
+       1792694727,
+       0.02467575662700903
+      ],
+      [
+       1792694757,
+       0.024150410323873956
+      ],
+      [
+       1792694787,
+       0.023760659339862433
+      ],
+      [
+       1792694817,
+       0.02342271029401822
+      ],
+      [
+       1792694847,
+       0.022697872267759576
+      ],
+      [
+       1792694877,
+       0.02414013651238903
+      ],
+      [
+       1792694907,
+       0.025017070395057614
+      ],
+      [
+       1792694937,
+       0.025227879840081787
+      ],
+      [
+       1792694967,
+       0.023889225106175437
+      ],
+      [
+       1792694997,
+       0.02203223283580736
+      ],
+      [
+       1792695027,
+       0.025899726912845065
+      ],
+      [
+       1792695057,
+       0.026076071008879407
+      ],
+      [
+       1792695087,
+       0.026320341187670526
+      ],
+      [
+       1792695117,
+       0.025961667634484303
+      ],
+      [
+       1792695147,
+       0.024484431317758223
+      ],
+      [
+       1792695177,
+       0.025950129639737914
+      ],
+      [
+       1792695207,
+       0.0243536476403475
+      ],
+      [
+       1792695237,
+       0.02462513826954636
+      ],
+      [
+       1792695267,
+       0.023723663689706107
+      ],
+      [
+       1792695297,
+       0.023674311137933692
+      ],
+      [
+       1792695327,
+       0.02404497873153604
+      ],
+      [
+       1792695357,
+       0.02608037905307447
+      ],
+      [
+       1792695387,
+       0.023643959201364605
+      ],
+      [
+       1792695417,
+       0.02362995846955898
+      ],
+      [
+       1792695447,
+       0.024280843793590367
+      ],
+      [
+       1792695477,
+       0.024051862212833557
+      ],
+      [
+       1792695507,
+       0.023503956618504376
+      ],
+      [
+       1792695537,
+       0.023068332007058087
+      ],
+      [
+       1792695567,
+       0.023247360183031866
+      ],
+      [
+       1792695597,
+       0.023361544062082622
+      ],
+      [
+       1792695627,
+       0.01094620265396079
+      ],
+      [
+       1792695657,
+       0.013435434703218984
+      ],
+      [
+       1792695687,
+       0.014731561522778786
+      ],
+      [
+       1792695717,
+       0.017139229906714338
+      ],
+      [
+       1792695747,
+       0.01916690288344917
+      ],
+      [
+       1792695777,
+       0.02210058712121212
+      ],
+      [
+       1792695807,
+       0.02501193281989318
+      ],
+      [
+       1792695837,
+       0.027175701221095083
+      ],
+      [
+       1792695867,
+       0.028571503725490197
+      ],
+      [
+       1792695897,
+       0.031156222127694613
+      ],
+      [
+       1792695927,
+       0.02044835974010799
+      ]
+     ],
+     "mem_series": [
+      [
+       1792694157,
+       0.733
+      ],
+      [
+       1792694187,
+       0.739
+      ],
+      [
+       1792694217,
+       0.727
+      ],
+      [
+       1792694247,
+       0.727
+      ],
+      [
+       1792694277,
+       0.727
+      ],
+      [
+       1792694307,
+       0.727
+      ],
+      [
+       1792694337,
+       0.727
+      ],
+      [
+       1792694367,
+       0.727
+      ],
+      [
+       1792694397,
+       0.727
+      ],
+      [
+       1792694427,
+       0.725
+      ],
+      [
+       1792694457,
+       0.725
+      ],
+      [
+       1792694487,
+       0.725
+      ],
+      [
+       1792694517,
+       0.725
+      ],
+      [
+       1792694547,
+       0.725
+      ],
+      [
+       1792694577,
+       0.725
+      ],
+      [
+       1792694607,
+       0.725
+      ],
+      [
+       1792694637,
+       0.725
+      ],
+      [
+       1792694667,
+       0.723
+      ],
+      [
+       1792694697,
+       0.721
+      ],
+      [
+       1792694727,
+       0.721
+      ],
+      [
+       1792694757,
+       0.721
+      ],
+      [
+       1792694787,
+       0.72
+      ],
+      [
+       1792694817,
+       0.72
+      ],
+      [
+       1792694847,
+       0.72
+      ],
+      [
+       1792694877,
+       0.72
+      ],
+      [
+       1792694907,
+       0.72
+      ],
+      [
+       1792694937,
+       0.718
+      ],
+      [
+       1792694967,
+       0.717
+      ],
+      [
+       1792694997,
+       0.717
+      ],
+      [
+       1792695027,
+       0.711
+      ],
+      [
+       1792695057,
+       0.711
+      ],
+      [
+       1792695087,
+       0.711
+      ],
+      [
+       1792695117,
+       0.711
+      ],
+      [
+       1792695147,
+       0.711
+      ],
+      [
+       1792695177,
+       0.711
+      ],
+      [
+       1792695207,
+       0.711
+      ],
+      [
+       1792695237,
+       0.711
+      ],
+      [
+       1792695267,
+       0.711
+      ],
+      [
+       1792695297,
+       0.711
+      ],
+      [
+       1792695327,
+       0.711
+      ],
+      [
+       1792695357,
+       0.705
+      ],
+      [
+       1792695387,
+       0.705
+      ],
+      [
+       1792695417,
+       0.705
+      ],
+      [
+       1792695447,
+       0.705
+      ],
+      [
+       1792695477,
+       0.705
+      ],
+      [
+       1792695507,
+       0.704
+      ],
+      [
+       1792695537,
+       0.704
+      ],
+      [
+       1792695567,
+       0.704
+      ],
+      [
+       1792695597,
+       0.704
+      ],
+      [
+       1792695627,
+       0.758
+      ],
+      [
+       1792695657,
+       0.758
+      ],
+      [
+       1792695687,
+       0.758
+      ],
+      [
+       1792695717,
+       0.758
+      ],
+      [
+       1792695747,
+       0.757
+      ],
+      [
+       1792695777,
+       0.758
+      ],
+      [
+       1792695807,
+       0.759
+      ],
+      [
+       1792695837,
+       0.759
+      ],
+      [
+       1792695867,
+       0.759
+      ],
+      [
+       1792695897,
+       0.055
+      ],
+      [
+       1792695927,
+       0.055
+      ]
+     ],
+     "log_tail": [
+      "22:28:21 std {\"ts\": \"2026-10-22T18:58:21.884Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "22:28:21 std {\"ts\": \"2026-10-22T18:58:21.884Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "22:28:25 std {\"ts\": \"2026-10-22T18:58:25.759Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"1402cf746344a9bcfecec35830b22e36\", \"trace_id\": \"881395abc6a4d1c523802f316272104f\", \"span_id\": \"e11a49e63cda5899\", \"session\": null, \"msg\": \"GET /api",
+      "22:28:29 std {\"ts\": \"2026-10-22T18:58:29.488Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"0a949916916ee26b2801be276a31f81b\", \"trace_id\": \"ac9feef1090f5c655197d2578e728d2e\", \"span_id\": \"c5190030a49ae5e9\", \"session\": null, \"msg\": \"GET /api",
+      "22:29:00 std {\"ts\": \"2026-10-22T18:59:00.499Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"9115d0dfe04c88fb922a2d786f65e451\", \"trace_id\": \"7dcf694a80368a157dab9647b29d4ad7\", \"span_id\": \"62c87d3851acc168\", \"session\": null, \"msg\": \"GET /api",
+      "22:29:21 std {\"ts\": \"2026-10-22T18:59:21.974Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "22:29:21 std {\"ts\": \"2026-10-22T18:59:21.974Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "22:29:25 std {\"ts\": \"2026-10-22T18:59:25.642Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"bdc77c6feb523ed9dcf0a415a13db474\", \"trace_id\": \"9ca38bd7e822962f74e5190886c460fb\", \"span_id\": \"e1cf3d4bebc6518d\", \"session\": null, \"msg\": \"GET /api",
+      "22:29:31 std {\"ts\": \"2026-10-22T18:59:31.596Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"dc0eb1545599f0447a2d430cc2fc2be5\", \"trace_id\": \"a07bb5cb88cd9497264cb6d4037d17a6\", \"span_id\": \"7a4fc280f4668d23\", \"session\": null, \"msg\": \"GET /api",
+      "22:29:54 std {\"ts\": \"2026-10-22T18:59:54.888Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.shutdown\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue stopped\", \"value\": 0}",
+      "22:29:54 std {\"ts\": \"2026-10-22T18:59:54.889Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"app.stop\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"stopped\", \"value\": 0}",
+      "22:30:02 std {\"ts\": \"2026-10-22T19:00:02.107Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"app.start\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"starting\", \"port\": 8080}",
+      "22:30:05 std {\"ts\": \"2026-10-22T19:00:05.964Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"app.start\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"ready\", \"queue_depth\": 0, \"provider\": \"anthropic\"}",
+      "22:30:05 std {\"ts\": \"2026-10-22T19:00:05.967Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "22:30:05 std {\"ts\": \"2026-10-22T19:00:05.967Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "22:30:25 std {\"ts\": \"2026-10-22T19:00:25.562Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"2f1292fe530e73979fdde1607a1e44f3\", \"trace_id\": \"ddb90c590118f4fdd1000eae9c0caaa4\", \"span_id\": \"ab7dc6e83203ac31\", \"session\": null, \"msg\": \"GET /api",
+      "22:30:30 std {\"ts\": \"2026-10-22T19:00:30.885Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"bf77b690b5028b93ae13bbdf472d2439\", \"trace_id\": \"50e0b9d56ed6b9052cd4d356753a53da\", \"span_id\": \"c964f4d426aa814f\", \"session\": null, \"msg\": \"GET /api",
+      "22:31:01 std {\"ts\": \"2026-10-22T19:01:01.644Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"b87ad88be8d9f11e9d3a46c53b87f48c\", \"trace_id\": \"56878e699866260d02143e91cf1e29f6\", \"span_id\": \"471e4cd16094d0b9\", \"session\": null, \"msg\": \"GET /api",
+      "22:31:06 std {\"ts\": \"2026-10-22T19:01:06.060Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "22:31:06 std {\"ts\": \"2026-10-22T19:01:06.060Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "22:31:25 std {\"ts\": \"2026-10-22T19:01:25.602Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"708058829194e62397eaa3a478e9f497\", \"trace_id\": \"057cd608220ac24a8b23de869588af64\", \"span_id\": \"bcc749412aa8ac5c\", \"session\": null, \"msg\": \"GET /api",
+      "22:31:32 std {\"ts\": \"2026-10-22T19:01:32.350Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"c73da6c22451694fc6e0c541498f460b\", \"trace_id\": \"438a910976986cbf02ba0bf79cf95e6d\", \"span_id\": \"8ef86d0da2ff118e\", \"session\": null, \"msg\": \"GET /api",
+      "22:32:03 std {\"ts\": \"2026-10-22T19:02:03.049Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"89f4e1d7224d84fbf53b4e80925bb62c\", \"trace_id\": \"3dc659c2f8c98dd688fb13e8324ffb4c\", \"span_id\": \"de3e8ba231f2a104\", \"session\": null, \"msg\": \"GET /api",
+      "22:32:06 std {\"ts\": \"2026-10-22T19:02:06.139Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "22:32:06 std {\"ts\": \"2026-10-22T19:02:06.139Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "22:32:26 std {\"ts\": \"2026-10-22T19:02:26.230Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"807db3896825c864a9340ce371f63185\", \"trace_id\": \"4bd3ae31ccbc90bd3431fcb6f081c260\", \"span_id\": \"e0a11004fb285d43\", \"session\": null, \"msg\": \"GET /api",
+      "22:32:33 std {\"ts\": \"2026-10-22T19:02:33.627Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"64f4d08d6b4e2866c19a243fedcd4351\", \"trace_id\": \"279d83acceff8f84423ba4d27764f828\", \"span_id\": \"009c8ec5e46a3e21\", \"session\": null, \"msg\": \"GET /api",
+      "22:33:04 std {\"ts\": \"2026-10-22T19:03:04.358Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"b5156dc3f794cf069f5a114a25793f3c\", \"trace_id\": \"1c0c614baa101f8a4fe684ca05e3fa86\", \"span_id\": \"05153d5fc5a74c89\", \"session\": null, \"msg\": \"GET /api",
+      "22:33:06 std {\"ts\": \"2026-10-22T19:03:06.232Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "22:33:06 std {\"ts\": \"2026-10-22T19:03:06.232Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "22:33:25 std {\"ts\": \"2026-10-22T19:03:25.524Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"0a893dacfbe498cdf5d57aed5e90a93f\", \"trace_id\": \"4a4e57c7471a16e0b574bb7a8bd59cb2\", \"span_id\": \"ee1406383b95c9df\", \"session\": null, \"msg\": \"GET /api",
+      "22:33:35 std {\"ts\": \"2026-10-22T19:03:35.062Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"70816b9626eb8850d8abc0f97a5609e6\", \"trace_id\": \"3aaf134db4f1493ac00afac67d23ce67\", \"span_id\": \"bc2144f51d96cdb2\", \"session\": null, \"msg\": \"GET /api",
+      "22:34:05 std {\"ts\": \"2026-10-22T19:04:05.649Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"d03e324eeae7a4b7f2e000c6dc750536\", \"trace_id\": \"117bebccc80bf462112edd12da209d8f\", \"span_id\": \"26ed6a8fb9383105\", \"session\": null, \"msg\": \"GET /api",
+      "22:34:06 std {\"ts\": \"2026-10-22T19:04:06.321Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "22:34:06 std {\"ts\": \"2026-10-22T19:04:06.321Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "22:34:25 std {\"ts\": \"2026-10-22T19:04:25.611Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"036e4115774e6da4b6de3a58d89ee16b\", \"trace_id\": \"c09f68576e1628eb5bd86d643d56836d\", \"span_id\": \"ce0f5df30e71b68f\", \"session\": null, \"msg\": \"GET /api",
+      "22:34:37 std {\"ts\": \"2026-10-22T19:04:37.229Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"7140f2754b77858b327a68fa2f1878da\", \"trace_id\": \"d1bb4758941e667d5046f013167894ee\", \"span_id\": \"68a00c2a5a84f693\", \"session\": null, \"msg\": \"GET /api",
+      "22:35:06 std {\"ts\": \"2026-10-22T19:05:06.510Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"queue depth\", \"metric\": \"queue.depth\", \"value\": 0, \"queue_dead\": 0, \"queue.retryi",
+      "22:35:06 std {\"ts\": \"2026-10-22T19:05:06.511Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"queue.metrics\", \"request_id\": null, \"trace_id\": null, \"span_id\": null, \"session\": null, \"msg\": \"dead letters\", \"metric\": \"queue.dead\", \"value\": 0}",
+      "22:35:07 std {\"ts\": \"2026-10-22T19:05:07.895Z\", \"level\": \"info\", \"app\": \"bazargard\", \"env\": \"production\", \"release\": \"4.1.0\", \"event\": \"http.request\", \"request_id\": \"fc4d6a7b75175087e1abe95a7075eb8c\", \"trace_id\": \"79a339091bbaebd0c7d12a6a2cebd51c\", \"span_id\": \"b8252de150a9447f\", \"session\": null, \"msg\": \"GET /api"
+     ],
+     "recent_ops": [
+      {
+       "ts": 1792695926.7407854,
+       "action": "incident_open",
+       "actor": "orchestrator"
+      },
+      {
+       "ts": 1792694557.4438488,
+       "action": "memory_add",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792694486.9956331,
+       "action": "diag.container_diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792694486.9309552,
+       "action": "exec.diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792694485.4840524,
+       "action": "diag.container_diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792694485.4050908,
+       "action": "exec.diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792694093.765081,
+       "action": "diag.container_diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792694093.6665769,
+       "action": "exec.diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792694092.4694421,
+       "action": "diag.container_diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792694092.4000125,
+       "action": "exec.diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792691973.941459,
+       "action": "diag.container_diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792691973.8562238,
+       "action": "exec.diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792691972.4976358,
+       "action": "diag.container_diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792691972.435553,
+       "action": "exec.diag",
+       "actor": "agent"
+      },
+      {
+       "ts": 1792691971.4700658,
+       "action": "diag.container_diag",
+       "actor": "agent"
+      }
+     ],
+     "logs": {
+      "lines": 102,
+      "requests": 0,
+      "status_counts": {},
+      "error_rate": 0.0,
+      "errors_5xx": 0,
+      "paths_5xx": {},
+      "slow": [],
+      "oom": [],
+      "missing_env": {},
+      "conn_errors": [],
+      "startups": 0,
+      "shutdowns": 0,
+      "restart_loop": false,
+      "first_ts": 1792694737.245014,
+      "last_ts": 1792695907.8999937,
+      "previous_release_tracebacks": 0,
+      "tracebacks": []
+     }
+    },
+    "llm_used": false
+   },
+   "fingerprint": "build_failed",
+   "timeline": [
+    {
+     "ts": 1792695926.6725671,
+     "text": "رخداد شناسایی شد: استقرار نسخه‌ی جدید شکست خورد"
+    },
+    {
+     "ts": 1792695938.0186865,
+     "text": "تشخیص: بیلد نسخه‌ی جدید شکست خورد (اطمینان 70٪)"
+    },
+    {
+     "ts": 1792695938.1255798,
+     "text": "اقدام خودکاری برای این رخداد تعریف نشده؛ گزارش تشخیص برای مالک آماده است."
+    }
+   ]
+  }
+ ],
+ "proposals": [
+  {
+   "id": "prp_8cd7d65d7b6f",
+   "app": "demo-shop",
+   "tool": "apply_code_fix",
+   "args": {
+    "app": "demo-shop",
+    "fix_id": "fix_ee9067796de9"
+   },
+   "title": "اعمال اصلاح کد روی demo-shop و استقرار",
+   "why": "تغییر آخرین کامیت، بررسی «محصول تخفیف‌دار است یا نه» را از تابع محاسبه تخفیف حذف کرده است. برای محصولی که قیمت قدیمی ندارد، تقسیم بر صفر رخ می‌دهد و صفحه اصلی از کار می‌افتد. تست‌ها قبل از وصله: 1 موفق، 2 ناموفق — بعد از وصله: 3 موفق، 0 ناموفق",
+   "impact": {
+    "downtime": "ندارد اگر استقرار بدون قطعی فعال باشد",
+    "cost": "بدون تغییر هزینه",
+    "risk": "متوسط",
+    "deploys": "یکی از سهمیه‌ی استقرار روزانه مصرف می‌شود",
+    "label": "اعمال اصلاح کد و استقرار",
+    "diff": "--- a/shop/pricing.py\n+++ b/shop/pricing.py\n@@ -2,8 +2,10 @@\n \n \n def discount_percent(p):\n-    \"\"\"Percentage off the old price (simplified).\"\"\"\n+    \"\"\"Percentage off the old price; 0 when the product is not on sale.\"\"\"\n     old = p.get(\"old_price\") or 0\n+    if not old or old <= p[\"price\"]:\n+        return 0\n     return round(100 * (old - p[\"price\"]) / old)\n \n \n",
+    "tests_before": {
+     "passed": false,
+     "summary": "1 موفق، 2 ناموفق"
+    },
+    "tests_after": {
+     "passed": true,
+     "summary": "3 موفق، 0 ناموفق"
+    },
+    "root_cause": "تغییر آخرین کامیت، بررسی «محصول تخفیف‌دار است یا نه» را از تابع محاسبه تخفیف حذف کرده است. برای محصولی که قیمت قدیمی ندارد، تقسیم بر صفر رخ می‌دهد و صفحه اصلی از کار می‌افتد.",
+    "technical": "The last commit removed the guard that returned 0 when old_price is missing or not greater than price, so discount_percent divides by zero for products without old_price and returns negative discounts otherwise. Restoring the guard fixes both the crash and the wrong values."
+   },
+   "rollback": "سورس فعلی در آرشیو نگهبان ذخیره است؛ با «بازگشت به نسخه‌ی قبلی» یا استقرار از آرشیو برمی‌گردد.",
+   "status": "done",
+   "created_at": 1792695944.8956854,
+   "expires_at": 1792697144.895686,
+   "origin": "orchestrator",
+   "incident_id": "inc_64d527a668fb",
+   "result": {
+    "commit": "f067a7a",
+    "release_id": "6ada5e8cb3b5ca83e1f67b2b",
+    "release_state": "READY",
+    "archive_id": "arc_9ca40c7ab4ef",
+    "failReason": null
+   },
+   "verification": {
+    "passed": true,
+    "checks": [
+     {
+      "name": "سلامت HTTP",
+      "ok": true,
+      "detail": "HTTP 200 در 65ms"
+     },
+     {
+      "name": "زمان پاسخ",
+      "ok": true,
+      "detail": "65ms (حد مجاز 2500ms)"
+     },
+     {
+      "name": "خطای جدید در لاگ",
+      "ok": true,
+      "detail": "0 پاسخ 5xx، 0 traceback از زمان اقدام"
+     }
+    ],
+    "attempts": 1,
+    "ts": 1792696005.8697886
+   },
+   "decided_by": "owner",
+   "decided_at": 1792695947.6398993,
+   "auto": 0
+  },
+  {
+   "id": "prp_ac625848ec52",
+   "app": "demo-shop",
+   "tool": "container_exec_any",
+   "args": {
+    "app": "demo-shop",
+    "command": "pip install requests"
+   },
+   "title": "اجرای فرمان در کانتینر demo-shop: pip install requests",
+   "why": "",
+   "impact": {
+    "downtime": "ندارد، مگر خود فرمان سرویس را متوقف کند",
+    "cost": "بدون هزینه",
+    "risk": "زیاد",
+    "command": "pip install requests",
+    "why_approval": "not on the read-only allowlist",
+    "label": "container_exec_any",
+    "session": "dashboard"
+   },
+   "rollback": "فرمان‌های داخل کانتینر برگشت خودکار ندارند. ری‌استارت برنامه کانتینر را از ایمیج نسخه‌ی فعلی از نو می‌سازد (تغییرات بیرون از دیسک پاک می‌شود؛ تغییرات روی دیسک می‌ماند).",
+   "status": "rejected",
+   "created_at": 1792695949.4453351,
+   "expires_at": 1792697149.4453356,
+   "origin": "dashboard",
+   "incident_id": null,
+   "result": null,
+   "verification": null,
+   "decided_by": "owner",
+   "decided_at": 1792695949.991879,
+   "auto": 0
+  }
+ ]
+}

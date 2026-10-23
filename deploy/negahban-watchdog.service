@@ -1,0 +1,8 @@
+[Unit]
+Description=Negahban external watchdog (checks negahban-sre on Liara, repairs via Liara API)
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/negahban/deploy/watchdog.py
+TimeoutStartSec=180

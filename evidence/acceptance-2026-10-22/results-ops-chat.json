@@ -1,0 +1,99 @@
+[
+ {
+  "check": "login (desktop)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "chat apps",
+  "ok": true,
+  "detail": "20s att=0 cards=0 :: این فهرست برنامه‌های تیم شماست و هزینه‌ی ساعتی هر کدام (پلن سخت‌افزاری + باندل):\n\n| برنامه | وضعیت | پلن | باندل | هزینه‌ی ساعتی (تومان) | هزینه‌ی تقریبی ماهانه",
+  "seconds": 20
+ },
+ {
+  "check": "chat chart",
+  "ok": true,
+  "detail": "9s att=1 cards=0 :: نمودار CPU برنامه‌ی demo-shop برای ۶ ساعت اخیر در چت نمایش داده شد. خلاصه‌ی آن:\n\n• میانگین مصرف: حدود ۰.۰۴ هسته (کمی بیش از ۷٪ از سقف ۰.۵ هسته)\n• اوج مصرف: ۰.۸۳",
+  "seconds": 9
+ },
+ {
+  "check": "chat diagram",
+  "ok": true,
+  "detail": "3s att=1 cards=0 :: نمودار CPU برنامه‌ی demo-shop برای ۶ ساعت اخیر در چت نمایش داده شد. خلاصه‌ی آن:\n\n• میانگین مصرف: حدود ۰.۰۴ هسته (کمی بیش از ۷٪ از سقف ۰.۵ هسته)\n• اوج مصرف: ۰.۸۳",
+  "seconds": 3
+ },
+ {
+  "check": "chat exec",
+  "ok": false,
+  "detail": "8s att=2 cards=0 :: نقشه‌ی ارتباط برنامه‌ها در چت نمایش داده شد. خلاصه‌ی آن:\n\n• برنامه‌های تیم: meowmeow-wallex، negahban-sre، demo-shop و bazargard-ai؛ هر چهار فعال و تحت نظر نگهب",
+  "seconds": 8
+ },
+ {
+  "check": "chat logs",
+  "ok": true,
+  "detail": "11s att=0 cards=0 :: در ساعت اخیر demo-shop سالم بوده و مشکلی ثبت نشده است:\n\n• درخواست‌ها: ۱۱۵ درخواست، همه با وضعیت ۲۰۰ (بدون هیچ خطای ۵xx یا تراک‌بک)\n• پرتکرارترین مسیرها: GET / ب",
+  "seconds": 11
+ },
+ {
+  "check": "chat template",
+  "ok": true,
+  "detail": "10s att=0 cards=1 :: کارت تأیید استقرار ساخته شد (شناسه: prp_4f51ff24d13b). تا وقتی شما در صفحه‌ی «تأییدها» آن را تأیید نکنید، برنامه ساخته نمی‌شود.\n\nجزئیات کارت:\n• برنامه: ngh-acc-",
+  "seconds": 10
+ },
+ {
+  "check": "template deploy card rejected (no extra app)",
+  "ok": true,
+  "detail": "استقرار ngh-acc-94442 از قالب fastapi روی پلن small-g2"
+ },
+ {
+  "check": "chat restart card",
+  "ok": true,
+  "detail": "10s cards=1"
+ },
+ {
+  "check": "approve → execute → verify (demo-shop restart)",
+  "ok": true,
+  "detail": "ری‌استارت demo-shop | انجام و تأیید شد | گفتگو · لحظاتی پیش | درخواست مالک: ری‌استارت demo-shop | قطعی | حدود ۱۰ تا ۳۰ ثانیه | هزینه | بدون تغییر هزینه | ریسک | کم | برنامه‌ی بازگشت: نیازی نیست؛ ری‌استارت وضعیت دائمی را تغییر نمی‌دهد. | ✅ سلامت HTTP — HTTP 200 در 47ms | ✅ زمان پاسخ — 47ms (حد مجاز 2"
+ },
+ {
+  "check": "memory across sessions",
+  "ok": true,
+  "detail": "6s :: اسم شما امیر است و پروژه‌ی اصلی‌تان bazargard-ai ثبت شده است."
+ },
+ {
+  "check": "chat default-subdomain card",
+  "ok": false,
+  "detail": "3s :: اسم شما امیر است و پروژه‌ی اصلی‌تان bazargard-ai ثبت شده است."
+ },
+ {
+  "check": "locked app refused without a card",
+  "ok": false,
+  "detail": "کارت تأیید غیرفعال‌سازی زیردامنه‌ی پیش‌فرض demo-shop.liara.run ساخته شد (شناسه: prp_05b6950ee1c3) و در انتظار تأیید شماست.\n\n• اثر: آدرس demo-shop.liara.run از د"
+ },
+ {
+  "check": "scale up via chat (small→medium): card exists",
+  "ok": false,
+  "detail": "['set_default_subdomain']"
+ },
+ {
+  "check": "scale down via chat (medium→small): card exists",
+  "ok": false,
+  "detail": "['set_default_subdomain']"
+ },
+ {
+  "check": "set_env via chat: approve → execute → verify",
+  "ok": true,
+  "detail": "done ✓ سلامت HTTP: HTTP 200 در 78ms | ✓ زمان پاسخ: 78ms (حد مجاز 2500ms) | ✓ خطای جدید در لاگ: 0 پاسخ 5xx، 0 traceback از زمان اقدام | ✓ کانتینر جدید بالا آمد: 14 ثانیه پس از اقدام | ✓ متغیر محیطی: APP_VERSION",
+  "card": "prp_7e8b6367e906"
+ },
+ {
+  "check": "deploy via chat: card exists",
+  "ok": false,
+  "detail": "['set_default_subdomain']"
+ },
+ {
+  "check": "rollback via chat: card exists",
+  "ok": false,
+  "detail": "['set_default_subdomain']"
+ }
+]

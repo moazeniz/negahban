@@ -1,0 +1,29 @@
+{
+ "cache_off": {
+  "calls": 6,
+  "tokens_in": 87133,
+  "tokens_out": 2099,
+  "cache_read": 0,
+  "cache_write": 0,
+  "cost_usd": 0.009763,
+  "seconds": [
+   12.9,
+   10.8,
+   8.7
+  ]
+ },
+ "cache_on": {
+  "calls": 6,
+  "tokens_in": 16318,
+  "tokens_out": 1670,
+  "cache_read": 58435,
+  "cache_write": 11687,
+  "cost_usd": 0.004512,
+  "seconds": [
+   11.0,
+   8.7,
+   8.7
+  ]
+ },
+ "input_cost_saving_pct": 53.8
+}

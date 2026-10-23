@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/usr/local/bin/uvicorn", line 8, in <module>
+    sys.exit(main())
+  File "/app/main.py", line 10, in <module>
+    PAYMENT_GATEWAY_KEY = os.environ["PAYMENT_GATEWAY_KEY"]  # required
+  File "<frozen os>", line 714, in __getitem__
+KeyError: 'PAYMENT_GATEWAY_KEY'
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+Traceback (most recent call last):
+  File "/app/main.py", line 10, in <module>
+    PAYMENT_GATEWAY_KEY = os.environ["PAYMENT_GATEWAY_KEY"]  # required
+KeyError: 'PAYMENT_GATEWAY_KEY'
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
