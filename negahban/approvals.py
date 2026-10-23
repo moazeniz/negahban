@@ -14,7 +14,7 @@ LABEL = {'restart_app': 'ری‌استارت برنامه', 'scale_app': 'روش
          'unset_env': 'حذف متغیر محیطی', 'toggle_zero_downtime': 'استقرار بدون قطعی', 'rollback_release': 'بازگشت به نسخه‌ی قبلی',
          'deploy_workspace': 'استقرار نسخه‌ی جدید', 'apply_code_fix': 'اعمال اصلاح کد و استقرار', 'redeploy_archive': 'استقرار مجدد از آرشیو',
          'create_app': 'ساخت برنامه‌ی جدید', 'deploy_project': 'استقرار پروژه', 'add_domain': 'افزودن دامنه', 'enable_ssl': 'فعال‌سازی SSL',
-         'create_dns_zone': 'ساخت ناحیه‌ی DNS', 'delete_app': 'حذف برنامه'}
+         'create_dns_zone': 'ساخت ناحیه‌ی DNS', 'delete_app': 'حذف برنامه', 'release_via_pipeline': 'انتشار از پایپ‌لاین گیت‌هاب'}
 
 
 async def state_fingerprint(app):
@@ -104,6 +104,12 @@ def guard(tool, a, auto=False):
     if not app:
         return None
     pol = store.policy(app)
+    if tool == 'release_via_pipeline':
+        from .gitops import NEVER_DISPATCH, PIPELINE_SELF_OK
+        if app in NEVER_DISPATCH:
+            return f'{app} فقط پایش می‌شود (معاملات با پول واقعی)؛ نگهبان هیچ‌وقت آن را منتشر نمی‌کند.'
+        if app in PIPELINE_SELF_OK:  # releasing through the repo's own CI (tests + smoke + auto-rollback) is allowed with approval
+            return None
     if pol.get('write_lock'):
         return f'برنامه‌ی {app} در حالت «فقط پایش» است؛ هیچ تغییری روی آن اجرا نمی‌شود. برای اجازه، قفل را در تنظیمات خودران همان برنامه بردارید.'
     if pol.get('env_lock') and tool in ('set_env', 'unset_env'):

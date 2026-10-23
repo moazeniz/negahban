@@ -6,6 +6,7 @@ _PATTERNS = [
     (re.compile(r'(?i)\b(bearer)\s+[A-Za-z0-9._\-]{12,}'), r'\1 ***'),
     (re.compile(r'eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}'), '***jwt***'),
     (re.compile(r'\bsk-[A-Za-z0-9_\-]{12,}'), 'sk-***'),
+    (re.compile(r'\b(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}|\bgithub_pat_[A-Za-z0-9_]{20,}'), 'gh***'),
     (re.compile(r'(?i)\b(password|passwd|secret|token|api[_-]?key|private[_-]?key)(["\']?\s*[:=]\s*["\']?)([^\s"\',;&]{4,})'), r'\1\2***'),
     (re.compile(r'(?i)(postgres|mysql|mongodb(?:\+srv)?|redis|amqp)://([^:/\s]+):([^@/\s]+)@'), r'\1://\2:***@'),
 ]

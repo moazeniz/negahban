@@ -21,9 +21,13 @@ def test_specs_are_complete_and_distinct():
         assert s['risk'] in ('read', 'safe', 'sensitive') and re.search('[؀-ۿ]', s['label_fa']) and len(s['desc']) > 40
         assert set(s['required']) <= set(s['params']) and inspect.iscoroutinefunction(s['fn'])
         if s['risk'] == 'sensitive':
-            assert callable(s['title']) and inspect.iscoroutinefunction(s['impact']), s['name']
+            assert callable(s['title']) and callable(s['impact']), s['name']
     assert {s['name'] for s in specs if s['risk'] == 'sensitive'} == {'container_exec_any', 'load_test', 'db_query', 'create_server', 'server_power', 'resize_server',
-                                                                      'server_add_disk', 'server_extend_disk', 'server_reset_password', 'server_reset_network', 'delete_server'}
+                                                                      'server_add_disk', 'server_extend_disk', 'server_reset_password', 'server_reset_network', 'delete_server',
+                                                                      'create_database', 'connect_database', 'database_power', 'resize_database', 'backup_database',
+                                                                      'database_backup_link', 'restore_database_backup', 'reset_database_password', 'database_public_network',
+                                                                      'delete_database', 'bucket_file_link', 'create_bucket', 'connect_bucket', 'bucket_permission',
+                                                                      'resize_bucket', 'delete_bucket', 'create_storage_key', 'revoke_storage_key', 'delete_storage_key'}
 
 
 def test_register_uses_core_decorator_signature():

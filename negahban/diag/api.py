@@ -219,3 +219,88 @@ async def server_template_op(tid: str, op: str, request: Request):
     if op == 'delete':
         return await _guarded(st.delete, tid, b.get('confirm_name'), 'owner')
     raise HTTPException(404, 'عملیات نامعتبر')
+
+
+# ---------------------------------------------------------------- one-time secrets + typed-name approvals (servers, databases, buckets)
+@router.post('/secret/{tok}')
+async def secret_once(tok: str, request: Request):
+    """One-time reveal of a secret produced by an approved card (DB/VM password, storage secret key, backup/file link)."""
+    require(request, csrf=True)
+    rate('diag_secret', 10, 60)
+    from . import iaas
+    s = iaas.reveal_secret(tok[:64])
+    if not s:
+        raise HTTPException(404, 'این مورد قبلاً نمایش داده شده یا منقضی شده است')
+    store.audit('owner', 'secret_revealed', None, {'label': s['label']})
+    return s
+
+
+@router.post('/approve-typed/{pid}')
+async def approve_typed(pid: str, request: Request):
+    """Approve a destructive card only when the owner typed the exact resource name (the LLM can never supply it)."""
+    require(request, csrf=True)
+    rate('approve', 20, 60)
+    from . import TYPED_CONFIRM
+    b = await _body(request)
+    p = store.get_proposal(pid)
+    if not p or p['tool'] not in TYPED_CONFIRM:
+        raise HTTPException(404, 'کارت پیدا نشد')
+    want = (p['args'] or {}).get(TYPED_CONFIRM[p['tool']])
+    if not want or str(b.get('confirm_name') or '') != want:
+        raise HTTPException(400, 'برای تأیید، نام را دقیقاً تایپ کنید')
+    from .. import approvals
+    r = await approvals.approve(pid, 'owner', {'confirm_name': want})
+    if isinstance(r, dict) and r.get('error'):
+        raise HTTPException(409, r['error'])
+    return r
+
+
+@router.get('/limitations')
+async def diag_limitations(request: Request):
+    require(request)
+    from . import limitations
+    return [{'title': t, 'text': x} for t, x in limitations()]
+
+
+# ---------------------------------------------------------------- databases (DBaaS)
+@router.get('/databases')
+async def databases_(request: Request):
+    require(request)
+    return await _run('list_databases', {}, request)
+
+
+@router.get('/databases/catalog')
+async def databases_catalog(request: Request, engine: str = None):
+    require(request)
+    return await _run('database_plans', {'engine': engine} if engine else {}, request)
+
+
+@router.get('/databases/{ref}')
+async def database_(ref: str, request: Request):
+    require(request)
+    return await _run('database_details', {'database': ref}, request)
+
+
+# ---------------------------------------------------------------- object storage
+@router.get('/storage')
+async def storage_(request: Request):
+    require(request)
+    return await _run('list_buckets', {}, request)
+
+
+@router.get('/storage/catalog')
+async def storage_catalog(request: Request):
+    require(request)
+    return await _run('storage_plans', {}, request)
+
+
+@router.get('/storage/keys')
+async def storage_keys(request: Request):
+    require(request)
+    return await _run('storage_keys', {}, request)
+
+
+@router.get('/storage/{bucket}/objects')
+async def storage_objects(bucket: str, request: Request, prefix: str = '', page: int = 1):
+    require(request)
+    return await _run('bucket_objects', {'bucket': bucket, 'prefix': prefix[:300], 'limit': 100, 'page': max(1, min(page, 1000))}, request)
